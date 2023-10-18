@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "ecoindex-monorepo"
+version = "0.1.0"
+description = ""
+authors = ["Vincent Vatelot <vincent.vatelot@ik.me>"]
+readme = "README.md"
+packages = [
+    { include = "development" },
+    { include = "ecoindex/compute", from = "components" },
+    { include = "ecoindex/models", from = "components" },
+    { include = "ecoindex/data", from = "components" },
+    { include = "ecoindex/worker", from = "bases" },
+    { include = "ecoindex/backend", from = "bases" },
+    { include = "ecoindex/cli", from = "bases" },
+    { include = "ecoindex/scripts", from = "components" },
+    { include = "ecoindex/scraper", from = "components" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^2.4.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
