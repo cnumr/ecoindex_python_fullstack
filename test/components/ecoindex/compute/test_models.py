@@ -35,15 +35,10 @@ def test_model_webpage_wrong_size():
         print(error.value)
 
     assert (
-        "2 validation errors for WebPage\n"
-        "width\n  "
-        "Input should be greater than or equal to 100 [type=greater_than_equal, "
-        "input_value=0, input_type=int]\n    "
-        "For further information visit https://errors.pydantic.dev/2.3/v/greater_than_equal\n"
-        "height\n  "
-        "Input should be greater than or equal to 50 [type=greater_than_equal, "
-        "input_value=0, input_type=int]\n    "
-        "For further information visit https://errors.pydantic.dev/2.3/v/greater_than_equal"
+        "2 validation errors for WebPage\nwidth\n  "
+        "Input should be greater than or equal to 100 [type=greater_than_equal, input_value=0, input_type=int]\n    "
+        "For further information visit https://errors.pydantic.dev/2.4/v/greater_than_equal\nheight\n  "
+        "Input should be greater than or equal to 50 [type=greater_than_equal, input_value=0, input_type=int]\n"
     ) in str(error.value)
 
 

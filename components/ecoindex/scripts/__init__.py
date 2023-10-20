@@ -1,4 +1,3 @@
-from ecoindex.scripts import core
+from ecoindex.scripts.update_values import update_values
 
-__all__ = ["core"]
-
+__all__ = ["update_values"]

@@ -2,7 +2,7 @@
 Ecoindex basic compute engine
 """
 
-from .ecoindex import (
+from ecoindex.compute.ecoindex import (
     get_ecoindex,
     get_grade,
     get_greenhouse_gases_emmission,

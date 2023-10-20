@@ -2,14 +2,14 @@
 Ecoindex models
 """
 
-from .api import (
+from ecoindex.models.api import (
     ApiEcoindex,
     ApiHealth,
     Host,
     PageApiEcoindexes,
     PageHosts,
 )
-from .compute import (
+from ecoindex.models.compute import (
     Ecoindex,
     PageMetrics,
     PageType,
@@ -19,14 +19,14 @@ from .compute import (
     WebPage,
     WindowSize,
 )
-from .enums import Version
-from .response_examples import (
+from ecoindex.models.enums import Version
+from ecoindex.models.response_examples import (
     example_daily_limit_response,
     example_ecoindex_not_found,
     example_file_not_found,
     example_page_listing_empty,
 )
-from .sort import Sort
+from ecoindex.models.sort import Sort
 
 __all__ = [
     "ApiEcoindex",

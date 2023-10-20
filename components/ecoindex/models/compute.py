@@ -2,7 +2,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from pkg_resources import get_distribution
+from ecoindex.data import ecoindex_compute_version
 from pydantic import AnyHttpUrl, BaseModel, Field
 
 PageType = str
@@ -36,7 +36,7 @@ class Ecoindex(BaseModel):
         ge=0,
     )
     ecoindex_version: str | None = Field(
-        default=get_distribution("ecoindex").version,
+        default=ecoindex_compute_version,
         title="Ecoindex version",
         description="Is the version of the ecoindex used to compute the score",
     )

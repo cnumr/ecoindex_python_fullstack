@@ -5,7 +5,14 @@ description = ""
 authors = ['Vincent Vatelot <vincent.vatelot@ik.me>']
 license = ""
 
-packages = []
+packages = [
+    { include = "ecoindex/compute", from = "../../components" },
+    { include = "ecoindex/data", from = "../../components" },
+    { include = "ecoindex/models", from = "../../components" },
+    { include = "ecoindex/scraper", from = "../../components" },
+    { include = "ecoindex/scripts", from = "../../components" },
+    { include = "ecoindex/cli", from = "../../bases" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
