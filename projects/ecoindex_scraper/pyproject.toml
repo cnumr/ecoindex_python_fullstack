@@ -1,9 +1,13 @@
 [tool.poetry]
 name = "ecoindex_scraper"
 version = "0.1.0"
-description = ""
+readme = "README.md"
+description = "Ecoindex_scraper module provides a way to scrape data from given website while simulating a real web browser"
 authors = ['Vincent Vatelot <vincent.vatelot@ik.me>']
-license = ""
+license = "Creative Commons BY-NC-ND"
+homepage = "http://www.ecoindex.fr"
+repository = "https://github.com/cnumr/ecoindex_scrap_python"
+include = ["LICENSE"]
 
 packages = [
     { include = "ecoindex/compute", from = "../../components" },

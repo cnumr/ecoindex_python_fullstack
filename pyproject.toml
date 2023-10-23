@@ -21,12 +21,16 @@ python = "^3.10"
 pydantic = "^2.4.2"
 aiofile = "^3.8.8"
 requests = "^2.31.0"
+pillow = "^10.1.0"
+playwright = "^1.39.0"
+python-slugify = "^8.0.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.2"
 pytest-asyncio = "^0.21.1"
 ruff = "^0.1.1"
 black = "^23.10.0"
+tqdm = "^4.66.1"
 
 [build-system]
 requires = ["poetry-core"]
