@@ -16,12 +16,10 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.10"
-pydantic = "^2.4.2"
 aiofile = "^3.8.8"
+pydantic = "^2.4.2"
+python = "^3.10"
 requests = "^2.31.0"
-
-[tool.poetry.group.dev.dependencies]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

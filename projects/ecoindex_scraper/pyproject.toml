@@ -1,21 +1,29 @@
 [tool.poetry]
 name = "ecoindex_scraper"
 version = "0.1.0"
-description = ""
+readme = "README.md"
+description = "Ecoindex_scraper module provides a way to scrape data from given website while simulating a real web browser"
 authors = ['Vincent Vatelot <vincent.vatelot@ik.me>']
-license = ""
+license = "Creative Commons BY-NC-ND"
+homepage = "http://www.ecoindex.fr"
+repository = "https://github.com/cnumr/ecoindex_scrap_python"
+include = ["LICENSE"]
 
 packages = [
     { include = "ecoindex/compute", from = "../../components" },
     { include = "ecoindex/data", from = "../../components" },
     { include = "ecoindex/models", from = "../../components" },
     { include = "ecoindex/scraper", from = "../../components" },
+    { include = "ecoindex/utils", from = "../../components" },
 ]
 
 [tool.poetry.dependencies]
+playwright = "^1.39.0"
+playwright-stealth = "^1.0.6"
+pydantic = "^2.4.2"
 python = "^3.10"
-
-[tool.poetry.group.dev.dependencies]
+slugify = "^0.0.1"
+typing-extensions = "^4.8.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

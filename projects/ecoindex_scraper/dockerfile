@@ -1,0 +1,13 @@
+
+FROM python:3.11-slim
+
+WORKDIR /code
+ENV PYTHONPATH "/code"
+
+RUN pip install poetry
+COPY ./ ./
+RUN poetry install
+
+RUN poetry run playwright install firefox --with-deps
+
+RUN rm -rf /tmp/dist /var/lib/{apt,dpkg,cache,log}/

@@ -11,6 +11,7 @@ from ecoindex.data import (  # noqa: F401
     quantiles_size,
 )
 from ecoindex.models import Ecoindex
+from typing_extensions import deprecated
 
 
 async def get_quantile(quantiles: list[int | float], value: int | float) -> float:
@@ -31,6 +32,7 @@ async def get_score(dom: int, size: float, requests: int) -> float:
     return round(100 - 5 * (3 * q_dom + 2 * q_req + q_size) / 6)
 
 
+@deprecated("Use compute_ecoindex instead")
 async def get_ecoindex(dom: int, size: float, requests: int) -> Ecoindex:
     score = await get_score(dom=dom, size=size, requests=requests)
 
@@ -39,6 +41,14 @@ async def get_ecoindex(dom: int, size: float, requests: int) -> Ecoindex:
         grade=await get_grade(score),
         ges=await get_greenhouse_gases_emmission(score),
         water=await get_water_consumption(score),
+    )
+
+
+async def compute_ecoindex(nodes: int, size: float, requests: int) -> Ecoindex:
+    return await get_ecoindex(
+        dom=nodes,
+        size=size,
+        requests=requests,
     )
 
 
