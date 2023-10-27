@@ -9,5 +9,6 @@ COPY ./ ./
 RUN poetry install --with scraper --with cli
 
 RUN poetry run playwright install chromium --with-deps
+RUN alias ecoindex-cli="poetry run ecoindex-cli"
 
 RUN rm -rf /tmp/dist /var/lib/{apt,dpkg,cache,log}/
