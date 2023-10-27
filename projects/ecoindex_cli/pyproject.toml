@@ -12,6 +12,7 @@ packages = [
     { include = "ecoindex/scraper", from = "../../components" },
     { include = "ecoindex/scripts", from = "../../components" },
     { include = "ecoindex/cli", from = "../../bases" },
+    { include = "ecoindex/utils", from = "../../components" },
 ]
 
 [tool.poetry.dependencies]

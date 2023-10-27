@@ -2,11 +2,14 @@ import json
 import os
 from datetime import datetime
 from time import sleep
+from uuid import uuid4
 
 from ecoindex.compute.ecoindex import compute_ecoindex
 from ecoindex.models.compute import PageMetrics, Result, ScreenShot, WindowSize
+from ecoindex.models.scraper import Requests
 from ecoindex.utils.screenshots import convert_screenshot_to_webp, set_screenshot_rights
 from playwright.async_api import async_playwright
+from playwright_stealth import stealth_async
 from slugify import slugify
 from typing_extensions import deprecated
 
@@ -35,13 +38,12 @@ class EcoindexScraper:
         self.screenshot_uid = screenshot_uid
         self.screenshot_gid = screenshot_gid
         self.page_load_timeout = page_load_timeout
-        self.all_requests = {"entries": [], "total_count": 0, "total_size": 0}
+        self.all_requests = Requests()
 
         self.now = datetime.now()
-        date = self.now.strftime("%Y-%m-%d-%H-%M-%S")
         slug = slugify(self.url)
 
-        self.slugified_session_name = f"ecoindex-{slug}-{date}"
+        self.slugified_session_name = f"ecoindex-{slug}-{uuid4()}"
         self.har_temp_file_path = f"/tmp/{self.slugified_session_name}.har"
 
     @deprecated("This method is useless with new version of EcoindexScraper")
@@ -67,6 +69,7 @@ class EcoindexScraper:
                 record_har_path=self.har_temp_file_path,
                 screen=self.window_size.model_dump(),
             )
+            await stealth_async(self.page)
             response = await self.page.goto(self.url)
             if response.status != 200:
                 raise EcoindexScraperException(
@@ -88,9 +91,9 @@ class EcoindexScraper:
         await self.get_requests_from_har_file()
 
         return PageMetrics(
-            size=self.all_requests["total_size"] / 1000,
+            size=self.all_requests.total_size / 1000,
             nodes=total_nodes,
-            requests=self.all_requests["total_count"],
+            requests=self.all_requests.total_count,
         )
 
     async def generate_screenshot(self) -> None:
@@ -108,7 +111,7 @@ class EcoindexScraper:
             trace = json.load(f)
 
             for entry in trace["log"]["entries"]:
-                self.all_requests["entries"].append(
+                self.all_requests.items.append(
                     {
                         "url": entry["request"]["url"],
                         "mime_type": entry["response"]["content"]["mimeType"],
@@ -117,8 +120,8 @@ class EcoindexScraper:
                     }
                 )
 
-                self.all_requests["total_count"] += 1
-                self.all_requests["total_size"] += entry["response"]["_transferSize"]
+                self.all_requests.total_count += 1
+                self.all_requests.total_size += entry["response"]["_transferSize"]
 
         os.remove(self.har_temp_file_path)
 

@@ -13,7 +13,7 @@ packages = [
     { include = "ecoindex/scripts", from = "../../components" },
     { include = "ecoindex/backend", from = "../../bases" },
     { include = "ecoindex/worker", from = "../../bases" },
-
+    { include = "ecoindex/utils", from = "../../components" },
 ]
 
 [tool.poetry.dependencies]

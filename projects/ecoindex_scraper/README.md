@@ -8,7 +8,6 @@ This module provides a simple interface to get the [Ecoindex](http://www.ecoinde
 ## Requirements
 
 - Python ^3.10 with [pip](https://pip.pypa.io/en/stable/installation/)
-- Google Chrome installed on your computer
 
 ## Install
 
@@ -119,30 +118,3 @@ with ThreadPoolExecutor(max_workers=8) as executor:
         except Exception as e:
             print(e)
 ```
-
-> **Note:** In this case, it is highly recommanded to use a fixed `chromedriver` version. You can set it with the parameter `chrome_version_main` (IE `107`) and `driver_executable_path` (IE `/usr/bin/chromedriver`). Otherwise undected-chromedriver will download the latest version of chromedriver and patch it for each analysis.
-
-## Contribute
-
-You need [poetry](https://python-poetry.org/) to install and manage dependencies. Once poetry installed, run :
-
-```bash
-poetry install
-```
-
-## Tests
-
-```shell
-poetry run pytest
-```
-
-## Disclaimer
-
-The LCA values used by [ecoindex_scraper](https://github.com/cnumr/ecoindex_scrap_python) to evaluate environmental impacts are not under free license - ©Frédéric Bordage
-Please also refer to the mentions provided in the code files for specifics on the IP regime.
-
-## [License](LICENSE)
-
-## [Contributing](CONTRIBUTING.md)
-
-## [Code of conduct](CODE_OF_CONDUCT.md)
