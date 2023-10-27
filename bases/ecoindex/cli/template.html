@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title }} {{ site }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma/css/bulma.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.866em%22 font-size=%22100%22>🟢</text></svg>">
+
+    <!-- Datatable -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div id="navbarBasicExample" class="navbar-menu">
+                <div class="navbar-start">
+                    <a class="navbar-item" onclick="show_report()" href="#synthese">{{ synthesis }} </a>
+                    <a class="navbar-item" onclick="show_report()" href="#top10">{{ top10 }} </a>
+                    <a class="navbar-item" onclick="show_report()" href="#indicateurs">{{ indicators}} </a>
+                    <a class="navbar-item" onclick="show_datatable()" href="#datatable">{{ all_data_title }}</a>
+                    <a class="navbar-item" onclick="show_report()" href="{{ result_file }}"><small>⬇️
+                            {{ download }}</small></a>
+                </div>
+                <div class="navbar-end">
+                    <span class="navbar-item">{{ site }} - {{ date }}</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="report" class="container section">
+        <div id="synthese">
+            <h1 class="title is-1"><a href="#">⬆️</a> {{ synthesis }}</h1>
+            <div class="columns is-mobile is-vcentered">
+                <div class="column ">
+                    <img src='grade.svg'>
+                </div>
+                <div class="column">
+                    <article class="message is-dark">
+                        <div class="message-header">
+                            <p>{{ ecoindex_score }}</p>
+                        </div>
+                        <div class="message-body">
+                            {{ ecoindex_body }}
+
+                            <p><strong>{{ ecoindex_body_end_pre}} {{ nb_page }} {{ ecoindex_body_end_mid }} {{ site }}</strong></p><br />
+
+                            {{ ecoindex_body_end_suf }}
+                    </article>
+                </div>
+            </div>
+            {{ summary }}
+        </div>
+        <hr />
+
+        <div id="top10">
+            <h1 class="title is-1"><a href="#">⬆️</a> {{ top10 }}</h1>
+            <h2 class="title is-2">✔️ {{ best_pages }}</h2>
+            {{ best }}
+            <h2 class="title is-2">❌️ {{ worst_pages }}</h2>
+            {{ worst }}
+        </div>
+        <hr />
+
+        <div id="indicateurs">
+            <h1 class="title is-1"><a href="#">⬆️</a> {{ indicators }}</h1>
+            <h2 class="title is-2">{{ number_of_requests }}</h2>
+            <div class="columns is-mobile is-vcentered">
+                <div class="column">
+                    <img src='requests.svg'>
+                </div>
+                <div class="column">
+                    <article class="message is-dark">
+                        <div class="message-body">
+                            {{ requests_body }}
+                        </div>
+                        <div class="box">
+                            {{ requests_comment }}
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <h2 class="title is-2">{{ pages_size }}</h2>
+            <div class="columns is-mobile is-vcentered">
+                <div class="column">
+                    <img src='size.svg'>
+                </div>
+                <div class="column">
+                    <article class="message is-dark">
+                        <div class="message-body">
+                            {{ size_body }}
+                        </div>
+                        <div class="box">
+                            {{ size_comment }}
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <h2 class="title is-2">{{ number_of_dom_nodes }}</h2>
+            <div class="columns is-mobile is-vcentered">
+                <div class="column">
+                    <img src='nodes.svg'>
+                </div>
+                <div class="column">
+                    <article class="message is-dark">
+                        <div class="message-body">
+                            {{ nodes_body }}
+                        </div>
+                        <div class="box">
+                            {{ nodes_comment }}
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="datatable" style="display: none;" class="container section">
+        <h1 class="title is-1"><a href="#" onclick="show_report()">⬆️</a> {{ all_data_title }}</h1>
+        {{ all_data }}
+    </div>
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>{{ footer }}</p>
+        </div>
+    </footer>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#datatable table').DataTable();
+        });
+
+        function show_report() {
+            $("#report").show()
+            $("#datatable").hide()
+        }
+
+        function show_datatable() {
+            $("#report").hide()
+            $("#datatable").show()
+        }
+    </script>
+</body>
+
+</html>

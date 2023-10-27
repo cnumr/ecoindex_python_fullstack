@@ -18,9 +18,10 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.10"
-pydantic = "^2.4.2"
 aiofile = "^3.8.8"
+loguru = "^0.7.2"
+pydantic = "^2.4.2"
+python = ">=3.10,<3.13"
 requests = "^2.31.0"
 
 [tool.poetry.group.scraper.dependencies]
@@ -30,6 +31,13 @@ playwright-stealth = "^1.0.6"
 python-slugify = "^8.0.1"
 
 [tool.poetry.group.cli.dependencies]
+click-spinner = "^0.1.10"
+jinja2 = "^3.1.2"
+matplotlib = "^3.8.0"
+pandas = "^2.1.2"
+pyyaml = "^6.0.1"
+scrapy = "^2.11.0"
+typer = "^0.9.0"
 
 [tool.poetry.group.api.dependencies]
 
@@ -40,6 +48,7 @@ pytest = "^7.4.2"
 pytest-asyncio = "^0.21.1"
 ruff = "^0.1.1"
 black = "^23.10.0"
+bump-pydantic = "^0.7.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -47,3 +56,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 update-values = "ecoindex.scripts:update_values"
+ecoindex-cli = "ecoindex.cli.app:app"

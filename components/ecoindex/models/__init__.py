@@ -19,7 +19,7 @@ from ecoindex.models.compute import (
     WebPage,
     WindowSize,
 )
-from ecoindex.models.enums import Version
+from ecoindex.models.enums import ExportFormat, Language, Version
 from ecoindex.models.response_examples import (
     example_daily_limit_response,
     example_ecoindex_not_found,
@@ -37,7 +37,9 @@ __all__ = [
     "example_ecoindex_not_found",
     "example_file_not_found",
     "example_page_listing_empty",
+    "ExportFormat",
     "Host",
+    "Language",
     "PageApiEcoindexes",
     "PageHosts",
     "PageMetrics",
