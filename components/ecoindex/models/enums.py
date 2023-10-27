@@ -7,3 +7,13 @@ class Version(str, Enum):
 
     def get_version_number(self) -> int:
         return int(self.value[1:])
+
+
+class ExportFormat(Enum):
+    csv = "csv"
+    json = "json"
+
+
+class Language(Enum):
+    fr = "fr"
+    en = "en"

@@ -22,7 +22,7 @@ pip install ecoindex-scraper
 You can run a page analysis by calling the function `get_page_analysis()`:
 
 ```python
-(function) get_page_analysis: (url: HttpUrl, window_size: WindowSize | None = WindowSize(width=1920, height=1080), wait_before_scroll: int | None = 1, wait_after_scroll: int | None = 1) -> Coroutine[Any, Any, Result]
+(function) get_page_analysis: (url: AnyHttpUrl, window_size: WindowSize | None = WindowSize(width=1920, height=1080), wait_before_scroll: int | None = 1, wait_after_scroll: int | None = 1) -> Coroutine[Any, Any, Result]
 ```
 
 Example:
@@ -45,7 +45,7 @@ pprint(
 Result example:
 
 ```python
-Result(width=1920, height=1080, url=HttpUrl('http://ecoindex.fr', ), size=549.253, nodes=52, requests=12, grade='A', score=90.0, ges=1.2, water=1.8, ecoindex_version='5.0.0', date=datetime.datetime(2022, 9, 12, 10, 54, 46, 773443), page_type=None)
+Result(width=1920, height=1080, url=AnyHttpUrl('http://ecoindex.fr', ), size=549.253, nodes=52, requests=12, grade='A', score=90.0, ges=1.2, water=1.8, ecoindex_version='5.0.0', date=datetime.datetime(2022, 9, 12, 10, 54, 46, 773443), page_type=None)
 ```
 
 > **Default behaviour:** By default, the page analysis simulates:
