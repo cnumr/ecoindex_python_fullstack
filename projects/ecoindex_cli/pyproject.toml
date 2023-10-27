@@ -6,19 +6,17 @@ authors = ['Vincent Vatelot <vincent.vatelot@ik.me>']
 license = ""
 
 packages = [
+    { include = "ecoindex/cli", from = "../../bases" },
     { include = "ecoindex/compute", from = "../../components" },
     { include = "ecoindex/data", from = "../../components" },
     { include = "ecoindex/models", from = "../../components" },
     { include = "ecoindex/scraper", from = "../../components" },
     { include = "ecoindex/scripts", from = "../../components" },
-    { include = "ecoindex/cli", from = "../../bases" },
     { include = "ecoindex/utils", from = "../../components" },
 ]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-
-[tool.poetry.group.dev.dependencies]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

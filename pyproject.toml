@@ -6,15 +6,15 @@ authors = ["Vincent Vatelot <vincent.vatelot@ik.me>"]
 readme = "README.md"
 packages = [
     { include = "development" },
-    { include = "ecoindex/compute", from = "components" },
-    { include = "ecoindex/models", from = "components" },
-    { include = "ecoindex/data", from = "components" },
-    { include = "ecoindex/worker", from = "bases" },
     { include = "ecoindex/backend", from = "bases" },
     { include = "ecoindex/cli", from = "bases" },
-    { include = "ecoindex/scripts", from = "components" },
+    { include = "ecoindex/compute", from = "components" },
+    { include = "ecoindex/data", from = "components" },
+    { include = "ecoindex/models", from = "components" },
     { include = "ecoindex/scraper", from = "components" },
+    { include = "ecoindex/scripts", from = "components" },
     { include = "ecoindex/utils", from = "components" },
+    { include = "ecoindex/worker", from = "bases" },
 ]
 
 [tool.poetry.dependencies]
@@ -22,17 +22,24 @@ python = "^3.10"
 pydantic = "^2.4.2"
 aiofile = "^3.8.8"
 requests = "^2.31.0"
+
+[tool.poetry.group.scraper.dependencies]
 pillow = "^10.1.0"
 playwright = "^1.39.0"
-python-slugify = "^8.0.1"
 playwright-stealth = "^1.0.6"
+python-slugify = "^8.0.1"
+
+[tool.poetry.group.cli.dependencies]
+
+[tool.poetry.group.api.dependencies]
+
+[tool.poetry.group.worker.dependencies]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.2"
 pytest-asyncio = "^0.21.1"
 ruff = "^0.1.1"
 black = "^23.10.0"
-tqdm = "^4.66.1"
 
 [build-system]
 requires = ["poetry-core"]
