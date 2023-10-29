@@ -21,7 +21,6 @@ from ecoindex.cli.report import Report
 from ecoindex.models import ExportFormat, Language
 from ecoindex.utils.files import write_results_to_file, write_urls_to_file
 from loguru import logger
-from pydantic import ValidationError
 from rich.progress import (
     BarColumn,
     MofNCompleteColumn,
@@ -170,7 +169,7 @@ def analyze(
                 level="INFO",
             )
 
-    except ValidationError as e:
+    except ValueError as e:
         secho(str(e), fg=colors.RED)
         raise Exit(code=1)
 
@@ -231,10 +230,12 @@ def analyze(
             for future in as_completed(future_to_analysis):
                 try:
                     result, success = future.result()
-                    results.append(result)
 
                     if not success:
                         count_errors += 1
+
+                    else:
+                        results.append(result)
 
                 except Exception as e:
                     count_errors += 1
