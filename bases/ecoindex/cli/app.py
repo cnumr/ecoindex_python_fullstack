@@ -226,6 +226,7 @@ def analyze(
                         wait_before_scroll,
                         logger,
                     )
+            count_errors = 0
 
             for future in as_completed(future_to_analysis):
                 try:
@@ -233,22 +234,24 @@ def analyze(
                     results.append(result)
 
                     if not success:
-                        error_found = True
+                        count_errors += 1
 
                 except Exception as e:
-                    error_found = True
+                    count_errors += 1
                     url, _, _ = future_to_analysis[future]
                     logger.error(f"{url} -- {e.msg if hasattr(e, 'msg') else e}")
 
                 progress.update(task, advance=1)
 
-    if error_found:
+    if count_errors > 0:
         secho(
             f"Errors found: please look at {logger_file})",
             fg=colors.RED,
         )
 
-    display_result_synthesis(total=len(urls) * len(window_sizes), success=len(results))
+    display_result_synthesis(
+        total=len(urls) * len(window_sizes), count_errors=count_errors
+    )
 
     if not results:
         raise Exit(code=1)

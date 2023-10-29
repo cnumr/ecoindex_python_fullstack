@@ -10,7 +10,8 @@ def run_page_analysis(
     wait_after_scroll: int = 3,
     wait_before_scroll: int = 3,
     logger=None,
-) -> Result:
+) -> tuple[Result, bool]:
+    """Run the page analysis and return the result and a boolean indicating if the analysis was successful"""
     scraper = EcoindexScraper(
         url=str(url),
         window_size=window_size,
