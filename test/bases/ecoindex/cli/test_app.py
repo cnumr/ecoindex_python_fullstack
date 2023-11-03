@@ -17,19 +17,20 @@ def test_analyze_not_valid_url():
     result = runner.invoke(app=app, args=["analyze", "--url", invalid_url])
     assert result.exit_code == 1
     assert (
-        "invalid or missing URL scheme (type=value_error.url.scheme)" in result.stdout
+        "Input should be a valid URL, relative URL without a base [type=url_parsing, input_value='url', input_type=str]"
+        in result.stdout
     )
 
 
 def test_analyze_one_invalid_url():
     valid_url = "https://www.test.com"
-    invalid_url = "http://dummy"
+    invalid_url = "dummy"
     result = runner.invoke(
-        app=app, args=["analyze", "--url", valid_url, "--url", invalid_url]
+        app=app, args=["analyze", "--url", valid_url, "--url", invalid_url], input="n\n"
     )
     assert result.exit_code == 1
     assert (
-        "1 validation error for GetUrlFromArgs\nurls_arg -> 1\n  URL host invalid, top level domain required (type=value_error.url.host)\n"
+        "Input should be a valid URL, relative URL without a base [type=url_parsing, input_value='dummy', input_type=str]"
         in result.stdout
     )
 

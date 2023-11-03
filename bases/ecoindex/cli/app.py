@@ -21,7 +21,6 @@ from ecoindex.cli.report import Report
 from ecoindex.models import ExportFormat, Language
 from ecoindex.utils.files import write_results_to_file, write_urls_to_file
 from loguru import logger
-from pydantic import ValidationError
 from rich.progress import (
     BarColumn,
     MofNCompleteColumn,
@@ -170,7 +169,7 @@ def analyze(
                 level="INFO",
             )
 
-    except ValidationError as e:
+    except ValueError as e:
         secho(str(e), fg=colors.RED)
         raise Exit(code=1)
 
@@ -191,8 +190,6 @@ def analyze(
         ),
         fg=colors.GREEN,
     )
-
-    error_found = False
 
     with Progress(
         TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
@@ -226,29 +223,34 @@ def analyze(
                         wait_before_scroll,
                         logger,
                     )
+            count_errors = 0
 
             for future in as_completed(future_to_analysis):
                 try:
                     result, success = future.result()
-                    results.append(result)
 
                     if not success:
-                        error_found = True
+                        count_errors += 1
+
+                    else:
+                        results.append(result)
 
                 except Exception as e:
-                    error_found = True
+                    count_errors += 1
                     url, _, _ = future_to_analysis[future]
                     logger.error(f"{url} -- {e.msg if hasattr(e, 'msg') else e}")
 
                 progress.update(task, advance=1)
 
-    if error_found:
+    if count_errors > 0:
         secho(
             f"Errors found: please look at {logger_file})",
             fg=colors.RED,
         )
 
-    display_result_synthesis(total=len(urls) * len(window_sizes), success=len(results))
+    display_result_synthesis(
+        total=len(urls) * len(window_sizes), count_errors=count_errors
+    )
 
     if not results:
         raise Exit(code=1)

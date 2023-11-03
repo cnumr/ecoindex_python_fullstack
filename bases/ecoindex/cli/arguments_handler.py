@@ -2,10 +2,9 @@ from tempfile import NamedTemporaryFile
 from typing import List, Set, Tuple
 from urllib.parse import urlparse
 
-from click.exceptions import BadParameter
 from ecoindex.cli.crawl import EcoindexSpider
 from ecoindex.models import WindowSize
-from pydantic import AnyHttpUrl, ValidationError, validate_call
+from pydantic import AnyHttpUrl, validate_call
 from pydantic.types import FilePath
 from scrapy.crawler import CrawlerProcess
 
@@ -66,21 +65,16 @@ def get_url_from_args(urls_arg: List[AnyHttpUrl]) -> Set[AnyHttpUrl]:
 
 def get_window_sizes_from_args(window_sizes: List[str]) -> List[WindowSize]:
     result = []
-    errors = []
+    errors = ""
     for window_size in window_sizes:
         try:
             width, height = window_size.split(",")
             result.append(WindowSize(width=int(width), height=int(height)))
         except ValueError:
-            errors.append(
-                BadParameter(
-                    message=f"🔥 `{window_size}` is not a valid window size. Must be of type `1920,1080`"
-                ),
-                loc="window_size",
-            )
+            errors += f"🔥 `{window_size}` is not a valid window size. Must be of type `1920,1080`\n"
 
     if errors:
-        raise ValidationError(errors=errors, model=WindowSize)
+        raise ValueError(errors)
 
     return result
 
