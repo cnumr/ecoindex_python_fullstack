@@ -191,8 +191,6 @@ def analyze(
         fg=colors.GREEN,
     )
 
-    error_found = False
-
     with Progress(
         TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
         BarColumn(),

@@ -141,7 +141,6 @@ class Report:
             "all_data": self.dataframe.to_html(
                 columns=[
                     "url",
-                    "page_type",
                     "score",
                     "size",
                     "nodes",
