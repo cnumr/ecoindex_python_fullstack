@@ -125,8 +125,8 @@ class EcoindexScraper:
 
         os.remove(self.har_temp_file_path)
 
-    async def get_nodes_count(self):
-        nodes = await self.page.locator("*").count()
-        svgs = await self.page.locator("//*[local-name()='svg']//*").count()
+    async def get_nodes_count(self) -> int:
+        nodes = await self.page.locator("*").all()
+        svgs = await self.page.locator("//*[local-name()='svg']//*").all()
 
-        return nodes - svgs
+        return len(nodes) - len(svgs)
