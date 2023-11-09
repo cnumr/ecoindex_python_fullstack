@@ -3,7 +3,6 @@ from datetime import datetime
 from multiprocessing import cpu_count
 from os.path import dirname
 from pathlib import Path
-from typing import List
 from webbrowser import open as open_webbrowser
 
 from click.exceptions import Exit
@@ -37,8 +36,8 @@ app = Typer(help="Ecoindex cli to make analysis of webpages")
 
 @app.command()
 def analyze(
-    url: List[str] = Option(default=None, help="List of urls to analyze"),
-    window_size: List[str] = Option(
+    url: list[str] = Option(default=None, help="List of urls to analyze"),
+    window_size: list[str] = Option(
         default=["1920,1080"],
         help=(
             "You can set multiple window sizes to make ecoindex test. "
@@ -258,7 +257,7 @@ def analyze(
     time_now = datetime.now()
 
     output_folder = (
-        f"{tmp_folder}/output/{file_prefix}/{time_now.strftime('%Y-%d-%m_%H%M%S')}"
+        f"{tmp_folder}/output/{file_prefix}/{time_now.strftime('%Y-%m-%d_%H%M%S')}"
     )
     output_filename = f"{output_folder}/results.{export_format.value}"
 

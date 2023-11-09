@@ -17,3 +17,9 @@ class ExportFormat(Enum):
 class Language(Enum):
     fr = "fr"
     en = "en"
+
+
+class TaskStatus(str, Enum):
+    FAILURE = "FAILURE"
+    PENDING = "PENDING"
+    SUCCESS = "SUCCESS"

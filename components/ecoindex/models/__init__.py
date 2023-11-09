@@ -1,14 +1,3 @@
-"""
-Ecoindex models
-"""
-
-from ecoindex.models.api import (
-    ApiEcoindex,
-    ApiHealth,
-    Host,
-    PageApiEcoindexes,
-    PageHosts,
-)
 from ecoindex.models.compute import (
     Ecoindex,
     PageMetrics,
@@ -30,18 +19,13 @@ from ecoindex.models.scraper import RequestItem, Requests
 from ecoindex.models.sort import Sort
 
 __all__ = [
-    "ApiEcoindex",
-    "ApiHealth",
     "Ecoindex",
     "example_daily_limit_response",
     "example_ecoindex_not_found",
     "example_file_not_found",
     "example_page_listing_empty",
     "ExportFormat",
-    "Host",
     "Language",
-    "PageApiEcoindexes",
-    "PageHosts",
     "PageMetrics",
     "PageType",
     "Request",

@@ -1,7 +1,3 @@
-"""
-Ecoindex API server
-"""
+from ecoindex.backend.main import app
 
-from ecoindex.backend import core
-
-__all__ = ["core"]
+__all__ = ["app"]

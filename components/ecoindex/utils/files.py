@@ -3,7 +3,6 @@ from csv import DictWriter
 from json import dump
 from os import makedirs
 from os.path import dirname, exists
-from typing import Dict, List
 
 from ecoindex.models import ExportFormat, Language, Result
 from yaml import safe_load as load_yaml
@@ -18,7 +17,7 @@ class File(ABC):
     def __init__(
         self,
         filename: str,
-        results: List[Result],
+        results: list[Result],
         export_format: ExportFormat | None = ExportFormat.csv,
     ):
         self.filename = filename
@@ -55,7 +54,7 @@ class JsonFile(File):
 
 def write_results_to_file(
     filename: str,
-    results: List[Result],
+    results: list[Result],
     export_format: ExportFormat | None = ExportFormat.csv,
 ) -> None:
     if export_format == ExportFormat.csv:
@@ -66,7 +65,7 @@ def write_results_to_file(
     file.write()
 
 
-def write_urls_to_file(file_prefix: str, urls: List[str]) -> None:
+def write_urls_to_file(file_prefix: str, urls: list[str]) -> None:
     tmp_input_folder = "/tmp/ecoindex-cli/input"
     create_folder(tmp_input_folder)
     with open(
@@ -76,7 +75,7 @@ def write_urls_to_file(file_prefix: str, urls: List[str]) -> None:
             input_urls_file.write(f"{str(url).strip()}\n")
 
 
-def get_translations(language: Language) -> Dict:
+def get_translations(language: Language) -> dict:
     filename = f"{dirname(__file__)}/cli_translations/{language.value}.yml"
     with open(filename) as fp:
         return load_yaml(fp)

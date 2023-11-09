@@ -4,7 +4,7 @@ from ecoindex.models import ScreenShot
 from PIL import Image
 
 
-def convert_screenshot_to_webp(screenshot: ScreenShot) -> None:
+async def convert_screenshot_to_webp(screenshot: ScreenShot) -> None:
     image = Image.open(rf"{screenshot.get_png()}")
     width, height = image.size
     ratio = 800 / height if width > height else 600 / width
@@ -16,7 +16,7 @@ def convert_screenshot_to_webp(screenshot: ScreenShot) -> None:
     os.unlink(screenshot.get_png())
 
 
-def set_screenshot_rights(
+async def set_screenshot_rights(
     screenshot: ScreenShot, uid: int | None = None, gid: int | None = None
 ) -> None:
     if uid and gid:

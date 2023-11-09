@@ -1,5 +1,4 @@
 from tempfile import NamedTemporaryFile
-from typing import List
 
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
@@ -12,8 +11,8 @@ class EcoindexSpider(CrawlSpider):
 
     def __init__(
         self,
-        allowed_domains: List[str],
-        start_urls: List[str],
+        allowed_domains: list[str],
+        start_urls: list[str],
         temp_file: NamedTemporaryFile,
         *a,
         **kw,

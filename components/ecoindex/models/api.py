@@ -1,51 +1,4 @@
-from typing import List
-from uuid import UUID
-
 from pydantic import BaseModel, Field
-
-from ecoindex.models.compute import Result
-
-
-class ApiEcoindex(Result):
-    id: UUID | None = Field(
-        default=None,
-        description="Analysis ID of type `UUID`",
-    )
-    host: str = Field(
-        default=...,
-        title="Web page host",
-        description="Host name of the web page",
-    )
-    version: int = Field(
-        default=1,
-        title="API version",
-        description="Version number of the API used to run the test",
-    )
-    initial_ranking: int | None = Field(
-        default=...,
-        title="Analysis rank",
-        description=(
-            "This is the initial rank of the analysis. "
-            "This is an indicator of the ranking at the "
-            "time of the analysis for a given version."
-        ),
-    )
-    initial_total_results: int | None = Field(
-        default=...,
-        title="Total number of analysis",
-        description=(
-            "This is the initial total number of analysis. "
-            "This is an indicator of the total number of analysis "
-            "at the time of the analysis for a given version."
-        ),
-    )
-
-
-class PageApiEcoindexes(BaseModel):
-    items: List[ApiEcoindex]
-    total: int
-    page: int
-    size: int
 
 
 class ApiHealth(BaseModel):
@@ -58,11 +11,32 @@ class BaseHost(BaseModel):
 
 
 class Host(BaseHost):
-    remaining_daily_requests: int | None
+    remaining_daily_requests: int | None = None
 
 
 class PageHosts(BaseModel):
-    items: List[str]
+    items: list[str]
     total: int
     page: int
     size: int
+
+
+class ExceptionResponse(BaseModel):
+    args: list[any]
+    exception: str
+    message: str | None = None
+
+
+class HealthWorker(BaseModel):
+    name: str = Field(default=..., title="Name of worker")
+    healthy: bool = Field(default=..., title="Status of worker")
+
+
+class HealthWorkers(BaseModel):
+    healthy: bool = Field(default=..., title="Global status of workers")
+    workers: list[HealthWorker] = Field(default=..., title="List of workers")
+
+
+class HealthResponse(BaseModel):
+    database: bool = Field(default=..., title="Status of database")
+    workers: HealthWorkers = Field(default=..., title="Status of workers")

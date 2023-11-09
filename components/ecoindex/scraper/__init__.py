@@ -1,3 +1,3 @@
-from ecoindex.scraper.scrap import EcoindexScraper, EcoindexScraperException
+from ecoindex.scraper.scrap import EcoindexScraper
 
-__all__ = ["EcoindexScraper", "EcoindexScraperException"]
+__all__ = ["EcoindexScraper"]

@@ -1,5 +1,4 @@
 from tempfile import NamedTemporaryFile
-from typing import List, Set, Tuple
 from urllib.parse import urlparse
 
 from ecoindex.cli.crawl import EcoindexSpider
@@ -10,7 +9,7 @@ from scrapy.crawler import CrawlerProcess
 
 
 @validate_call
-def validate_list_of_urls(urls: List[AnyHttpUrl]) -> Tuple[AnyHttpUrl]:
+def validate_list_of_urls(urls: list[AnyHttpUrl]) -> tuple[AnyHttpUrl]:
     result = set()
 
     for url in urls:
@@ -21,7 +20,7 @@ def validate_list_of_urls(urls: List[AnyHttpUrl]) -> Tuple[AnyHttpUrl]:
 
 
 @validate_call
-def get_urls_from_file(urls_file: FilePath) -> List[AnyHttpUrl]:
+def get_urls_from_file(urls_file: FilePath) -> list[AnyHttpUrl]:
     with open(urls_file) as fp:
         urls_from_file = set()
 
@@ -34,7 +33,7 @@ def get_urls_from_file(urls_file: FilePath) -> List[AnyHttpUrl]:
     return validate_list_of_urls(urls_from_file)
 
 
-def get_urls_recursive(main_url: str) -> Tuple[str]:
+def get_urls_recursive(main_url: str) -> tuple[str]:
     parsed_url = urlparse(main_url)
     domain = parsed_url.netloc
     main_url = f"{parsed_url.scheme}://{domain}"
@@ -55,7 +54,7 @@ def get_urls_recursive(main_url: str) -> Tuple[str]:
 
 
 @validate_call
-def get_url_from_args(urls_arg: List[AnyHttpUrl]) -> Set[AnyHttpUrl]:
+def get_url_from_args(urls_arg: list[AnyHttpUrl]) -> set[AnyHttpUrl]:
     urls_from_args = set()
     for url in urls_arg:
         urls_from_args.add(url)
@@ -63,7 +62,7 @@ def get_url_from_args(urls_arg: List[AnyHttpUrl]) -> Set[AnyHttpUrl]:
     return urls_from_args
 
 
-def get_window_sizes_from_args(window_sizes: List[str]) -> List[WindowSize]:
+def get_window_sizes_from_args(window_sizes: list[str]) -> list[WindowSize]:
     result = []
     errors = ""
     for window_size in window_sizes:
@@ -80,10 +79,10 @@ def get_window_sizes_from_args(window_sizes: List[str]) -> List[WindowSize]:
 
 
 def get_file_prefix_input_file_logger_file(
-    urls: List[AnyHttpUrl],
+    urls: list[AnyHttpUrl],
     urls_file: str | None = None,
     tmp_folder: str = "/tmp/ecoindex-cli",
-) -> Tuple[str, str, str]:
+) -> tuple[str, str, str]:
     """
     Returns file prefix, input file and logger file based on provided urls
     and provider method: If this is based on an existing csv file, we take

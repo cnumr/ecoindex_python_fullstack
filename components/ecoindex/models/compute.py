@@ -1,9 +1,8 @@
 from datetime import datetime
 from pathlib import Path
-from typing import Any
 
 from ecoindex.data import ecoindex_compute_version
-from pydantic import AnyHttpUrl, BaseModel, Field
+from pydantic import AnyHttpUrl, BaseModel, Field, field_validator
 
 PageType = str
 
@@ -81,9 +80,24 @@ class WebPage(BaseModel):
         ge=50,
         le=2160,
     )
-    url: AnyHttpUrl = Field(
-        default=..., title="Page url", description="Url of the analysed page"
+    url: str = Field(
+        default=...,
+        title="Page url",
+        description="Url of the analysed page",
+        examples=["https://www.ecoindex.fr"],
     )
+
+    @field_validator("url")
+    @classmethod
+    def url_as_http_url(cls, v: str) -> str:
+        url_object = AnyHttpUrl(url=v)
+
+        return url_object.unicode_string()
+
+    def get_url_host(self) -> str:
+        url_obect = AnyHttpUrl(url=self.url)
+
+        return url_obect.host
 
 
 class WindowSize(BaseModel):
@@ -117,7 +131,7 @@ class ScreenShot(BaseModel):
     id: str
     folder: str
 
-    def __init__(__pydantic_self__, **data: Any) -> None:
+    def __init__(__pydantic_self__, **data: any) -> None:
         super().__init__(**data)
         path = Path(__pydantic_self__.folder)
         path.mkdir(parents=True, exist_ok=True)

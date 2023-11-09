@@ -8,25 +8,32 @@ license = ""
 packages = [
     { include = "ecoindex/backend", from = "../../bases" },
     { include = "ecoindex/compute", from = "../../components" },
+    { include = "ecoindex/config", from = "../../components" },
     { include = "ecoindex/data", from = "../../components" },
+    { include = "ecoindex/database", from = "../../components" },
+    { include = "ecoindex/exceptions", from = "../../components" },
     { include = "ecoindex/models", from = "../../components" },
     { include = "ecoindex/scraper", from = "../../components" },
-    { include = "ecoindex/scripts", from = "../../components" },
     { include = "ecoindex/utils", from = "../../components" },
     { include = "ecoindex/worker", from = "../../bases" },
 ]
 
 [tool.poetry.dependencies]
-python = "^3.10"
 aiofile = "^3.8.8"
+alembic = "^1.12.1"
+celery = "^5.3.4"
+fastapi = "^0.104.1"
 pillow = "^10.1.0"
 playwright = "^1.39.0"
 playwright-stealth = "^1.0.6"
 pydantic = "^2.4.2"
+python = "^3.10"
+pyyaml = "^6.0.1"
 requests = "^2.31.0"
 slugify = "^0.0.1"
+sqlmodel = { git = "https://github.com/AntonDeMeester/sqlmodel.git" }
 typing-extensions = "^4.8.0"
-pyyaml = "^6.0.1"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

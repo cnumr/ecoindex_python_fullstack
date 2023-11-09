@@ -1,8 +1,5 @@
-"""
-Ecoindex basic compute engine
-"""
-
 from ecoindex.compute.ecoindex import (
+    compute_ecoindex,
     get_ecoindex,
     get_grade,
     get_greenhouse_gases_emmission,
@@ -12,6 +9,7 @@ from ecoindex.compute.ecoindex import (
 )
 
 __all__ = [
+    "compute_ecoindex",
     "get_ecoindex",
     "get_grade",
     "get_greenhouse_gases_emmission",
