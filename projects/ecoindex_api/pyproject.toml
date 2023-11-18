@@ -1,9 +1,12 @@
 [tool.poetry]
 name = "ecoindex_api"
-version = "0.1.0"
-description = ""
+version = "3.1.0"
+description = "REST API to expose Ecoindex"
 authors = ['Vincent Vatelot <vincent.vatelot@ik.me>']
-license = ""
+license = "Creative Commons BY-NC-ND"
+homepage = "http://www.ecoindex.fr"
+repository = "https://github.com/cnumr/ecoindex_api"
+include = ["LICENSE"]
 
 packages = [
     { include = "ecoindex/backend", from = "../../bases" },
