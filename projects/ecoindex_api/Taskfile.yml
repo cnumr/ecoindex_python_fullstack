@@ -1,0 +1,62 @@
+version: '3'
+
+vars:
+  VERSION:
+    sh: poetry version -s
+
+tasks:
+  build-project:
+    aliases: [bp]
+    summary: |
+      Build the poetry project dependencies, and then build the project distribution
+    cmds:
+      - poetry lock
+      - poetry build-project
+    silent: true
+  
+  build-backend:
+    aliases: [bb]
+    summary: |
+      Build the backend docker image
+    cmds:
+      - docker build -t vvatelot/ecoindex-api-backend --build-arg="ecoindex_api-{{.VERSION}}-py3-none-any.whl" -f docker/backend/dockerfile .
+    silent: true
+
+  build-worker:
+    aliases: [bw]
+    summary: |
+      Build the worker docker image
+    cmds:
+      - docker build -t vvatelot/ecoindex-api-worker --build-arg="ecoindex_api-{{.VERSION}}-py3-none-any.whl" -f docker/worker/dockerfile .
+    silent: true
+
+  up:
+    summary: |
+      Start the docker-compose stack
+    cmds:
+      - docker compose up
+    silent: true
+
+  create-migration:
+    aliases: [cm]
+    summary: |
+      Create a new alembic migration
+    cmds:
+      - poetry run alembic revision --autogenerate -m "{{.CLI_ARGS}}"
+    silent: true
+
+  start-redis:
+    aliases: [sr]
+    summary: |
+      Start the redis server
+    cmds:
+      - docker run --rm -p 6379:6379 -d redis:alpine
+    silent: true
+
+  start-worker:
+    aliases: [sw]
+    summary: |
+      Start the worker
+    cmds:
+      - poetry run celery -A ecoindex_api.worker worker -l info
+    silent: true

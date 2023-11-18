@@ -1,5 +1,6 @@
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 from ecoindex.data import ecoindex_compute_version
 from pydantic import AnyHttpUrl, BaseModel, Field, field_validator
@@ -97,7 +98,7 @@ class WebPage(BaseModel):
     def get_url_host(self) -> str:
         url_obect = AnyHttpUrl(url=self.url)
 
-        return url_obect.host
+        return str(url_obect.host)
 
 
 class WindowSize(BaseModel):
@@ -131,7 +132,7 @@ class ScreenShot(BaseModel):
     id: str
     folder: str
 
-    def __init__(__pydantic_self__, **data: any) -> None:
+    def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
         path = Path(__pydantic_self__.folder)
         path.mkdir(parents=True, exist_ok=True)

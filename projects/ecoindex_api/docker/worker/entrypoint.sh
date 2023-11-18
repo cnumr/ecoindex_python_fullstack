@@ -1,3 +1,3 @@
 #!/bin/sh
 
-celery -A worker.tasks worker -P threads
+celery -A ecoindex.worker.tasks worker -P threads

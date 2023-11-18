@@ -1,3 +1,5 @@
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 
@@ -22,7 +24,7 @@ class PageHosts(BaseModel):
 
 
 class ExceptionResponse(BaseModel):
-    args: list[any]
+    args: list[Any]
     exception: str
     message: str | None = None
 

@@ -1,9 +1,11 @@
+from typing import Any
+
 from ecoindex.models import Result
 from pydantic import AnyHttpUrl, BaseModel, Field
 
 
 class QueueTaskError(BaseModel):
-    detail: any | None = Field(
+    detail: Any | None = Field(
         default=None, title="Detail object of the raised exception"
     )
     exception: str = Field(default=..., title="Name of the exception that was raised")
@@ -47,7 +49,7 @@ class QueueTaskApi(BaseModel):
     ecoindex_result: QueueTaskResult | None = Field(
         default=None, title="Result of the Ecoindex analysis"
     )
-    task_error: any | None = Field(
+    task_error: Any | None = Field(
         default=None,
         title="Detail of the error encountered by the task in case of Failure",
     )

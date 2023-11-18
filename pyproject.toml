@@ -53,8 +53,6 @@ sqlmodel = { git = "https://github.com/AntonDeMeester/sqlmodel.git" }
 
 [tool.poetry.group.api-backend.dependencies]
 fastapi = "^0.104.0"
-fastapi-health = "^0.4.0"
-gunicorn = "^21.2.0"
 uvicorn = "^0.23.2"
 
 [tool.poetry.group.dev.dependencies]
@@ -69,7 +67,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 update-values = "ecoindex.scripts:update_values"
-ecoindex-cli = "ecoindex.cli.app:app"
 
 [tool.pytest.ini_options]
 filterwarnings = ["ignore::DeprecationWarning"]

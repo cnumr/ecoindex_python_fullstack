@@ -22,7 +22,7 @@ pip install ecoindex-scraper
 You can run a page analysis by calling the function `get_page_analysis()`:
 
 ```python
-(function) get_page_analysis: (url: AnyHttpUrl, window_size: WindowSize | None = WindowSize(width=1920, height=1080), wait_before_scroll: int | None = 1, wait_after_scroll: int | None = 1) -> Coroutine[any, any, Result]
+(function) get_page_analysis: (url: AnyHttpUrl, window_size: WindowSize | None = WindowSize(width=1920, height=1080), wait_before_scroll: int | None = 1, wait_after_scroll: int | None = 1) -> Coroutine[Any, Any, Result]
 ```
 
 Example:

@@ -9,3 +9,5 @@
 !poetry.lock
 !settings.py
 !worker
+!dist
+!alembic

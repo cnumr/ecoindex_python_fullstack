@@ -90,7 +90,7 @@ async def check_quota(
         raise QuotaExceededException(
             limit=Settings().DAILY_LIMIT_PER_HOST,
             host=host,
-            latest_result=loads(latest_result.json()),
+            latest_result=loads(latest_result.model_dump_json()),
         )
 
     return Settings().DAILY_LIMIT_PER_HOST - count_daily_request_per_host

@@ -17,15 +17,14 @@ services:
       retries: 10
       interval: 2s
 
-  api:
-    build:
-      context: ./
-      dockerfile: ./docker/api/dockerfile
+  backend:
+    image: vvatelot/ecoindex-api-backend
     restart: always
     ports:
       - "8001:8000"
     environment:
       DATABASE_URL: mysql+aiomysql://ecoindex:ecoindex@db/ecoindex?charset=utf8mb4
+      DEBUG: 0
       TZ: Europe/Paris
       WORKER_BROKER_URL: redis://redis/0
       WORKER_BACKEND_URL: redis://redis/1
@@ -34,14 +33,11 @@ services:
         condition: service_healthy
 
   worker:
-    build:
-      context: ./
-      dockerfile: ./docker/worker/dockerfile
-      args:
-        CHROME_VERSION_MAIN: 111
+    image: vvatelot/ecoindex-api-worker
     restart: always
     environment:
       DATABASE_URL: mysql+aiomysql://ecoindex:ecoindex@db/ecoindex?charset=utf8mb4
+      DEBUG: 0
       TZ: Europe/Paris
       WORKER_BROKER_URL: redis://redis/0
       WORKER_BACKEND_URL: redis://redis/1
