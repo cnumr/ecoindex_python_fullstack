@@ -34,7 +34,3 @@ def init_app():
 
 
 app = init_app()
-
-# from api.domain.health.routes import add_healthcheck_route
-
-# add_healthcheck_route()
