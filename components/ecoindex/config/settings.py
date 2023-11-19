@@ -1,4 +1,4 @@
-from pydantic_settings import SettingsConfigDict, BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -10,10 +10,11 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite+aiosqlite:///db.sqlite3"
     DEBUG: bool = True
     ENABLE_SCREENSHOT: bool = False
+    REDIS_CACHE_HOST: str = "localhost"
     SCREENSHOTS_GID: int | None = None
     SCREENSHOTS_UID: int | None = None
     WAIT_AFTER_SCROLL: int = 3
     WAIT_BEFORE_SCROLL: int = 3
-    WORKER_BACKEND_URL: str = "redis://localhost:6379/0"
+    WORKER_BACKEND_URL: str = "redis://localhost:6379/1"
     WORKER_BROKER_URL: str = "redis://localhost:6379/0"
     model_config = SettingsConfigDict(env_file=".env")

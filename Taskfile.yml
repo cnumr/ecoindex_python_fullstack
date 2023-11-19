@@ -1,0 +1,6 @@
+version: '3'
+
+includes:
+  api:
+    taskfile: ./projects/ecoindex_api/Taskfile.yml
+    dir: ./projects/ecoindex_api/

@@ -48,3 +48,10 @@ class PageApiEcoindexes(BaseModel):
     total: int
     page: int
     size: int
+
+
+class EcoindexSearchResults(BaseModel):
+    count: int
+    latest_result: ApiEcoindex | None = None
+    older_results: list[ApiEcoindex] = []
+    host_results: list[ApiEcoindex] = []

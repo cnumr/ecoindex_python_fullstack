@@ -81,7 +81,7 @@ async def check_quota(
     host: str,
 ) -> int | None:
     if not Settings().DAILY_LIMIT_PER_HOST:
-        return
+        return None
 
     count_daily_request_per_host = await get_count_daily_request_per_host(host=host)
 

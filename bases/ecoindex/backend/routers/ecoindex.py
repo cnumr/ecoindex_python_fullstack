@@ -9,8 +9,13 @@ from ecoindex.backend.dependencies import (
     pagination_parameters,
     version_parameter,
 )
+from ecoindex.backend.services.cache import cache
 from ecoindex.backend.utils import get_sort_parameters, get_status_code
-from ecoindex.database.models import ApiEcoindex, PageApiEcoindexes
+from ecoindex.database.models import (
+    ApiEcoindex,
+    EcoindexSearchResults,
+    PageApiEcoindexes,
+)
 from ecoindex.database.repositories.ecoindex import (
     get_count_analysis_db,
     get_ecoindex_result_by_id_db,
@@ -22,10 +27,12 @@ from ecoindex.models.response_examples import (
     example_ecoindex_not_found,
     example_file_not_found,
 )
+from ecoindex.models.sort import Sort
 from fastapi import APIRouter, Depends, Response, status
 from fastapi.exceptions import HTTPException
 from fastapi.params import Query
 from fastapi.responses import FileResponse
+from pydantic import AnyHttpUrl
 
 router = APIRouter(prefix="/{version}/ecoindexes", tags=["Ecoindex"])
 
@@ -87,6 +94,73 @@ async def get_ecoindex_analysis_list(
         page=pagination.page,
         size=pagination.size,
     )
+
+
+@router.get(
+    name="Get latest results",
+    path="/latest",
+    response_model=EcoindexSearchResults,
+    response_description="Get latest results for a given url",
+)
+async def get_latest_results(
+    response: Response,
+    url: Annotated[AnyHttpUrl, Query(description="Url to be searched in database")],
+    refresh: Annotated[
+        bool, Query(description="If set to true, the cache will be refreshed")
+    ] = False,
+    version: Annotated[Version, Depends(version_parameter)] = Version.v1,
+) -> EcoindexSearchResults:
+    """
+    This returns the latest results for a given url. This feature is used by the Ecoindex
+    browser extension. By default, the results are cached for 7 days.
+
+    If the url is not found in the database, the response status code will be 404.
+    """
+    ecoindex_cache = cache.set_cache_key(url=url)
+    cached_results = await ecoindex_cache.get_cached_ecoindex_search_results()
+
+    if not refresh and cached_results:
+        if cached_results.count == 0:
+            response.status_code = status.HTTP_404_NOT_FOUND
+
+        return cached_results
+
+    ecoindexes = await get_ecoindex_result_list_db(
+        host=str(url.host),
+        version=version,
+        size=20,
+        sort_params=[Sort(clause="date", sort="desc")],
+    )
+
+    if not ecoindexes:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        await ecoindex_cache.set_cached_ecoindex_search_results(
+            ecoindex_search_results=EcoindexSearchResults(count=0)
+        )
+
+        return EcoindexSearchResults(count=0)
+
+    exact_url_results = []
+    host_results = []
+
+    for ecoindex in ecoindexes:
+        if ecoindex.get_url_path() == str(url.path):
+            exact_url_results.append(ecoindex)
+        else:
+            host_results.append(ecoindex)
+
+    results = EcoindexSearchResults(
+        count=len(ecoindexes),
+        latest_result=exact_url_results[0],
+        older_results=exact_url_results[1:],
+        host_results=host_results,
+    )
+
+    await ecoindex_cache.set_cached_ecoindex_search_results(
+        ecoindex_search_results=results
+    )
+
+    return results
 
 
 @router.get(

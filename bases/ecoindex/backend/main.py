@@ -1,4 +1,5 @@
 from ecoindex.backend.routers import router
+from ecoindex.backend.services.cache import cache
 from ecoindex.database import db
 from fastapi import FastAPI
 from fastapi.concurrency import asynccontextmanager
@@ -6,6 +7,7 @@ from fastapi.concurrency import asynccontextmanager
 
 def init_app():
     db.init()
+    cache.init()
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):

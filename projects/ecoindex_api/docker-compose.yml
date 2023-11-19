@@ -25,6 +25,7 @@ services:
     environment:
       DATABASE_URL: mysql+aiomysql://ecoindex:ecoindex@db/ecoindex?charset=utf8mb4
       DEBUG: 0
+      REDIS_CACHE_HOST: redis
       TZ: Europe/Paris
       WORKER_BROKER_URL: redis://redis/0
       WORKER_BACKEND_URL: redis://redis/1

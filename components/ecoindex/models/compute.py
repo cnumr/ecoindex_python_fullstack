@@ -100,6 +100,11 @@ class WebPage(BaseModel):
 
         return str(url_obect.host)
 
+    def get_url_path(self) -> str:
+        url_obect = AnyHttpUrl(url=self.url)
+
+        return str(url_obect.path)
+
 
 class WindowSize(BaseModel):
     height: int = Field(

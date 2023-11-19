@@ -24,9 +24,10 @@ packages = [
 aiofile = "^3.8.8"
 loguru = "^0.7.2"
 pydantic = "^2.4.2"
-python = ">=3.10,<3.13"
-requests = "^2.31.0"
 pydantic-settings = "^2.0.3"
+python = ">=3.10,<3.13"
+redis = { extras = ["hiredis"], version = "^5.0.1" }
+requests = "^2.31.0"
 
 [tool.poetry.group.scraper.dependencies]
 pillow = "^10.1.0"
