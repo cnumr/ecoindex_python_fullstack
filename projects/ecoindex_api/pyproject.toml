@@ -18,6 +18,7 @@ packages = [
     { include = "ecoindex/models", from = "../../components" },
     { include = "ecoindex/scraper", from = "../../components" },
     { include = "ecoindex/utils", from = "../../components" },
+    { include = "ecoindex/worker_component", from = "../../components" },
     { include = "ecoindex/worker", from = "../../bases" },
 ]
 
@@ -37,7 +38,6 @@ redis = "^5.0.1"
 requests = "^2.31.0"
 python-slugify = "^8.0.1"
 sqlmodel = { git = "https://github.com/AntonDeMeester/sqlmodel.git", rev = "refs/pull/4/head" }
-# sqlmodel = { git = "https://github.com/tiangolo/sqlmodel.git", rev = "refs/pull/632/head" }
 
 [tool.poetry.group.backend.dependencies]
 uvicorn = "^0.23.2"

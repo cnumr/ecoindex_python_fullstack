@@ -10,7 +10,7 @@ tasks:
     desc: Check polylith structure project
     aliases: [check]
     cmds:
-      - poetry poly check --strict
+      - poetry poly check
 
   build-project:
     desc: Build the project

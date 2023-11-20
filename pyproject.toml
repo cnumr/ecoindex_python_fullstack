@@ -9,15 +9,16 @@ packages = [
     { include = "ecoindex/backend", from = "bases" },
     { include = "ecoindex/cli", from = "bases" },
     { include = "ecoindex/compute", from = "components" },
+    { include = "ecoindex/config", from = "components" },
     { include = "ecoindex/data", from = "components" },
+    { include = "ecoindex/database", from = "components" },
+    { include = "ecoindex/exceptions", from = "components" },
     { include = "ecoindex/models", from = "components" },
     { include = "ecoindex/scraper", from = "components" },
     { include = "ecoindex/scripts", from = "components" },
     { include = "ecoindex/utils", from = "components" },
+    { include = "ecoindex/worker_component", from = "components" },
     { include = "ecoindex/worker", from = "bases" },
-    { include = "ecoindex/database", from = "components" },
-    { include = "ecoindex/exceptions", from = "components" },
-    { include = "ecoindex/config", from = "components" },
 ]
 
 [tool.poetry.dependencies]
@@ -57,10 +58,12 @@ fastapi = "^0.104.0"
 uvicorn = "^0.23.2"
 
 [tool.poetry.group.dev.dependencies]
+black = "^23.10.0"
+mypy = "^1.7.0"
 pytest = "^7.4.2"
 pytest-asyncio = "^0.21.1"
+pytest-cov = "^4.1.0"
 ruff = "^0.1.1"
-black = "^23.10.0"
 
 [build-system]
 requires = ["poetry-core"]
