@@ -10,8 +10,8 @@ from ecoindex.models import WebPage
 from ecoindex.models.enums import TaskStatus
 from ecoindex.models.response_examples import example_daily_limit_response
 from ecoindex.models.tasks import QueueTaskApi, QueueTaskResult
-from ecoindex.worker.tasks import app as task_app
 from ecoindex.worker.tasks import ecoindex_task
+from ecoindex.worker_component import app as task_app
 from fastapi import APIRouter, Depends, Response, status
 from fastapi.params import Body
 

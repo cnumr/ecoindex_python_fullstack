@@ -16,6 +16,4 @@ class Settings(BaseSettings):
     SCREENSHOTS_UID: int | None = None
     WAIT_AFTER_SCROLL: int = 3
     WAIT_BEFORE_SCROLL: int = 3
-    WORKER_BACKEND_URL: str = "redis://localhost:6379/1"
-    WORKER_BROKER_URL: str = "redis://localhost:6379/0"
     model_config = SettingsConfigDict(env_file=".env")

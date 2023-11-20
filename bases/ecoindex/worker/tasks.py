@@ -2,7 +2,6 @@ from asyncio import run
 from os import getcwd
 from urllib.parse import urlparse
 
-from celery import Celery
 from ecoindex.backend.utils import check_quota
 from ecoindex.config.settings import Settings
 from ecoindex.database.engine import db
@@ -13,15 +12,7 @@ from ecoindex.models import ScreenShot, WindowSize
 from ecoindex.models.enums import TaskStatus
 from ecoindex.models.tasks import QueueTaskError, QueueTaskResult
 from ecoindex.scraper.scrap import EcoindexScraper
-
-app: Celery = Celery(
-    "tasks",
-    broker=Settings().WORKER_BROKER_URL,
-    backend=Settings().WORKER_BACKEND_URL,
-    broker_connection_retry=False,
-    broker_connection_retry_on_startup=True,
-    broker_connection_max_retries=10,
-)
+from ecoindex.worker_component import app
 
 db.init()
 
