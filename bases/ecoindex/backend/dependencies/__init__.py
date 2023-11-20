@@ -3,8 +3,9 @@ from typing import Annotated
 from uuid import UUID
 
 from ecoindex.models.enums import Version
-from ecoindex.models.parameters import DateRange, Pagination
-from fastapi import Path, Query
+from ecoindex.models.parameters import BffParameters, DateRange, Pagination
+from fastapi import Depends, Path, Query
+from pydantic import AnyHttpUrl
 
 
 def date_parameters(
@@ -55,3 +56,20 @@ def id_parameter(
     ]
 ) -> UUID:
     return id
+
+
+def bff_parameters(
+    url: Annotated[AnyHttpUrl, Query(description="Url to be searched in database")],
+    refresh: Annotated[
+        bool,
+        Query(
+            description="Force the refresh of the cache",
+        ),
+    ] = False,
+    version: Annotated[Version, Depends(version_parameter)] = Version.v1,
+) -> BffParameters:
+    return BffParameters(
+        url=url,
+        refresh=refresh,
+        version=version,
+    )

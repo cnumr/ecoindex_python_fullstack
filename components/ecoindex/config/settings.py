@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite+aiosqlite:///db.sqlite3"
     DEBUG: bool = True
     ENABLE_SCREENSHOT: bool = False
+    FRONTEND_BASE_URL: str = "https://www.ecoindex.fr"
     REDIS_CACHE_HOST: str = "localhost"
     SCREENSHOTS_GID: int | None = None
     SCREENSHOTS_UID: int | None = None

@@ -3,14 +3,16 @@ from typing import Annotated
 from uuid import UUID
 
 from ecoindex.backend.dependencies import (
+    bff_parameters,
     date_parameters,
     host_parameter,
     id_parameter,
     pagination_parameters,
     version_parameter,
 )
-from ecoindex.backend.services.cache import cache
+from ecoindex.backend.services.ecoindex import get_badge, get_latest_result_by_url
 from ecoindex.backend.utils import get_sort_parameters, get_status_code
+from ecoindex.config.settings import Settings
 from ecoindex.database.models import (
     ApiEcoindex,
     EcoindexSearchResults,
@@ -21,18 +23,16 @@ from ecoindex.database.repositories.ecoindex import (
     get_ecoindex_result_by_id_db,
     get_ecoindex_result_list_db,
 )
-from ecoindex.models.enums import Version
-from ecoindex.models.parameters import DateRange, Pagination
+from ecoindex.models.enums import BadgeTheme, Version
+from ecoindex.models.parameters import BffParameters, DateRange, Pagination
 from ecoindex.models.response_examples import (
     example_ecoindex_not_found,
     example_file_not_found,
 )
-from ecoindex.models.sort import Sort
 from fastapi import APIRouter, Depends, Response, status
 from fastapi.exceptions import HTTPException
 from fastapi.params import Query
-from fastapi.responses import FileResponse
-from pydantic import AnyHttpUrl
+from fastapi.responses import FileResponse, RedirectResponse
 
 router = APIRouter(prefix="/{version}/ecoindexes", tags=["Ecoindex"])
 
@@ -101,14 +101,11 @@ async def get_ecoindex_analysis_list(
     path="/latest",
     response_model=EcoindexSearchResults,
     response_description="Get latest results for a given url",
+    tags=["BFF"],
 )
 async def get_latest_results(
     response: Response,
-    url: Annotated[AnyHttpUrl, Query(description="Url to be searched in database")],
-    refresh: Annotated[
-        bool, Query(description="If set to true, the cache will be refreshed")
-    ] = False,
-    version: Annotated[Version, Depends(version_parameter)] = Version.v1,
+    parameters: Annotated[BffParameters, Depends(bff_parameters)],
 ) -> EcoindexSearchResults:
     """
     This returns the latest results for a given url. This feature is used by the Ecoindex
@@ -116,51 +113,74 @@ async def get_latest_results(
 
     If the url is not found in the database, the response status code will be 404.
     """
-    ecoindex_cache = cache.set_cache_key(url=url)
-    cached_results = await ecoindex_cache.get_cached_ecoindex_search_results()
-
-    if not refresh and cached_results:
-        if cached_results.count == 0:
-            response.status_code = status.HTTP_404_NOT_FOUND
-
-        return cached_results
-
-    ecoindexes = await get_ecoindex_result_list_db(
-        host=str(url.host),
-        version=version,
-        size=20,
-        sort_params=[Sort(clause="date", sort="desc")],
+    latest_result = await get_latest_result_by_url(
+        url=parameters.url, refresh=parameters.refresh, version=parameters.version
     )
 
-    if not ecoindexes:
+    if latest_result.count == 0:
         response.status_code = status.HTTP_404_NOT_FOUND
-        await ecoindex_cache.set_cached_ecoindex_search_results(
-            ecoindex_search_results=EcoindexSearchResults(count=0)
+
+    return latest_result
+
+
+@router.get(
+    name="Get badge",
+    path="/latest/badge",
+    response_description="Badge of the given url from [CDN V1](https://www.jsdelivr.com/package/gh/cnumr/ecoindex_badge)",
+    responses={status.HTTP_404_NOT_FOUND: example_file_not_found},
+    tags=["BFF"],
+)
+async def get_badge_enpoint(
+    parameters: Annotated[BffParameters, Depends(bff_parameters)],
+    theme: Annotated[
+        BadgeTheme, Query(description="Theme of the badge")
+    ] = BadgeTheme.light,
+) -> Response:
+    """
+    This returns the SVG badge of the given url. This feature is used by the Ecoindex
+    badge. By default, the results are cached for 7 days.
+
+    If the url is not found in the database, it will return a badge with the grade `?`.
+    """
+    return Response(
+        content=await get_badge(
+            url=parameters.url,
+            refresh=parameters.refresh,
+            version=parameters.version,
+            theme=theme,
+        ),
+        media_type="image/svg+xml",
+    )
+
+
+@router.get(
+    name="Get latest results redirect",
+    path="/latest/redirect",
+    response_description="Redirect to the latest results for a given url",
+    tags=["BFF"],
+)
+async def get_latest_result_redirect(
+    parameters: Annotated[BffParameters, Depends(bff_parameters)],
+) -> RedirectResponse:
+    """
+    This redirects to the latest results on the frontend website for the given url.
+    This feature is used by the Ecoindex browser extension and badge.
+
+    If the url is not found in the database, the response status code will be 404.
+    """
+    latest_result = await get_latest_result_by_url(
+        url=parameters.url, refresh=parameters.refresh, version=parameters.version
+    )
+
+    if latest_result.count == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No analysis found for {parameters.url}",
         )
 
-        return EcoindexSearchResults(count=0)
-
-    exact_url_results = []
-    host_results = []
-
-    for ecoindex in ecoindexes:
-        if ecoindex.get_url_path() == str(url.path):
-            exact_url_results.append(ecoindex)
-        else:
-            host_results.append(ecoindex)
-
-    results = EcoindexSearchResults(
-        count=len(ecoindexes),
-        latest_result=exact_url_results[0],
-        older_results=exact_url_results[1:],
-        host_results=host_results,
+    return RedirectResponse(
+        url=f"{Settings().FRONTEND_BASE_URL}/resultat/?id={latest_result.latest_result.id}"
     )
-
-    await ecoindex_cache.set_cached_ecoindex_search_results(
-        ecoindex_search_results=results
-    )
-
-    return results
 
 
 @router.get(
@@ -191,7 +211,7 @@ async def get_ecoindex_analysis_by_id(
     description="This returns the screenshot of the webpage analysis if it exists",
     responses={status.HTTP_404_NOT_FOUND: example_file_not_found},
 )
-async def get_screenshot(
+async def get_screenshot_endpoint(
     id: Annotated[UUID, Depends(id_parameter)],
     version: Annotated[Version, Depends(version_parameter)] = Version.v1,
 ):
