@@ -37,34 +37,47 @@ tasks:
       - docker compose up
     silent: true
 
-  create-migration:
-    aliases: [cm]
+  migration-create:
+    aliases: [mc]
     desc: |
       Create a new alembic migration
     cmds:
       - poetry run alembic revision --autogenerate -m "{{.CLI_ARGS}}"
     silent: true
-
+  
   start-redis:
     aliases: [sr]
     desc: |
       Start the redis server
     cmds:
       - docker run --rm -p 6379:6379 -d redis:alpine
+    status:
+      - docker ps | grep redis
     silent: true
 
   start-worker:
     aliases: [sw]
+    deps: [start-redis]
     desc: |
       Start the worker
     cmds:
-      - poetry run celery -A ecoindex_api.worker worker -l info
+      - poetry run celery -A ecoindex.worker.tasks worker -l info
     silent: true
   
   start-backend:
     aliases: [sb]
+    deps: [start-redis]
     desc: |
       Start the backend
     cmds:
       - poetry run uvicorn ecoindex.backend.main:app --reload
+    silent: true
+
+  start-dev:
+    aliases: [sd]
+    deps: [start-backend, start-worker]
+    desc: |
+      Start the backend and the worker
+    cmds:
+      - echo "Starting the backend and the worker"
     silent: true

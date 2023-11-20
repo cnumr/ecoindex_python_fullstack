@@ -2,3 +2,4 @@ __pycache__
 dist
 *.webp
 *.sqlite3
+.coverage

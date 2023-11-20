@@ -1,8 +1,5 @@
 # Ecoindex-Cli
 
-[![Quality check](https://github.com/cnumr/ecoindex_cli/workflows/Quality%20checks/badge.svg)](https://github.com/cnumr/ecoindex_cli/actions/workflows/quality.yml)
-[![PyPI version](https://badge.fury.io/py/ecoindex-cli.svg)](https://badge.fury.io/py/ecoindex-cli)
-
 This tool provides an easy way to analyze websites with [Ecoindex](https://www.ecoindex.fr) from your local computer using multi-threading. You have the ability to:
 
 - Make the analysis on multiple pages

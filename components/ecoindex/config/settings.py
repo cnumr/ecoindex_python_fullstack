@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     CORS_ALLOWED_ORIGINS: list = ["*"]
     DAILY_LIMIT_PER_HOST: int = 0
     DATABASE_URL: str = "sqlite+aiosqlite:///db.sqlite3"
-    DEBUG: bool = True
+    DEBUG: bool = False
     ENABLE_SCREENSHOT: bool = False
     FRONTEND_BASE_URL: str = "https://www.ecoindex.fr"
     REDIS_CACHE_HOST: str = "localhost"
