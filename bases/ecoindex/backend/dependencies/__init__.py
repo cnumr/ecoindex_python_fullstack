@@ -3,7 +3,12 @@ from typing import Annotated
 from uuid import UUID
 
 from ecoindex.models.enums import Version
-from ecoindex.models.parameters import BffParameters, DateRange, Pagination
+from ecoindex.models.parameters import (
+    BffParameters,
+    ComputeParameters,
+    DateRange,
+    Pagination,
+)
 from fastapi import Depends, Path, Query
 from pydantic import AnyHttpUrl
 
@@ -73,3 +78,29 @@ def bff_parameters(
         refresh=refresh,
         version=version,
     )
+
+
+def compute_parameters(
+    dom: Annotated[
+        int,
+        Query(
+            default=...,
+            description="Number of DOM nodes of the page",
+            gt=0,
+            example=204,
+        ),
+    ],
+    size: Annotated[
+        float,
+        Query(
+            default=..., description="Total size of the page in Kb", gt=0, example=109
+        ),
+    ],
+    requests: Annotated[
+        int,
+        Query(
+            default=..., description="Number of requests of the page", gt=0, example=5
+        ),
+    ],
+) -> ComputeParameters:
+    return ComputeParameters(dom=dom, size=size, requests=requests)

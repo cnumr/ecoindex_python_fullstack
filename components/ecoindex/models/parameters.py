@@ -18,3 +18,9 @@ class BffParameters(BaseModel):
     url: AnyHttpUrl
     refresh: bool = False
     version: Version = Version.v1
+
+
+class ComputeParameters(BaseModel):
+    dom: int
+    size: float
+    requests: int
