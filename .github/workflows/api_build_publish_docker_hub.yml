@@ -1,8 +1,6 @@
 name: Publish API Docker images
 
 on:
-  release:
-    types: [published]
   workflow_dispatch:
 
 jobs:
