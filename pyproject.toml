@@ -9,11 +9,15 @@ packages = [
     { include = "ecoindex/backend", from = "bases" },
     { include = "ecoindex/cli", from = "bases" },
     { include = "ecoindex/compute", from = "components" },
+    { include = "ecoindex/config", from = "components" },
     { include = "ecoindex/data", from = "components" },
+    { include = "ecoindex/database", from = "components" },
+    { include = "ecoindex/exceptions", from = "components" },
     { include = "ecoindex/models", from = "components" },
     { include = "ecoindex/scraper", from = "components" },
     { include = "ecoindex/scripts", from = "components" },
     { include = "ecoindex/utils", from = "components" },
+    { include = "ecoindex/worker_component", from = "components" },
     { include = "ecoindex/worker", from = "bases" },
 ]
 
@@ -21,7 +25,9 @@ packages = [
 aiofile = "^3.8.8"
 loguru = "^0.7.2"
 pydantic = "^2.4.2"
+pydantic-settings = "^2.0.3"
 python = ">=3.10,<3.13"
+redis = { extras = ["hiredis"], version = "^5.0.1" }
 requests = "^2.31.0"
 
 [tool.poetry.group.scraper.dependencies]
@@ -36,19 +42,28 @@ jinja2 = "^3.1.2"
 matplotlib = "^3.8.0"
 pandas = "^2.1.2"
 pyyaml = "^6.0.1"
+rich = "^13.6.0"
 scrapy = "^2.11.0"
 typer = "^0.9.0"
 
 [tool.poetry.group.api.dependencies]
+aiosqlite = "^0.19.0"
+alembic = "^1.12.1"
+celery = "^5.3.4"
+redis = "^5.0.1"
+sqlmodel = { git = "https://github.com/AntonDeMeester/sqlmodel.git" }
 
-[tool.poetry.group.worker.dependencies]
+[tool.poetry.group.api-backend.dependencies]
+fastapi = "^0.104.0"
+uvicorn = "^0.23.2"
 
 [tool.poetry.group.dev.dependencies]
+black = "^23.10.0"
+mypy = "^1.7.0"
 pytest = "^7.4.2"
 pytest-asyncio = "^0.21.1"
+pytest-cov = "^4.1.0"
 ruff = "^0.1.1"
-black = "^23.10.0"
-bump-pydantic = "^0.7.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -56,4 +71,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 update-values = "ecoindex.scripts:update_values"
-ecoindex-cli = "ecoindex.cli.app:app"
+
+[tool.pytest.ini_options]
+filterwarnings = ["ignore::DeprecationWarning"]

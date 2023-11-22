@@ -1,0 +1,32 @@
+version: '3'
+
+includes:
+  api:
+    taskfile: ./projects/ecoindex_api/Taskfile.yml
+    dir: ./projects/ecoindex_api/
+
+tasks:
+  check-project:
+    desc: Check polylith structure project
+    aliases: [check]
+    cmds:
+      - poetry poly check
+
+  build-project:
+    desc: Build the project
+    aliases: [bp]
+    cmds:
+      - poetry lock
+      - poetry build-project
+
+  tests:
+    desc: Run tests
+    aliases: [t]
+    cmds:
+      - poetry run pytest
+
+  tests-coverage:
+    desc: Run tests with coverage
+    aliases: [tc]
+    cmds:
+      - poetry run pytest --cov-report term-missing:skip-covered --cov=. --cov-config=.coveragerc test

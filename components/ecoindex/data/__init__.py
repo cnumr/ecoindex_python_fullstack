@@ -1,7 +1,3 @@
-"""
-Ecoindex reference data
-"""
-
 from ecoindex.data.colors import A as A_color
 from ecoindex.data.colors import B as B_color
 from ecoindex.data.colors import C as C_color

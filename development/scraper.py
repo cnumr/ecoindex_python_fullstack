@@ -15,7 +15,7 @@ with ThreadPoolExecutor(max_workers=8) as executor:
 
     url = "https://www.ecoindex.fr"
 
-    for i in range(20):
+    for i in range(1):
         print(f"Starting ecoindex {i} analysis")
         future_to_analysis[
             executor.submit(

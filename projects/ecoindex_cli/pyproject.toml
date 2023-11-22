@@ -11,9 +11,9 @@ packages = [
     { include = "ecoindex/cli", from = "../../bases" },
     { include = "ecoindex/compute", from = "../../components" },
     { include = "ecoindex/data", from = "../../components" },
+    { include = "ecoindex/exceptions", from = "../../components" },
     { include = "ecoindex/models", from = "../../components" },
     { include = "ecoindex/scraper", from = "../../components" },
-    { include = "ecoindex/scripts", from = "../../components" },
     { include = "ecoindex/utils", from = "../../components" },
 ]
 
@@ -28,11 +28,14 @@ playwright = "^1.39.0"
 playwright-stealth = "^1.0.6"
 pydantic = "^2.4.2"
 python = ">=3.10,<3.13"
+python-slugify = "^8.0.1"
 pyyaml = "^6.0.1"
 rich = "^13.6.0"
 scrapy = "^2.11.0"
-slugify = "^0.0.1"
 typer = "^0.9.0"
+
+[tool.poetry.scripts]
+ecoindex-cli = "ecoindex.cli.app:app"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

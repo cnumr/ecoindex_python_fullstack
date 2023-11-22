@@ -1,0 +1,83 @@
+version: '3'
+
+vars:
+  VERSION:
+    sh: poetry version -s
+
+tasks:
+  build-project:
+    aliases: [bp]
+    desc: |
+      Build the poetry project dependencies, and then build the project distribution
+    cmds:
+      - poetry lock
+      - poetry build-project
+    silent: true
+  
+  build-backend:
+    aliases: [bb]
+    desc: |
+      Build the backend docker image
+    cmds:
+      - docker build -t vvatelot/ecoindex-api-backend --build-arg="ecoindex_api-{{.VERSION}}-py3-none-any.whl" -f docker/backend/dockerfile .
+    silent: true
+
+  build-worker:
+    aliases: [bw]
+    desc: |
+      Build the worker docker image
+    cmds:
+      - docker build -t vvatelot/ecoindex-api-worker --build-arg="ecoindex_api-{{.VERSION}}-py3-none-any.whl" -f docker/worker/dockerfile .
+    silent: true
+
+  up:
+    desc: |
+      Start the docker-compose stack
+    cmds:
+      - docker compose up
+    silent: true
+
+  migration-create:
+    aliases: [mc]
+    desc: |
+      Create a new alembic migration
+    cmds:
+      - poetry run alembic revision --autogenerate -m "{{.CLI_ARGS}}"
+    silent: true
+  
+  start-redis:
+    aliases: [sr]
+    desc: |
+      Start the redis server
+    cmds:
+      - docker run --rm -p 6379:6379 -d redis:alpine
+    status:
+      - docker ps | grep redis
+    silent: true
+
+  start-worker:
+    aliases: [sw]
+    deps: [start-redis]
+    desc: |
+      Start the worker
+    cmds:
+      - poetry run celery -A ecoindex.worker.tasks worker -l info
+    silent: true
+  
+  start-backend:
+    aliases: [sb]
+    deps: [start-redis]
+    desc: |
+      Start the backend
+    cmds:
+      - poetry run uvicorn ecoindex.backend.main:app --reload
+    silent: true
+
+  start-dev:
+    aliases: [sd]
+    deps: [start-backend, start-worker]
+    desc: |
+      Start the backend and the worker
+    cmds:
+      - echo "Starting the backend and the worker"
+    silent: true

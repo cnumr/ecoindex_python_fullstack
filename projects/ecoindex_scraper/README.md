@@ -1,7 +1,4 @@
-# ECOINDEX SCRAPER PYTHON
-
-![Quality check](https://github.com/cnumr/ecoindex_scrap_python/workflows/Quality%20checks/badge.svg)
-[![PyPI version](https://badge.fury.io/py/ecoindex-scraper.svg)](https://badge.fury.io/py/ecoindex-scraper)
+# Ecoindex Scraper
 
 This module provides a simple interface to get the [Ecoindex](http://www.ecoindex.fr) of a given webpage using module [ecoindex-python](https://pypi.org/project/ecoindex/)
 
@@ -50,7 +47,6 @@ Result(width=1920, height=1080, url=AnyHttpUrl('http://ecoindex.fr', ), size=549
 
 > **Default behaviour:** By default, the page analysis simulates:
 >
-> - Uses the last version of chrome (can be set with parameter `chrome_version_main` to a given version. IE `107`)
 > - Window size of **1920x1080** pixels (can be set with parameter `window_size`)
 > - Wait for **1 second when page is loaded** (can be set with parameter `wait_before_scroll`)
 > - Scroll to the bottom of the page (if it is possible)

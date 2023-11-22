@@ -1,14 +1,24 @@
+FROM python:3.11-slim as requirements-stage
+
+WORKDIR /tmp
+
+RUN pip install poetry
+COPY pyproject.toml poetry.lock /tmp/
+RUN poetry export --output=requirements.txt --without-hashes
+
 
 FROM python:3.11-slim
 
+ARG wheel=ecoindex_cli-2.23.0-py3-none-any.whl
+
 WORKDIR /code
-ENV PYTHONPATH "/code"
 
-RUN pip install poetry
-COPY ./ ./
-RUN poetry install --with scraper --with cli
+COPY --from=requirements-stage /tmp/requirements.txt /code/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt 
 
-RUN poetry run playwright install chromium --with-deps
-RUN ln -s /code/.venv/bin/ecoindex-cli /usr/bin/
+COPY dist/$wheel $wheel
+RUN pip install --no-cache-dir $wheel
 
-RUN rm -rf /tmp/dist /var/lib/{apt,dpkg,cache,log}/
+RUN playwright install chromium --with-deps
+
+RUN rm -rf $wheel requirements.txt /tmp/dist /var/lib/{apt,dpkg,cache,log}/

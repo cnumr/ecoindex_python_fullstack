@@ -4,7 +4,8 @@ from datetime import datetime
 from time import sleep
 from uuid import uuid4
 
-from ecoindex.compute.ecoindex import compute_ecoindex
+from ecoindex.compute import compute_ecoindex
+from ecoindex.exceptions.scraper import EcoindexScraperException
 from ecoindex.models.compute import PageMetrics, Result, ScreenShot, WindowSize
 from ecoindex.models.scraper import Requests
 from ecoindex.utils.screenshots import convert_screenshot_to_webp, set_screenshot_rights
@@ -12,10 +13,6 @@ from playwright.async_api import async_playwright
 from playwright_stealth import stealth_async
 from slugify import slugify
 from typing_extensions import deprecated
-
-
-class EcoindexScraperException(Exception):
-    pass
 
 
 class EcoindexScraper:
@@ -99,8 +96,8 @@ class EcoindexScraper:
     async def generate_screenshot(self) -> None:
         if self.screenshot and self.screenshot.folder and self.screenshot.id:
             await self.page.screenshot(path=self.screenshot.get_png())
-            convert_screenshot_to_webp(self.screenshot)
-            set_screenshot_rights(
+            await convert_screenshot_to_webp(self.screenshot)
+            await set_screenshot_rights(
                 screenshot=self.screenshot,
                 uid=self.screenshot_uid,
                 gid=self.screenshot_gid,

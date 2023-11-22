@@ -1,0 +1,36 @@
+FROM python:3.11-slim as requirements-stage
+
+WORKDIR /tmp
+
+RUN pip install poetry
+COPY pyproject.toml poetry.lock /tmp/
+RUN poetry export --with=worker --output=requirements.txt --without-hashes
+
+
+FROM python:3.11-slim
+
+ARG wheel=ecoindex_api-3.1.0-py3-none-any.whl
+
+WORKDIR /code
+
+RUN apt-get update && apt-get install -y --no-install-recommends git \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY alembic.ini alembic.ini
+ADD alembic alembic
+
+COPY --from=requirements-stage /tmp/requirements.txt /code/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt 
+
+COPY dist/$wheel $wheel
+RUN pip install --no-cache-dir $wheel
+RUN pip install --no-cache-dir aiomysql
+
+RUN playwright install chromium --with-deps
+
+RUN rm -rf $wheel requirements.txt /tmp/dist /var/lib/{apt,dpkg,cache,log}/
+
+COPY docker/worker/entrypoint.sh /usr/bin/entrypoint
+RUN chmod +x /usr/bin/entrypoint
+
+ENTRYPOINT [ "/usr/bin/entrypoint" ]

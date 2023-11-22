@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any
 
 from ecoindex.data import ecoindex_compute_version
-from pydantic import AnyHttpUrl, BaseModel, Field
+from pydantic import AnyHttpUrl, BaseModel, Field, field_validator
 
 PageType = str
 
@@ -81,9 +81,29 @@ class WebPage(BaseModel):
         ge=50,
         le=2160,
     )
-    url: AnyHttpUrl = Field(
-        default=..., title="Page url", description="Url of the analysed page"
+    url: str = Field(
+        default=...,
+        title="Page url",
+        description="Url of the analysed page",
+        examples=["https://www.ecoindex.fr"],
     )
+
+    @field_validator("url")
+    @classmethod
+    def url_as_http_url(cls, v: str) -> str:
+        url_object = AnyHttpUrl(url=v)
+
+        return url_object.unicode_string()
+
+    def get_url_host(self) -> str:
+        url_obect = AnyHttpUrl(url=self.url)
+
+        return str(url_obect.host)
+
+    def get_url_path(self) -> str:
+        url_obect = AnyHttpUrl(url=self.url)
+
+        return str(url_obect.path)
 
 
 class WindowSize(BaseModel):

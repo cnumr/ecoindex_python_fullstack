@@ -1,0 +1,13 @@
+*
+!.env
+!api
+!alembic.ini
+!common
+!db
+!docker
+!pyproject.toml
+!poetry.lock
+!settings.py
+!worker
+!dist
+!alembic

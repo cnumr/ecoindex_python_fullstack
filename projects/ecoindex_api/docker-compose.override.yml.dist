@@ -1,0 +1,14 @@
+services:
+  api:
+    entrypoint: |
+      bash -c  "alembic upgrade head && \
+                uvicorn ecoindex.backend.main:app --reload --port 8000 --host 0.0.0.0"
+    volumes:
+      - "./:/code/"
+
+  worker:
+    entrypoint: |
+      bash -c  "pip install watchdog &&  \
+                watchmedo auto-restart --directory=./ --pattern=worker/*.py --recursive -- celery -A ecoindex.worker.tasks worker -P threads --loglevel=INFO"
+    volumes:
+      - "./:/code/"

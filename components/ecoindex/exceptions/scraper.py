@@ -1,0 +1,2 @@
+class EcoindexScraperException(Exception):
+    pass
