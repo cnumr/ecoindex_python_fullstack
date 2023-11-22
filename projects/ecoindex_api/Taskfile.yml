@@ -5,6 +5,30 @@ vars:
     sh: poetry version -s
 
 tasks:
+  install-project:
+    aliases: [ip]
+    desc: |
+      Install the poetry project dependencies
+    cmds:
+      - poetry install
+    silent: true
+
+  update-openapi:
+    aliases: [uo]
+    desc: |
+      Update the openapi.json file
+    cmds:
+      - poetry run update-openapi > openapi.json
+    silent: true
+
+  sync-api-version:
+    aliases: [sav]
+    desc: |
+      Sync the poetry project version with the openapi.json file
+    cmds:
+      - poetry version $(cat openapi.json | jq -r '.info.version')
+    silent: true
+
   build-project:
     aliases: [bp]
     desc: |

@@ -6,6 +6,8 @@ includes:
     dir: ./projects/ecoindex_api/
 
 tasks:
+  # Update all projects deps...
+  
   check-project:
     desc: Check polylith structure project
     aliases: [check]

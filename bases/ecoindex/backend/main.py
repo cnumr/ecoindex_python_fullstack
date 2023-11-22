@@ -1,3 +1,4 @@
+from ecoindex.backend import ecoindex_api_version
 from ecoindex.backend.routers import router
 from ecoindex.backend.services.cache import cache
 from ecoindex.database import db
@@ -17,7 +18,7 @@ def init_app():
 
     app = FastAPI(
         title="Ecoindex API",
-        version="1.0.0",
+        version=ecoindex_api_version,
         description=(
             "Ecoindex API enables you to perform ecoindex analysis of given web pages"
         ),

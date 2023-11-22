@@ -29,6 +29,7 @@ pydantic-settings = "^2.0.3"
 python = ">=3.10,<3.13"
 redis = { extras = ["hiredis"], version = "^5.0.1" }
 requests = "^2.31.0"
+tomli = "^2.0.1"
 
 [tool.poetry.group.scraper.dependencies]
 pillow = "^10.1.0"

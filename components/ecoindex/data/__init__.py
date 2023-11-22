@@ -1,3 +1,5 @@
+import os
+
 from ecoindex.data.colors import A as A_color
 from ecoindex.data.colors import B as B_color
 from ecoindex.data.colors import C as C_color
@@ -21,6 +23,7 @@ from ecoindex.data.targets import (
     target_req,
     target_size,
 )
+from ecoindex.utils.sync_version import read_version_from_file
 
 __all__ = [
     "A",
@@ -48,4 +51,7 @@ __all__ = [
     "target_size",
 ]
 
-ecoindex_compute_version = "5.4.3"
+current_directory = os.path.dirname(os.path.realpath(__file__))
+filename = os.path.join(current_directory, "..", "compute", "VERSION")
+
+ecoindex_compute_version = read_version_from_file(filename)
