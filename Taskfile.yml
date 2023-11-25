@@ -5,6 +5,10 @@ includes:
     taskfile: ./projects/ecoindex_api/Taskfile.yml
     dir: ./projects/ecoindex_api/
 
+  compute:
+    taskfile: ./projects/ecoindex_compute/Taskfile.yml
+    dir: ./projects/ecoindex_compute/
+
 tasks:
   # Update all projects deps...
   
