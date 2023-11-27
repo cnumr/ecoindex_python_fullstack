@@ -17,6 +17,8 @@ includes:
     taskfile: ./projects/ecoindex_scraper/Taskfile.yml
     dir: ./projects/ecoindex_scraper/
 
+  poetry: ./tasks/PoetryTaskfile.yml
+
 tasks:
   update-all:
     desc: Update all dependencies
@@ -44,3 +46,12 @@ tasks:
     desc: Run tests with coverage
     cmds:
       - poetry run pytest --cov-report term-missing:skip-covered --cov=. --cov-config=.coveragerc test
+
+  bump:
+    desc: Bump the Main project version with rules:major, minor, patch, premajor, preminor, prepatch or prerelease.
+    cmds:
+      - task: poetry:bump
+        vars:
+          VERSION_FILE_PATH: "VERSION"
+          VERSION_RULE: "{{.CLI_ARGS}}"
+    silent: true
