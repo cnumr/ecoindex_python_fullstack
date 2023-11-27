@@ -6,8 +6,6 @@ includes:
   pypi: ../../tasks/PypiTaskFile.yml
 
 vars:
-  VERSION:
-    sh: poetry version -s
   PROJECT_NAME: cli
 
 tasks:
@@ -22,9 +20,14 @@ tasks:
   
   docker-build:
     desc: Build the docker image
+    deps: [poetry:build]
+    vars:
+      VERSION:
+        sh: poetry version -s
     cmds:
       - task: docker:build
         vars:
-          DOCKER_IMAGE: vvatelot/ecoindex-{{.PROJECT_NAME}}:{{.VERSION}}
-          OPTIONS: --build-arg="wheel=ecoindex_cli-{{.VERSION}}-py3-none-any.whl" -f docker/dockerfile .
+          VERSION: "{{.VERSION}}"
+          NAME: "{{.PROJECT_NAME}}"
+          OPTIONS: --build-arg="wheel=ecoindex_cli-{{.VERSION}}-py3-none-any.whl"
     silent: true

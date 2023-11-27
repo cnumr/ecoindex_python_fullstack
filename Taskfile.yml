@@ -20,13 +20,6 @@ includes:
   poetry: ./tasks/PoetryTaskfile.yml
 
 tasks:
-  update-all:
-    desc: Update all dependencies
-    deps: [api:poetry:update, compute:poetry:update]
-    cmds:
-      - echo "Update all dependencies"
-    silent: true
-
   project-check:
     desc: Check polylith structure project
     cmds:

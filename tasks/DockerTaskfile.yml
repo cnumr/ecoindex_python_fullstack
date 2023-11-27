@@ -1,31 +1,9 @@
 version: '3'
 
 tasks:
-  up:
-    desc: Start the docker-compose {{.PROJECT_NAME}}
-    dir: '{{.USER_WORKING_DIR}}'
-    preconditions:
-      - test -f docker-compose.yml  
-    cmds:
-      - docker-compose up
-    silent: true
-
-  login:
-    desc: Login to dockerhub
-    cmds:
-      - echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USERNAME --password-stdin
-    silent: true
-
-  publish:
-    directory: '{{.USER_WORKING_DIR}}'
-    internal: true
-    cmds:
-      - docker push {{.DOCKER_IMAGE}}
-    silent: true
-
   build:
-    directory: '{{.USER_WORKING_DIR}}'
     internal: true
     cmds:
-      - docker build -t {{.DOCKER_IMAGE}} {{.OPTIONS}} .
+      - echo "docker build -t {{.NAME}} {{.VERSION}} {{.OPTIONS}} ."
+      - docker build -t vvatelot/ecoindex-{{.NAME}}:{{.VERSION}} -t vvatelot/ecoindex-{{.NAME}}:latest {{.OPTIONS}} .
     silent: true

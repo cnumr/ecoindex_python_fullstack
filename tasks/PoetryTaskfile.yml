@@ -16,7 +16,6 @@ tasks:
     silent: true
 
   build:
-    directory: '{{.USER_WORKING_DIR}}'
     desc: Build the poetry project {{.PROJECT_NAME}} dependencies, and then build the project distribution
     cmds:
       - poetry lock

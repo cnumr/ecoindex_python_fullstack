@@ -5,8 +5,6 @@ includes:
   docker: ../../tasks/DockerTaskfile.yml
 
 vars:
-  VERSION:
-    sh: poetry version -s
   PROJECT_NAME: api
 
 tasks:
@@ -29,27 +27,53 @@ tasks:
 
   docker-build-backend:
     desc: Build the backend docker image
+    vars:
+      VERSION:
+        sh: poetry version -s
     cmds:
+      - echo "Build the backend docker image with version {{.VERSION}}"
       - task: docker:build
         vars:
-          DOCKER_IMAGE: vvatelot/ecoindex-api-backend:{{.VERSION}}
-          OPTIONS: --build-arg="wheel=ecoindex_api-{{.VERSION}}-py3-none-any.whl" -f docker/backend/dockerfile .
+          VERSION: "{{.VERSION}}"
+          NAME: "api-backend"
+          OPTIONS: --build-arg="wheel=ecoindex_api-{{.VERSION}}-py3-none-any.whl" -f docker/backend/dockerfile
     silent: true
 
   docker-build-worker:
     desc: Build the worker docker image
+    vars:
+      VERSION:
+        sh: poetry version -s
     cmds:
+      - echo "Build the worker docker image with version {{.VERSION}}"
       - task: docker:build
         vars:
-          DOCKER_IMAGE: vvatelot/ecoindex-api-worker:{{.VERSION}}
-          OPTIONS: --build-arg="wheel=ecoindex_api-{{.VERSION}}-py3-none-any.whl" -f docker/worker/dockerfile .
+          VERSION: "{{.VERSION}}"
+          NAME: "api-worker"
+          OPTIONS: --build-arg="wheel=ecoindex_api-{{.VERSION}}-py3-none-any.whl" -f docker/worker/dockerfile
+    silent: true
+  
+  docker-build-all:
+    desc: Build poetry project and then build the docker images
+    cmds:
+      - task: poetry:build
+      - task: docker-build-images
     silent: true
 
   docker-build-images:
+    internal: true
     desc: Build the docker images
-    deps: [build-docker-backend, build-docker-worker]
+    deps: [docker-build-backend, docker-build-worker]
     cmds:
       - echo "Build the docker images"
+    silent: true
+  
+  up:
+    desc: Start the docker-compose API
+    preconditions:
+      - test -f docker-compose.yml  
+    cmds:
+      - docker compose up
     silent: true
 
   migration-create:
@@ -74,7 +98,6 @@ tasks:
     silent: true
   
   start-backend:
-    deps: [start-redis]
     internal: true
     cmds:
       - poetry run uvicorn ecoindex.backend.main:app --reload
