@@ -4,13 +4,15 @@ includes:
   poetry: ../../tasks/PoetryTaskfile.yml
   pypi: ../../tasks/PypiTaskFile.yml
 
+vars:
+  PROJECT_NAME: compute
+
 tasks:
   bump:
-    desc: Bump the project version with rules:major, minor, patch, premajor, preminor, prepatch or prerelease.
+    desc: Bump the compute version with rules:major, minor, patch, premajor, preminor, prepatch or prerelease.
     cmds:
       - task: poetry:bump
         vars:
-          PROJECT_NAME: compute
           VERSION_FILE_PATH: "../../components/ecoindex/compute/VERSION"
           VERSION_RULE: "{{.CLI_ARGS}}"
     silent: true

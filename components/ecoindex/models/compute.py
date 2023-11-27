@@ -1,11 +1,21 @@
+import os
 from datetime import datetime
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from ecoindex.data import ecoindex_compute_version
 from pydantic import AnyHttpUrl, BaseModel, Field, field_validator
 
 PageType = str
+
+
+@lru_cache
+def get_compute_version() -> str:
+    current_directory = os.path.dirname(os.path.realpath(__file__))
+    version_filename = os.path.join(current_directory, "..", "compute", "VERSION")
+
+    with open(version_filename, "r") as f:
+        return (f.read()).strip()
 
 
 class Ecoindex(BaseModel):
@@ -36,7 +46,7 @@ class Ecoindex(BaseModel):
         ge=0,
     )
     ecoindex_version: str | None = Field(
-        default=ecoindex_compute_version,
+        default=get_compute_version(),
         title="Ecoindex version",
         description="Is the version of the ecoindex used to compute the score",
     )

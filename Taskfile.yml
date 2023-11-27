@@ -25,10 +25,15 @@ tasks:
       - echo "Update all dependencies"
     silent: true
 
-  check-project:
+  project-check:
     desc: Check polylith structure project
     cmds:
       - poetry poly check
+
+  project-sync:
+    desc: Sync polylith structure project
+    cmds:
+      - poetry poly sync
   
   tests:
     desc: Run tests

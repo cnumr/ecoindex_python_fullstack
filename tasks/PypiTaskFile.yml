@@ -9,7 +9,7 @@ tasks:
 
   publish:
     directory: '{{.USER_WORKING_DIR}}'
-    desc: Publish the project to pypi
+    desc: Publish the project {{.PROJECT_NAME}} to pypi
     cmds:
       - poetry publish
     silent: true

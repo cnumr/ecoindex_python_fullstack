@@ -2,7 +2,7 @@ version: '3'
 
 tasks:
   up:
-    desc: Start the docker-compose project
+    desc: Start the docker-compose {{.PROJECT_NAME}}
     dir: '{{.USER_WORKING_DIR}}'
     preconditions:
       - test -f docker-compose.yml  
@@ -18,7 +18,14 @@ tasks:
 
   publish:
     directory: '{{.USER_WORKING_DIR}}'
-    desc: Publish the docker image to dockerhub
+    internal: true
     cmds:
-      - docker push {{.DOCKERHUB_USERNAME}}/{{.DOCKERHUB_IMAGE_NAME}}:{{.DOCKERHUB_IMAGE_TAG}}
+      - docker push {{.DOCKER_IMAGE}}
+    silent: true
+
+  build:
+    directory: '{{.USER_WORKING_DIR}}'
+    internal: true
+    cmds:
+      - docker build -t {{.DOCKER_IMAGE}} {{.OPTIONS}} .
     silent: true

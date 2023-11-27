@@ -3,21 +3,21 @@ version: '3'
 tasks:
   install:
     directory: '{{.USER_WORKING_DIR}}'
-    desc: Install the poetry project dependencies
+    desc: Install the poetry project dependencies of {{.PROJECT_NAME}}
     cmds:
       - poetry install
     silent: true
 
   update:
     directory: '{{.USER_WORKING_DIR}}'
-    desc: Update dependencies
+    desc: Update dependencies of {{.PROJECT_NAME}}
     cmds:
       - poetry update
     silent: true
 
   build:
     directory: '{{.USER_WORKING_DIR}}'
-    desc: Build the poetry project dependencies, and then build the project distribution
+    desc: Build the poetry project {{.PROJECT_NAME}} dependencies, and then build the project distribution
     cmds:
       - poetry lock
       - poetry build-project
@@ -25,7 +25,7 @@ tasks:
 
   bump:
     directory: '{{.USER_WORKING_DIR}}'
-    desc: Bump the project version with rules:major, minor, patch, premajor, preminor, prepatch or prerelease.
+    internal: true
     preconditions: 
       - sh: '[[ "{{.CLI_ARGS}}" =~ ^(major|minor|patch|premajor|preminor|prepatch|prerelease)$ ]]'
         msg: "Invalid version rule: `{{.CLI_ARGS}}` must be major, minor, patch, premajor, preminor, prepatch or prerelease."

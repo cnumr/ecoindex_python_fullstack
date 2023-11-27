@@ -2,10 +2,12 @@ version: '3'
 
 includes:
   poetry: ../../tasks/PoetryTaskfile.yml
+  docker: ../../tasks/DockerTaskfile.yml
 
 vars:
   VERSION:
     sh: poetry version -s
+  PROJECT_NAME: api
 
 tasks:
   update-openapi:
@@ -17,28 +19,33 @@ tasks:
     silent: true
 
   bump:
-    desc: Bump the project version with rules:major, minor, patch, premajor, preminor, prepatch or prerelease.
+    desc: Bump the API version with rules:major, minor, patch, premajor, preminor, prepatch or prerelease.
     cmds:
       - task: poetry:bump
         vars:
-          PROJECT_NAME: api
           VERSION_FILE_PATH: "../../bases/ecoindex/backend/VERSION"
           VERSION_RULE: "{{.CLI_ARGS}}"
     silent: true
 
-  build-docker-backend:
+  docker-build-backend:
     desc: Build the backend docker image
     cmds:
-      - docker build -t vvatelot/ecoindex-api-backend --build-arg="wheel=ecoindex_api-{{.VERSION}}-py3-none-any.whl" -f docker/backend/dockerfile .
+      - task: docker:build
+        vars:
+          DOCKER_IMAGE: vvatelot/ecoindex-api-backend:{{.VERSION}}
+          OPTIONS: --build-arg="wheel=ecoindex_api-{{.VERSION}}-py3-none-any.whl" -f docker/backend/dockerfile .
     silent: true
 
-  build-docker-worker:
+  docker-build-worker:
     desc: Build the worker docker image
     cmds:
-      - docker build -t vvatelot/ecoindex-api-worker --build-arg="wheel=ecoindex_api-{{.VERSION}}-py3-none-any.whl" -f docker/worker/dockerfile .
+      - task: docker:build
+        vars:
+          DOCKER_IMAGE: vvatelot/ecoindex-api-worker:{{.VERSION}}
+          OPTIONS: --build-arg="wheel=ecoindex_api-{{.VERSION}}-py3-none-any.whl" -f docker/worker/dockerfile .
     silent: true
 
-  build-docker-images:
+  docker-build-images:
     desc: Build the docker images
     deps: [build-docker-backend, build-docker-worker]
     cmds:
@@ -52,7 +59,7 @@ tasks:
     silent: true
   
   start-redis:
-    desc: Start the redis server
+    internal: true
     cmds:
       - docker run --rm -p 6379:6379 -d redis:alpine
     status:
@@ -61,14 +68,14 @@ tasks:
 
   start-worker:
     deps: [start-redis]
-    desc: Start the worker
+    internal: true
     cmds:
       - poetry run celery -A ecoindex.worker.tasks worker -l info
     silent: true
   
   start-backend:
     deps: [start-redis]
-    desc: Start the backend
+    internal: true
     cmds:
       - poetry run uvicorn ecoindex.backend.main:app --reload
     silent: true
