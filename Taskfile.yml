@@ -10,21 +10,19 @@ includes:
     dir: ./projects/ecoindex_compute/
 
 tasks:
-  # Update all projects deps...
-  
+  update-all:
+    desc: Update all dependencies
+    deps: [api:poetry:update, compute:poetry:update]
+    cmds:
+      - echo "Update all dependencies"
+    silent: true
+
   check-project:
     desc: Check polylith structure project
     aliases: [check]
     cmds:
       - poetry poly check
-
-  build-project:
-    desc: Build the project
-    aliases: [bp]
-    cmds:
-      - poetry lock
-      - poetry build-project
-
+  
   tests:
     desc: Run tests
     aliases: [t]

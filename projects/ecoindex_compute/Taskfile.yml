@@ -1,27 +1,17 @@
 version: '3'
 
-tasks:
-  bump-project:
-    aliases: [bump]
-    vars:
-      VERSION_RULE: "{{.CLI_ARGS}}"
-    desc: |
-      Bump the project version
-    cmds:
-      - echo "Possible version rules:major, minor, patch, premajor, preminor, prepatch, prerelease, or a valid semver string."
-      - poetry version -s > /tmp/version-current-output-compute
-      - poetry version {{.VERSION_RULE}} -s > /tmp/version-bump-output-compute
-      - echo "Current version:$(cat /tmp/version-current-output-compute)"
-      - echo "Bumped version:$(cat /tmp/version-bump-output-compute)"
-      # - Bump `ecoindex_compute_version` in `components/ecoindex/data/__init__.py`
-    silent: true
+includes:
+  poetry: ../../tasks/PoetryTaskfile.yml
+  docker: ../../tasks/DockerTaskfile.yml
+  pypi: ../../tasks/PypiTaskFile.yml
 
-  build-project:
-    aliases: [build]
-    deps: [bump-project]
-    desc: |
-      Build the poetry project dependencies, and then build the project distribution
+tasks:
+  bump:
+    desc: Bump the project version with rules:major, minor, patch, premajor, preminor, prepatch or prerelease.
     cmds:
-      - poetry lock
-      - poetry build-project
+      - task: poetry:bump
+        vars:
+          PROJECT_NAME: compute
+          VERSION_FILE_PATH: "../../components/ecoindex/compute/VERSION"
+          VERSION_RULE: "{{.CLI_ARGS}}"
     silent: true
