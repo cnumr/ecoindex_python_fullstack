@@ -10,7 +10,7 @@ tasks:
     cmds:
       - task: poetry:bump
         vars:
-          PROJECT_NAME: compute
-          VERSION_FILE_PATH: "../../components/ecoindex/compute/VERSION"
+          PROJECT_NAME: scraper
+          VERSION_FILE_PATH: "../../components/ecoindex/scraper/VERSION"
           VERSION_RULE: "{{.CLI_ARGS}}"
     silent: true
