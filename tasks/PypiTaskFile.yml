@@ -2,7 +2,6 @@ version: '3'
 
 tasks:
   login-pypi:
-    aliases: [lp]
     desc: Login to pypi
     cmds:
       - poetry config pypi-token.pypi $PYPI_TOKEN
