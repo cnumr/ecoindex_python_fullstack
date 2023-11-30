@@ -68,6 +68,39 @@ tasks:
       - echo "Build the docker images"
     silent: true
   
+  docker-push-backend:
+    desc: Push the backend docker image
+    vars:
+      VERSION:
+        sh: poetry version -s
+    cmds:
+      - echo "Push the backend docker image with version {{.VERSION}}"
+      - task: docker:push
+        vars:
+          VERSION: "{{.VERSION}}"
+          NAME: "api-backend"
+    silent: true
+  
+  docker-push-worker:
+    desc: Push the worker docker image
+    vars:
+      VERSION:
+        sh: poetry version -s
+    cmds:
+      - echo "Push the worker docker image with version {{.VERSION}}"
+      - task: docker:push
+        vars:
+          VERSION: "{{.VERSION}}"
+          NAME: "api-worker"
+    silent: true
+  
+  docker-push-all:
+    desc: Push the docker images
+    deps: [docker-push-backend, docker-push-worker]
+    cmds:
+      - echo "Push the docker images"
+    silent: true
+  
   up:
     desc: Start the docker-compose API
     preconditions:
@@ -81,6 +114,12 @@ tasks:
     cmds:
       - poetry run alembic revision --autogenerate -m "{{.CLI_ARGS}}"
     silent: true
+
+  migration-upgrade:
+    desc: Upgrade the database to the last migration
+    cmds:
+      - poetry run alembic upgrade head
+    silent: true
   
   start-redis:
     internal: true
@@ -91,7 +130,7 @@ tasks:
     silent: true
 
   start-worker:
-    deps: [start-redis]
+    deps: [start-redis, poetry:install-playwright]
     internal: true
     cmds:
       - poetry run celery -A ecoindex.worker.tasks worker -l info
@@ -100,7 +139,7 @@ tasks:
   start-backend:
     internal: true
     cmds:
-      - poetry run uvicorn ecoindex.backend.main:app --reload
+      - poetry run uvicorn ecoindex.backend.main:app
     silent: true
 
   start-dev:

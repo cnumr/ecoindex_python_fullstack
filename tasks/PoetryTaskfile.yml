@@ -2,14 +2,12 @@ version: '3'
 
 tasks:
   install:
-    directory: '{{.USER_WORKING_DIR}}'
     desc: Install the poetry project dependencies of {{.PROJECT_NAME}}
     cmds:
       - poetry install
     silent: true
 
   update:
-    directory: '{{.USER_WORKING_DIR}}'
     desc: Update dependencies of {{.PROJECT_NAME}}
     cmds:
       - poetry update
@@ -23,7 +21,6 @@ tasks:
     silent: true
 
   bump:
-    directory: '{{.USER_WORKING_DIR}}'
     internal: true
     preconditions: 
       - sh: '[[ "{{.CLI_ARGS}}" =~ ^(major|minor|patch|premajor|preminor|prepatch|prerelease)$ ]]'
@@ -36,3 +33,10 @@ tasks:
       - echo "Update {{.VERSION_FILE_PATH}}"
       - echo "$(cat /tmp/version-bump-output-{{.PROJECT_NAME}})" > {{.VERSION_FILE_PATH}}
     silent: true
+
+  install-playwright:
+    desc: Install playwright
+    cmds:
+      - poetry run playwright install
+    silent: true
+    internal: true

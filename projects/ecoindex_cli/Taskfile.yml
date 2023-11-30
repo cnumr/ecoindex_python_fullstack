@@ -31,3 +31,15 @@ tasks:
           NAME: "{{.PROJECT_NAME}}"
           OPTIONS: --build-arg="wheel=ecoindex_cli-{{.VERSION}}-py3-none-any.whl"
     silent: true
+  
+  docker-push:
+    desc: Push the docker image
+    vars:
+      VERSION:
+        sh: poetry version -s
+    cmds:
+      - task: docker:push
+        vars:
+          VERSION: "{{.VERSION}}"
+          NAME: "{{.PROJECT_NAME}}"
+    silent: true

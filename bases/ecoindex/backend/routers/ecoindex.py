@@ -147,7 +147,7 @@ async def get_badge_enpoint(
             url=parameters.url,
             refresh=parameters.refresh,
             version=parameters.version,
-            theme=theme,
+            theme=theme.value,
         ),
         media_type="image/svg+xml",
     )

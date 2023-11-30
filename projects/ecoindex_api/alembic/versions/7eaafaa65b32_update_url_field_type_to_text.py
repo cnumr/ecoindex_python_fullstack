@@ -15,18 +15,18 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.alter_column(
-        "apiecoindex",
-        "url",
-        existing_type=sa.String(length=2048),
-        type_=sa.Text(),
-    )
+    with op.batch_alter_table("apiecoindex", schema=None) as batch_op:
+        batch_op.alter_column(
+            "url",
+            existing_type=sa.String(length=2048),
+            type_=sa.Text(),
+        )
 
 
 def downgrade() -> None:
-    op.alter_column(
-        "apiecoindex",
-        "url",
-        existing_type=sa.Text(),
-        type_=sa.String(length=2048),
-    )
+    with op.batch_alter_table("apiecoindex", schema=None) as batch_op:
+        batch_op.alter_column(
+            "url",
+            existing_type=sa.Text(),
+            type_=sa.String(length=2048),
+        )
