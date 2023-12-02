@@ -5,28 +5,46 @@ includes:
     taskfile: ./projects/ecoindex_api/Taskfile.yml
     dir: ./projects/ecoindex_api/
 
+  cli:
+    taskfile: ./projects/ecoindex_cli/Taskfile.yml
+    dir: ./projects/ecoindex_cli/
+
+  compute:
+    taskfile: ./projects/ecoindex_compute/Taskfile.yml
+    dir: ./projects/ecoindex_compute/
+
+  scraper:
+    taskfile: ./projects/ecoindex_scraper/Taskfile.yml
+    dir: ./projects/ecoindex_scraper/
+
+  poetry: ./tasks/PoetryTaskfile.yml
+
 tasks:
-  check-project:
+  project-check:
     desc: Check polylith structure project
-    aliases: [check]
     cmds:
       - poetry poly check
 
-  build-project:
-    desc: Build the project
-    aliases: [bp]
+  project-sync:
+    desc: Sync polylith structure project
     cmds:
-      - poetry lock
-      - poetry build-project
-
+      - poetry poly sync
+  
   tests:
     desc: Run tests
-    aliases: [t]
     cmds:
       - poetry run pytest
 
   tests-coverage:
     desc: Run tests with coverage
-    aliases: [tc]
     cmds:
       - poetry run pytest --cov-report term-missing:skip-covered --cov=. --cov-config=.coveragerc test
+
+  bump:
+    desc: Bump the Main project version with rules:major, minor, patch, premajor, preminor, prepatch or prerelease.
+    cmds:
+      - task: poetry:bump
+        vars:
+          VERSION_FILE_PATH: "VERSION"
+          VERSION_RULE: "{{.CLI_ARGS}}"
+    silent: true

@@ -1,0 +1,2029 @@
+{
+  "components": {
+    "schemas": {
+      "ApiEcoindex": {
+        "properties": {
+          "date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Date of the analysis",
+            "title": "Analysis datetime"
+          },
+          "ecoindex_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "5.4.3",
+            "description": "Is the version of the ecoindex used to compute the score",
+            "title": "Ecoindex version"
+          },
+          "ges": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Is the equivalent of greenhouse gases emission (in `gCO2e`) of the page",
+            "title": "Ecoindex GES equivalent"
+          },
+          "grade": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Is the corresponding ecoindex grade of the page (from A to G)",
+            "title": "Ecoindex grade"
+          },
+          "height": {
+            "anyOf": [
+              {
+                "maximum": 2160.0,
+                "minimum": 50.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 1080,
+            "description": "Height of the simulated window in pixel",
+            "title": "Page Height"
+          },
+          "host": {
+            "description": "Host name of the web page",
+            "title": "Web page host",
+            "type": "string"
+          },
+          "id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Analysis ID of type `UUID`",
+            "title": "Id"
+          },
+          "initial_ranking": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "This is the initial rank of the analysis. This is an indicator of the ranking at the time of the analysis for a given version.",
+            "title": "Analysis rank"
+          },
+          "initial_total_results": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "This is the initial total number of analysis. This is an indicator of the total number of analysis at the time of the analysis for a given version.",
+            "title": "Total number of analysis"
+          },
+          "nodes": {
+            "description": "Is the number of the DOM elements in the page",
+            "minimum": 0.0,
+            "title": "Page nodes",
+            "type": "integer"
+          },
+          "page_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Is the type of the page, based ton the [opengraph type tag](https://ogp.me/#types)",
+            "title": "Page type"
+          },
+          "requests": {
+            "description": "Is the number of external requests made by the page",
+            "minimum": 0.0,
+            "title": "Page requests",
+            "type": "integer"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Is the corresponding ecoindex score of the page (0 to 100)",
+            "title": "Ecoindex score"
+          },
+          "size": {
+            "description": "Is the size of the page and of the downloaded elements of the page in KB",
+            "minimum": 0.0,
+            "title": "Page size",
+            "type": "number"
+          },
+          "url": {
+            "description": "Url of the analysed page",
+            "examples": [
+              "https://www.ecoindex.fr"
+            ],
+            "title": "Page url",
+            "type": "string"
+          },
+          "version": {
+            "default": 1,
+            "description": "Version number of the API used to run the test",
+            "title": "API version",
+            "type": "integer"
+          },
+          "water": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Is the equivalent water consumption (in `cl`) of the page",
+            "title": "Ecoindex Water equivalent"
+          },
+          "width": {
+            "anyOf": [
+              {
+                "maximum": 3840.0,
+                "minimum": 100.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 1920,
+            "description": "Width of the simulated window in pixel",
+            "title": "Page Width"
+          }
+        },
+        "required": [
+          "url",
+          "size",
+          "nodes",
+          "requests"
+        ],
+        "title": "ApiEcoindex",
+        "type": "object"
+      },
+      "BadgeTheme": {
+        "enum": [
+          "dark",
+          "light"
+        ],
+        "title": "BadgeTheme",
+        "type": "string"
+      },
+      "Ecoindex": {
+        "properties": {
+          "ecoindex_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "5.4.3",
+            "description": "Is the version of the ecoindex used to compute the score",
+            "title": "Ecoindex version"
+          },
+          "ges": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Is the equivalent of greenhouse gases emission (in `gCO2e`) of the page",
+            "title": "Ecoindex GES equivalent"
+          },
+          "grade": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Is the corresponding ecoindex grade of the page (from A to G)",
+            "title": "Ecoindex grade"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Is the corresponding ecoindex score of the page (0 to 100)",
+            "title": "Ecoindex score"
+          },
+          "water": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Is the equivalent water consumption (in `cl`) of the page",
+            "title": "Ecoindex Water equivalent"
+          }
+        },
+        "title": "Ecoindex",
+        "type": "object"
+      },
+      "EcoindexSearchResults": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "host_results": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ApiEcoindex"
+            },
+            "title": "Host Results",
+            "type": "array"
+          },
+          "latest_result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ApiEcoindex"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "older_results": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ApiEcoindex"
+            },
+            "title": "Older Results",
+            "type": "array"
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "title": "EcoindexSearchResults",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HealthResponse": {
+        "properties": {
+          "database": {
+            "title": "Status of database",
+            "type": "boolean"
+          },
+          "workers": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/HealthWorkers"
+              }
+            ],
+            "title": "Status of workers"
+          }
+        },
+        "required": [
+          "database",
+          "workers"
+        ],
+        "title": "HealthResponse",
+        "type": "object"
+      },
+      "HealthWorker": {
+        "properties": {
+          "healthy": {
+            "title": "Status of worker",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name of worker",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "healthy"
+        ],
+        "title": "HealthWorker",
+        "type": "object"
+      },
+      "HealthWorkers": {
+        "properties": {
+          "healthy": {
+            "title": "Global status of workers",
+            "type": "boolean"
+          },
+          "workers": {
+            "items": {
+              "$ref": "#/components/schemas/HealthWorker"
+            },
+            "title": "List of workers",
+            "type": "array"
+          }
+        },
+        "required": [
+          "healthy",
+          "workers"
+        ],
+        "title": "HealthWorkers",
+        "type": "object"
+      },
+      "Host": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "remaining_daily_requests": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remaining Daily Requests"
+          },
+          "total_count": {
+            "title": "Total Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "total_count"
+        ],
+        "title": "Host",
+        "type": "object"
+      },
+      "PageApiEcoindexes": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ApiEcoindex"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "page": {
+            "title": "Page",
+            "type": "integer"
+          },
+          "size": {
+            "title": "Size",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "size"
+        ],
+        "title": "PageApiEcoindexes",
+        "type": "object"
+      },
+      "PageHosts": {
+        "properties": {
+          "items": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "page": {
+            "title": "Page",
+            "type": "integer"
+          },
+          "size": {
+            "title": "Size",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "size"
+        ],
+        "title": "PageHosts",
+        "type": "object"
+      },
+      "QueueTaskApi-Input": {
+        "properties": {
+          "ecoindex_result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueueTaskResult"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result of the Ecoindex analysis"
+          },
+          "id": {
+            "title": "Identifier of the current. This identifier will become the identifier of the analysis",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status of the current task. Can be PENDING, FAILURE, SUCCESS",
+            "type": "string"
+          },
+          "task_error": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail of the error encountered by the task in case of Failure"
+          }
+        },
+        "required": [
+          "id",
+          "status"
+        ],
+        "title": "QueueTaskApi",
+        "type": "object"
+      },
+      "QueueTaskApi-Output": {
+        "properties": {
+          "ecoindex_result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueueTaskResult"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result of the Ecoindex analysis"
+          },
+          "id": {
+            "title": "Identifier of the current. This identifier will become the identifier of the analysis",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status of the current task. Can be PENDING, FAILURE, SUCCESS",
+            "type": "string"
+          },
+          "task_error": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail of the error encountered by the task in case of Failure"
+          }
+        },
+        "required": [
+          "id",
+          "status"
+        ],
+        "title": "QueueTaskApi",
+        "type": "object"
+      },
+      "QueueTaskError": {
+        "properties": {
+          "detail": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail object of the raised exception"
+          },
+          "exception": {
+            "title": "Name of the exception that was raised",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message of the exception",
+            "type": "string"
+          },
+          "status_code": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Corresponding original HTTP status code sended by the API"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "format": "uri",
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "URL of the analyzed web page"
+          }
+        },
+        "required": [
+          "exception",
+          "message"
+        ],
+        "title": "QueueTaskError",
+        "type": "object"
+      },
+      "QueueTaskResult": {
+        "properties": {
+          "detail": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Result"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result of the ecoindex analysis once it was successfuly completed"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueueTaskError"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail of the ecoindex error if it is not successful"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "While the task is pending or the analysis is running, it is null. But once the analysis is complete, it should return SUCCESS or FAILURE.",
+            "title": "Status of the ecoindex analysis."
+          }
+        },
+        "title": "QueueTaskResult",
+        "type": "object"
+      },
+      "Result": {
+        "properties": {
+          "date": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Date of the analysis",
+            "title": "Analysis datetime"
+          },
+          "ecoindex_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "5.4.3",
+            "description": "Is the version of the ecoindex used to compute the score",
+            "title": "Ecoindex version"
+          },
+          "ges": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Is the equivalent of greenhouse gases emission (in `gCO2e`) of the page",
+            "title": "Ecoindex GES equivalent"
+          },
+          "grade": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Is the corresponding ecoindex grade of the page (from A to G)",
+            "title": "Ecoindex grade"
+          },
+          "height": {
+            "anyOf": [
+              {
+                "maximum": 2160.0,
+                "minimum": 50.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 1080,
+            "description": "Height of the simulated window in pixel",
+            "title": "Page Height"
+          },
+          "nodes": {
+            "description": "Is the number of the DOM elements in the page",
+            "minimum": 0.0,
+            "title": "Page nodes",
+            "type": "integer"
+          },
+          "page_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Is the type of the page, based ton the [opengraph type tag](https://ogp.me/#types)",
+            "title": "Page type"
+          },
+          "requests": {
+            "description": "Is the number of external requests made by the page",
+            "minimum": 0.0,
+            "title": "Page requests",
+            "type": "integer"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Is the corresponding ecoindex score of the page (0 to 100)",
+            "title": "Ecoindex score"
+          },
+          "size": {
+            "description": "Is the size of the page and of the downloaded elements of the page in KB",
+            "minimum": 0.0,
+            "title": "Page size",
+            "type": "number"
+          },
+          "url": {
+            "description": "Url of the analysed page",
+            "examples": [
+              "https://www.ecoindex.fr"
+            ],
+            "title": "Page url",
+            "type": "string"
+          },
+          "water": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Is the equivalent water consumption (in `cl`) of the page",
+            "title": "Ecoindex Water equivalent"
+          },
+          "width": {
+            "anyOf": [
+              {
+                "maximum": 3840.0,
+                "minimum": 100.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 1920,
+            "description": "Width of the simulated window in pixel",
+            "title": "Page Width"
+          }
+        },
+        "required": [
+          "url",
+          "size",
+          "nodes",
+          "requests"
+        ],
+        "title": "Result",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "Version": {
+        "enum": [
+          "v0",
+          "v1"
+        ],
+        "title": "Version",
+        "type": "string"
+      },
+      "WebPage": {
+        "properties": {
+          "height": {
+            "anyOf": [
+              {
+                "maximum": 2160.0,
+                "minimum": 50.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 1080,
+            "description": "Height of the simulated window in pixel",
+            "title": "Page Height"
+          },
+          "url": {
+            "description": "Url of the analysed page",
+            "examples": [
+              "https://www.ecoindex.fr"
+            ],
+            "title": "Page url",
+            "type": "string"
+          },
+          "width": {
+            "anyOf": [
+              {
+                "maximum": 3840.0,
+                "minimum": 100.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 1920,
+            "description": "Width of the simulated window in pixel",
+            "title": "Page Width"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "WebPage",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Ecoindex API enables you to perform ecoindex analysis of given web pages",
+    "title": "Ecoindex API",
+    "version": "3.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/ecoindex/ecoindex": {
+      "get": {
+        "description": "This returns the ecoindex computed based on the given parameters: DOM (number of DOM nodes), size (total size in Kb) and requests",
+        "operationId": "Compute_ecoindex_ecoindex_ecoindex_get",
+        "parameters": [
+          {
+            "description": "Number of DOM nodes of the page",
+            "example": 204,
+            "in": "query",
+            "name": "dom",
+            "required": true,
+            "schema": {
+              "description": "Number of DOM nodes of the page",
+              "exclusiveMinimum": 0,
+              "title": "Dom",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Total size of the page in Kb",
+            "example": 109,
+            "in": "query",
+            "name": "size",
+            "required": true,
+            "schema": {
+              "description": "Total size of the page in Kb",
+              "exclusiveMinimum": 0.0,
+              "title": "Size",
+              "type": "number"
+            }
+          },
+          {
+            "description": "Number of requests of the page",
+            "example": 5,
+            "in": "query",
+            "name": "requests",
+            "required": true,
+            "schema": {
+              "description": "Number of requests of the page",
+              "exclusiveMinimum": 0,
+              "title": "Requests",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ecoindex"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Compute Ecoindex",
+        "tags": [
+          "Ecoindex",
+          "Ecoindex"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "description": "This returns the health of the service",
+        "operationId": "Health_check_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health Check",
+        "tags": [
+          "Infra"
+        ]
+      }
+    },
+    "/v1/tasks/ecoindexes": {
+      "post": {
+        "description": "This submits a ecoindex analysis task to the engine",
+        "operationId": "Add_new_ecoindex_analysis_task_to_the_waiting_queue_v1_tasks_ecoindexes_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "height": 1080,
+                "url": "https://www.ecoindex.fr/",
+                "width": 1920
+              },
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WebPage"
+                  }
+                ],
+                "title": "Web page to analyze defined by its url and its screen resolution"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response 201 Add New Ecoindex Analysis Task To The Waiting Queue V1 Tasks Ecoindexes Post",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Identifier of the task that has been created in queue"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": {
+                    "daily_limit_per_host": 1,
+                    "host": "www.ecoindex.fr",
+                    "latest_result": {
+                      "date": "2023-01-05T12:06:57",
+                      "ecoindex_version": "5.4.1",
+                      "ges": 1.26,
+                      "grade": "A",
+                      "height": 1080,
+                      "host": "www.ecoindex.fr",
+                      "id": "be8c3612-545f-4e72-8880-13b8db74ff6e",
+                      "initial_ranking": 1,
+                      "initial_total_results": 1,
+                      "nodes": 201,
+                      "requests": 6,
+                      "score": 87,
+                      "size": 107.178,
+                      "url": "https://www.ecoindex.fr",
+                      "version": 1,
+                      "water": 1.89,
+                      "width": 1920
+                    },
+                    "limit": 1,
+                    "message": "You have already reached the daily limit of 1 requests for host www.ecoindex.fr today"
+                  }
+                }
+              }
+            },
+            "description": "You have reached the daily limit"
+          }
+        },
+        "summary": "Add New Ecoindex Analysis Task To The Waiting Queue",
+        "tags": [
+          "Tasks"
+        ]
+      }
+    },
+    "/v1/tasks/ecoindexes/{id}": {
+      "delete": {
+        "description": "This aborts one ecoindex task by its id if it is still waiting",
+        "operationId": "Abort_ecoindex_analysis_by_id_v1_tasks_ecoindexes__id__delete",
+        "parameters": [
+          {
+            "description": "Unique identifier of the ecoindex analysis",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "description": "Unique identifier of the ecoindex analysis",
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Abort one ecoindex task by its id if it is still waiting"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Abort Ecoindex Analysis By Id",
+        "tags": [
+          "Tasks"
+        ]
+      },
+      "get": {
+        "description": "This returns an ecoindex given by its unique identifier",
+        "operationId": "Get_ecoindex_analysis_task_by_id_v1_tasks_ecoindexes__id__get",
+        "parameters": [
+          {
+            "description": "Unique identifier of the ecoindex analysis",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "description": "Unique identifier of the ecoindex analysis",
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueTaskApi-Input"
+                }
+              }
+            },
+            "description": "Get one ecoindex task result by its id"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "425": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueTaskApi-Input"
+                }
+              }
+            },
+            "description": "Too Early"
+          }
+        },
+        "summary": "Get Ecoindex Analysis Task By Id",
+        "tags": [
+          "Tasks"
+        ]
+      }
+    },
+    "/{version}/ecoindexes": {
+      "get": {
+        "description": "This returns a list of ecoindex analysis corresponding to query filters and the given version engine. The results are ordered by ascending date",
+        "operationId": "Get_ecoindex_analysis_list__version__ecoindexes_get",
+        "parameters": [
+          {
+            "description": "Engine version used to run the analysis (v0 or v1)",
+            "example": "v1",
+            "in": "path",
+            "name": "version",
+            "required": true,
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Version"
+                }
+              ],
+              "description": "Engine version used to run the analysis (v0 or v1)",
+              "title": "Engine version"
+            }
+          },
+          {
+            "description": "You can sort results using this param with the format `sort=param1:asc&sort=param2:desc`",
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "default": [
+                "date:desc"
+              ],
+              "description": "You can sort results using this param with the format `sort=param1:asc&sort=param2:desc`",
+              "items": {
+                "type": "string"
+              },
+              "title": "Sort",
+              "type": "array"
+            }
+          },
+          {
+            "description": "Start date of the filter elements (example: 2020-01-01)",
+            "in": "query",
+            "name": "date_from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Start date of the filter elements (example: 2020-01-01)",
+              "title": "Date From"
+            }
+          },
+          {
+            "description": "End date of the filter elements  (example: 2020-01-01)",
+            "in": "query",
+            "name": "date_to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "End date of the filter elements  (example: 2020-01-01)",
+              "title": "Date To"
+            }
+          },
+          {
+            "description": "Host name you want to filter (can be partial)",
+            "in": "query",
+            "name": "host",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Host name you want to filter (can be partial)",
+              "title": "Host"
+            }
+          },
+          {
+            "description": "Page number",
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "description": "Page number",
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Number of elements per page",
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "description": "Number of elements per page",
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Size",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageApiEcoindexes"
+                }
+              }
+            },
+            "description": "List of corresponding ecoindex results"
+          },
+          "206": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageApiEcoindexes"
+                }
+              }
+            },
+            "description": "Partial Content"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageApiEcoindexes"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Ecoindex Analysis List",
+        "tags": [
+          "Ecoindex"
+        ]
+      }
+    },
+    "/{version}/ecoindexes/latest": {
+      "get": {
+        "description": "This returns the latest results for a given url. This feature is used by the Ecoindex\nbrowser extension. By default, the results are cached for 7 days.\n\nIf the url is not found in the database, the response status code will be 404.",
+        "operationId": "Get_latest_results__version__ecoindexes_latest_get",
+        "parameters": [
+          {
+            "description": "Engine version used to run the analysis (v0 or v1)",
+            "example": "v1",
+            "in": "path",
+            "name": "version",
+            "required": true,
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Version"
+                }
+              ],
+              "description": "Engine version used to run the analysis (v0 or v1)",
+              "title": "Engine version"
+            }
+          },
+          {
+            "description": "Url to be searched in database",
+            "in": "query",
+            "name": "url",
+            "required": true,
+            "schema": {
+              "description": "Url to be searched in database",
+              "format": "uri",
+              "minLength": 1,
+              "title": "Url",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Force the refresh of the cache",
+            "in": "query",
+            "name": "refresh",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Force the refresh of the cache",
+              "title": "Refresh",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcoindexSearchResults"
+                }
+              }
+            },
+            "description": "Get latest results for a given url"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Latest Results",
+        "tags": [
+          "Ecoindex",
+          "BFF"
+        ]
+      }
+    },
+    "/{version}/ecoindexes/latest/badge": {
+      "get": {
+        "description": "This returns the SVG badge of the given url. This feature is used by the Ecoindex\nbadge. By default, the results are cached for 7 days.\n\nIf the url is not found in the database, it will return a badge with the grade `?`.",
+        "operationId": "Get_badge__version__ecoindexes_latest_badge_get",
+        "parameters": [
+          {
+            "description": "Engine version used to run the analysis (v0 or v1)",
+            "example": "v1",
+            "in": "path",
+            "name": "version",
+            "required": true,
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Version"
+                }
+              ],
+              "description": "Engine version used to run the analysis (v0 or v1)",
+              "title": "Engine version"
+            }
+          },
+          {
+            "description": "Theme of the badge",
+            "in": "query",
+            "name": "theme",
+            "required": false,
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/BadgeTheme"
+                }
+              ],
+              "default": "light",
+              "description": "Theme of the badge",
+              "title": "Theme"
+            }
+          },
+          {
+            "description": "Url to be searched in database",
+            "in": "query",
+            "name": "url",
+            "required": true,
+            "schema": {
+              "description": "Url to be searched in database",
+              "format": "uri",
+              "minLength": 1,
+              "title": "Url",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Force the refresh of the cache",
+            "in": "query",
+            "name": "refresh",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Force the refresh of the cache",
+              "title": "Refresh",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Badge of the given url from [CDN V1](https://www.jsdelivr.com/package/gh/cnumr/ecoindex_badge)"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "File at path screenshots/v0/550cdf8c-9c4c-4f8a-819d-cb69d0866fe1.webp does not exist."
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Badge",
+        "tags": [
+          "Ecoindex",
+          "BFF"
+        ]
+      }
+    },
+    "/{version}/ecoindexes/latest/redirect": {
+      "get": {
+        "description": "This redirects to the latest results on the frontend website for the given url.\nThis feature is used by the Ecoindex browser extension and badge.\n\nIf the url is not found in the database, the response status code will be 404.",
+        "operationId": "Get_latest_results_redirect__version__ecoindexes_latest_redirect_get",
+        "parameters": [
+          {
+            "description": "Engine version used to run the analysis (v0 or v1)",
+            "example": "v1",
+            "in": "path",
+            "name": "version",
+            "required": true,
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Version"
+                }
+              ],
+              "description": "Engine version used to run the analysis (v0 or v1)",
+              "title": "Engine version"
+            }
+          },
+          {
+            "description": "Url to be searched in database",
+            "in": "query",
+            "name": "url",
+            "required": true,
+            "schema": {
+              "description": "Url to be searched in database",
+              "format": "uri",
+              "minLength": 1,
+              "title": "Url",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Force the refresh of the cache",
+            "in": "query",
+            "name": "refresh",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Force the refresh of the cache",
+              "title": "Refresh",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Redirect to the latest results for a given url"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Latest Results Redirect",
+        "tags": [
+          "Ecoindex",
+          "BFF"
+        ]
+      }
+    },
+    "/{version}/ecoindexes/{id}": {
+      "get": {
+        "description": "This returns an ecoindex given by its unique identifier",
+        "operationId": "Get_ecoindex_analysis_by_id__version__ecoindexes__id__get",
+        "parameters": [
+          {
+            "description": "Unique identifier of the ecoindex analysis",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "description": "Unique identifier of the ecoindex analysis",
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Engine version used to run the analysis (v0 or v1)",
+            "example": "v1",
+            "in": "path",
+            "name": "version",
+            "required": true,
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Version"
+                }
+              ],
+              "description": "Engine version used to run the analysis (v0 or v1)",
+              "title": "Engine version"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiEcoindex"
+                }
+              }
+            },
+            "description": "Get one ecoindex result by its id"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Analysis e9a4d5ea-b9c5-4440-a74a-cac229f7d672 not found for version v1"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Ecoindex Analysis By Id",
+        "tags": [
+          "Ecoindex"
+        ]
+      }
+    },
+    "/{version}/ecoindexes/{id}/screenshot": {
+      "get": {
+        "description": "This returns the screenshot of the webpage analysis if it exists",
+        "operationId": "Get_screenshot__version__ecoindexes__id__screenshot_get",
+        "parameters": [
+          {
+            "description": "Unique identifier of the ecoindex analysis",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "description": "Unique identifier of the ecoindex analysis",
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Engine version used to run the analysis (v0 or v1)",
+            "example": "v1",
+            "in": "path",
+            "name": "version",
+            "required": true,
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Version"
+                }
+              ],
+              "description": "Engine version used to run the analysis (v0 or v1)",
+              "title": "Engine version"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "File at path screenshots/v0/550cdf8c-9c4c-4f8a-819d-cb69d0866fe1.webp does not exist."
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Screenshot",
+        "tags": [
+          "Ecoindex"
+        ]
+      }
+    },
+    "/{version}/hosts": {
+      "get": {
+        "description": "This returns a list of hosts that ran an ecoindex analysis order by most request made",
+        "operationId": "Get_host_list__version__hosts_get",
+        "parameters": [
+          {
+            "description": "Engine version used to run the analysis (v0 or v1)",
+            "example": "v1",
+            "in": "path",
+            "name": "version",
+            "required": true,
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Version"
+                }
+              ],
+              "description": "Engine version used to run the analysis (v0 or v1)",
+              "title": "Engine version"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Filter by partial host name (replaced by `host`)",
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "description": "Filter by partial host name (replaced by `host`)",
+              "title": "Q",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Start date of the filter elements (example: 2020-01-01)",
+            "in": "query",
+            "name": "date_from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Start date of the filter elements (example: 2020-01-01)",
+              "title": "Date From"
+            }
+          },
+          {
+            "description": "End date of the filter elements  (example: 2020-01-01)",
+            "in": "query",
+            "name": "date_to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "End date of the filter elements  (example: 2020-01-01)",
+              "title": "Date To"
+            }
+          },
+          {
+            "description": "Host name you want to filter (can be partial)",
+            "in": "query",
+            "name": "host",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Host name you want to filter (can be partial)",
+              "title": "Host"
+            }
+          },
+          {
+            "description": "Page number",
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "description": "Page number",
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Number of elements per page",
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "description": "Number of elements per page",
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Size",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageHosts"
+                }
+              }
+            },
+            "description": "List ecoindex hosts"
+          },
+          "206": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageHosts"
+                }
+              }
+            },
+            "description": "Partial Content"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageHosts"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Host List",
+        "tags": [
+          "Host"
+        ]
+      }
+    },
+    "/{version}/hosts/{host}": {
+      "get": {
+        "description": "This returns the details of a host. If no no quota is set, remaining_daily_requests will be null",
+        "operationId": "Get_host_details__version__hosts__host__get",
+        "parameters": [
+          {
+            "description": "Exact matching host name",
+            "in": "path",
+            "name": "host",
+            "required": true,
+            "schema": {
+              "description": "Exact matching host name",
+              "title": "Host",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Engine version used to run the analysis (v0 or v1)",
+            "example": "v1",
+            "in": "path",
+            "name": "version",
+            "required": true,
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Version"
+                }
+              ],
+              "description": "Engine version used to run the analysis (v0 or v1)",
+              "title": "Engine version"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Host"
+                }
+              }
+            },
+            "description": "Host details"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Host"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": {
+                    "daily_limit_per_host": 1,
+                    "host": "www.ecoindex.fr",
+                    "latest_result": {
+                      "date": "2023-01-05T12:06:57",
+                      "ecoindex_version": "5.4.1",
+                      "ges": 1.26,
+                      "grade": "A",
+                      "height": 1080,
+                      "host": "www.ecoindex.fr",
+                      "id": "be8c3612-545f-4e72-8880-13b8db74ff6e",
+                      "initial_ranking": 1,
+                      "initial_total_results": 1,
+                      "nodes": 201,
+                      "requests": 6,
+                      "score": 87,
+                      "size": 107.178,
+                      "url": "https://www.ecoindex.fr",
+                      "version": 1,
+                      "water": 1.89,
+                      "width": 1920
+                    },
+                    "limit": 1,
+                    "message": "You have already reached the daily limit of 1 requests for host www.ecoindex.fr today"
+                  }
+                }
+              }
+            },
+            "description": "You have reached the daily limit"
+          }
+        },
+        "summary": "Get Host Details",
+        "tags": [
+          "Host"
+        ]
+      }
+    }
+  }
+}

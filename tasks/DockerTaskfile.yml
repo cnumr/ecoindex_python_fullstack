@@ -1,0 +1,18 @@
+version: '3'
+
+tasks:
+  build:
+    internal: true
+    cmds:
+      - echo "docker build -t {{.NAME}} {{.VERSION}} {{.OPTIONS}} ."
+      - docker build -t vvatelot/ecoindex-{{.NAME}}:{{.VERSION}} -t vvatelot/ecoindex-{{.NAME}}:latest {{.OPTIONS}} .
+    silent: true
+  
+  push:
+    internal: true
+    cmds:
+      - echo "docker push vvatelot/ecoindex-{{.NAME}}:{{.VERSION}}"
+      - docker push vvatelot/ecoindex-{{.NAME}}:{{.VERSION}}
+      - echo "docker push vvatelot/ecoindex-{{.NAME}}:latest"
+      - docker push vvatelot/ecoindex-{{.NAME}}:latest
+    silent: true

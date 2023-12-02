@@ -1,0 +1,18 @@
+version: '3'
+
+includes:
+  poetry: ../../tasks/PoetryTaskfile.yml
+  pypi: ../../tasks/PypiTaskFile.yml
+
+vars:
+  PROJECT_NAME: scraper
+
+tasks:
+  bump:
+    desc: Bump the scraper version with rules:major, minor, patch, premajor, preminor, prepatch or prerelease.
+    cmds:
+      - task: poetry:bump
+        vars:
+          VERSION_FILE_PATH: "../../components/ecoindex/scraper/VERSION"
+          VERSION_RULE: "{{.CLI_ARGS}}"
+    silent: true

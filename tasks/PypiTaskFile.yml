@@ -1,0 +1,8 @@
+version: '3'
+
+tasks:
+  publish:
+    desc: Publish the project {{.PROJECT_NAME}} to pypi
+    cmds:
+      - poetry publish
+    silent: true

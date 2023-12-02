@@ -47,5 +47,3 @@ __all__ = [
     "target_req",
     "target_size",
 ]
-
-ecoindex_compute_version = "5.4.3"

@@ -1,0 +1,42 @@
+version: '3'
+
+tasks:
+  install:
+    desc: Install the poetry project dependencies of {{.PROJECT_NAME}}
+    cmds:
+      - poetry install
+    silent: true
+
+  update:
+    desc: Update dependencies of {{.PROJECT_NAME}}
+    cmds:
+      - poetry update
+    silent: true
+
+  build:
+    desc: Build the poetry project {{.PROJECT_NAME}} dependencies, and then build the project distribution
+    cmds:
+      - poetry lock
+      - poetry build-project
+    silent: true
+
+  bump:
+    internal: true
+    preconditions: 
+      - sh: '[[ "{{.CLI_ARGS}}" =~ ^(major|minor|patch|premajor|preminor|prepatch|prerelease)$ ]]'
+        msg: "Invalid version rule: `{{.CLI_ARGS}}` must be major, minor, patch, premajor, preminor, prepatch or prerelease."
+    cmds:
+      - poetry version -s > /tmp/version-current-output-{{.PROJECT_NAME}}
+      - poetry version {{.VERSION_RULE}} -s > /tmp/version-bump-output-{{.PROJECT_NAME}}
+      - echo "Current version:$(cat /tmp/version-current-output-{{.PROJECT_NAME}})"
+      - echo "Bumped version:$(cat /tmp/version-bump-output-{{.PROJECT_NAME}})"
+      - echo "Update {{.VERSION_FILE_PATH}}"
+      - echo "$(cat /tmp/version-bump-output-{{.PROJECT_NAME}})" > {{.VERSION_FILE_PATH}}
+    silent: true
+
+  install-playwright:
+    desc: Install playwright
+    cmds:
+      - poetry run playwright install
+    silent: true
+    internal: true
