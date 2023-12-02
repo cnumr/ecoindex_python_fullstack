@@ -908,7 +908,7 @@
   "info": {
     "description": "Ecoindex API enables you to perform ecoindex analysis of given web pages",
     "title": "Ecoindex API",
-    "version": "1.0.0"
+    "version": "3.1.0"
   },
   "openapi": "3.1.0",
   "paths": {

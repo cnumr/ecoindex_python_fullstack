@@ -1,14 +1,7 @@
 version: '3'
 
 tasks:
-  login-pypi:
-    desc: Login to pypi
-    cmds:
-      - poetry config pypi-token.pypi $PYPI_TOKEN
-    silent: true
-
   publish:
-    directory: '{{.USER_WORKING_DIR}}'
     desc: Publish the project {{.PROJECT_NAME}} to pypi
     cmds:
       - poetry publish
