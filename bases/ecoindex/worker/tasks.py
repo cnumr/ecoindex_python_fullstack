@@ -23,6 +23,8 @@ db.init()
     autoretry_for=(Exception,),
     retry_backoff=5,
     retry_kwargs={"max_retries": 5},
+    timezone=Settings().TZ,
+    queue="ecoindex",
 )
 def ecoindex_task(self, url: str, width: int, height: int) -> str:
     queue_task_result = run(async_ecoindex_task(self, url, width, height))

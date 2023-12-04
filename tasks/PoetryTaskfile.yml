@@ -37,6 +37,7 @@ tasks:
   install-playwright:
     desc: Install playwright
     cmds:
-      - poetry run playwright install
+      - poetry run playwright install chromium --with-deps
     silent: true
     internal: true
+    interactive: true

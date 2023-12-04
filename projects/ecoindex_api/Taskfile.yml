@@ -101,12 +101,38 @@ tasks:
       - echo "Push the docker images"
     silent: true
   
+  docker-pull:
+    desc: Pull the docker images
+    cmds:
+      - echo "Pull the docker images"
+      - docker compose pull
+    silent: true
+  
   up:
     desc: Start the docker-compose API
     preconditions:
-      - test -f docker-compose.yml  
+      - test -f docker-compose.yml
+      - test -f .env
     cmds:
-      - docker compose up
+      - docker compose up {{.CLI_ARGS}}
+    silent: true
+
+  down:
+    desc: Stop the docker-compose API
+    preconditions:
+      - test -f docker-compose.yml
+      - test -f .env
+    cmds:
+      - docker compose down {{.CLI_ARGS}}
+    silent: true
+
+  exec:
+    desc: Execute a command in the docker-compose API
+    preconditions:
+      - test -f docker-compose.yml
+      - test -f .env
+    cmds:
+      - docker compose exec {{.CLI_ARGS}}
     silent: true
 
   migration-create:
@@ -130,16 +156,16 @@ tasks:
     silent: true
 
   start-worker:
-    deps: [start-redis, poetry:install-playwright]
+    deps: [start-redis]
     internal: true
     cmds:
-      - poetry run celery -A ecoindex.worker.tasks worker -l info
+      - poetry run watchmedo auto-restart --directory=../.. --pattern=worker/*.py --recursive -- poetry run celery -- -A ecoindex.worker.tasks worker -l info -Q ecoindex -E
     silent: true
   
   start-backend:
     internal: true
     cmds:
-      - poetry run uvicorn ecoindex.backend.main:app
+      - poetry run uvicorn ecoindex.backend.main:app --reload --reload-dir ../..
     silent: true
 
   start-dev:
@@ -147,4 +173,28 @@ tasks:
     desc: Start the backend and the worker
     cmds:
       - echo "Starting the backend and the worker"
+    silent: true
+
+  init-env:
+    desc: Initialize the .env file
+    preconditions:
+      - test -f .env
+    cmds:
+      - cp .env.template .env
+    silent: true
+    internal: true
+
+  init-dev-project:
+    desc: Initialize the project for development
+    cmds:
+      - echo "Initialize the project for development"
+      - echo "Install poetry dependencies"
+      - task: poetry:install
+      - echo "Install playwright"
+      - task: poetry:install-playwright
+      - echo "Create the environment file"
+      - task: init-env
+      - echo "Create the database"
+      - task: migration-upgrade
+      - echo "All done!"
     silent: true

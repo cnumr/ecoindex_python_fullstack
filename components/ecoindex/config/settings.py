@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     REDIS_CACHE_HOST: str = "localhost"
     SCREENSHOTS_GID: int | None = None
     SCREENSHOTS_UID: int | None = None
+    TZ: str = "Europe/Paris"
     WAIT_AFTER_SCROLL: int = 3
     WAIT_BEFORE_SCROLL: int = 3
     model_config = SettingsConfigDict(env_file=".env")
