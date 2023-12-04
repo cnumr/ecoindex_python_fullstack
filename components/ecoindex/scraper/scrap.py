@@ -5,7 +5,7 @@ from time import sleep
 from uuid import uuid4
 
 from ecoindex.compute import compute_ecoindex
-from ecoindex.exceptions.scraper import EcoindexScraperException
+from ecoindex.exceptions.scraper import EcoindexScraperStatusException
 from ecoindex.models.compute import PageMetrics, Result, ScreenShot, WindowSize
 from ecoindex.models.scraper import Requests
 from ecoindex.utils.screenshots import convert_screenshot_to_webp, set_screenshot_rights
@@ -68,9 +68,11 @@ class EcoindexScraper:
             )
             await stealth_async(self.page)
             response = await self.page.goto(self.url)
-            if response.status != 200:
-                raise EcoindexScraperException(
-                    f"Error {response.status} for {self.url}"
+            if response and response.status != 200:
+                raise EcoindexScraperStatusException(
+                    url=self.url,
+                    status=response.status,
+                    message=response.status_text,
                 )
 
             await self.page.wait_for_load_state()

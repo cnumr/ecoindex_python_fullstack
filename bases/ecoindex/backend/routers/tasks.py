@@ -12,7 +12,7 @@ from ecoindex.models.response_examples import example_daily_limit_response
 from ecoindex.models.tasks import QueueTaskApi, QueueTaskResult
 from ecoindex.worker.tasks import ecoindex_task
 from ecoindex.worker_component import app as task_app
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.params import Body
 
 router = APIRouter()
@@ -24,6 +24,7 @@ router = APIRouter()
     response_description="Identifier of the task that has been created in queue",
     responses={
         status.HTTP_201_CREATED: {"model": str},
+        status.HTTP_403_FORBIDDEN: {"model": str},
         status.HTTP_429_TOO_MANY_REQUESTS: example_daily_limit_response,
     },
     tags=["Tasks"],
@@ -39,8 +40,17 @@ async def add_ecoindex_analysis_task(
     ),
 ) -> str:
     if Settings().DAILY_LIMIT_PER_HOST:
-        remaining_quota = await check_quota(host=web_page.url.host)
+        remaining_quota = await check_quota(host=web_page.get_url_host())
         response.headers["X-Remaining-Daily-Requests"] = str(remaining_quota - 1)
+
+    if (
+        Settings().EXCLUDED_HOSTS
+        and web_page.get_url_host() in Settings().EXCLUDED_HOSTS
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="This host is excluded from the analysis",
+        )
 
     task_result = ecoindex_task.delay(
         str(web_page.url), web_page.width, web_page.height

@@ -54,9 +54,9 @@ router = APIRouter(prefix="/{version}/ecoindexes", tags=["Ecoindex"])
 )
 async def get_ecoindex_analysis_list(
     response: Response,
+    host: Annotated[str, Depends(host_parameter)],
     version: Annotated[Version, Depends(version_parameter)] = Version.v1,
     date_range: Annotated[DateRange, Depends(date_parameters)] = DateRange(),
-    host: Annotated[str, Depends(host_parameter)] = None,
     pagination: Annotated[Pagination, Depends(pagination_parameters)] = Pagination(),
     sort: Annotated[
         list[str],
