@@ -134,6 +134,14 @@ tasks:
       - docker compose exec {{.CLI_ARGS}}
     silent: true
 
+  logs:
+    desc: Show the logs of the docker-compose API
+    preconditions:
+      - test -f docker-compose.yml
+    cmds:
+      - docker compose logs {{.CLI_ARGS}}
+    silent: true
+
   migration-create:
     desc: Create a new alembic migration
     cmds:
