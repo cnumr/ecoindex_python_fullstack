@@ -178,8 +178,8 @@ tasks:
     desc: Initialize the .env file
     preconditions:
       - test -f .env.template
-      - test ! -f .env
     cmds:
+      - echo "Initialize the .env file"
       - cp .env.template .env
     silent: true
     internal: true
