@@ -110,9 +110,9 @@ tasks:
   
   up:
     desc: Start the docker-compose API
+    deps: [init-env]
     preconditions:
       - test -f docker-compose.yml
-      - test -f .env
     cmds:
       - docker compose up {{.CLI_ARGS}}
     silent: true
@@ -121,7 +121,6 @@ tasks:
     desc: Stop the docker-compose API
     preconditions:
       - test -f docker-compose.yml
-      - test -f .env
     cmds:
       - docker compose down {{.CLI_ARGS}}
     silent: true
@@ -178,11 +177,14 @@ tasks:
   init-env:
     desc: Initialize the .env file
     preconditions:
-      - test -f .env
+      - test -f .env.template
+      - test ! -f .env
     cmds:
       - cp .env.template .env
     silent: true
     internal: true
+    status:
+      - test -f .env
 
   init-dev-project:
     desc: Initialize the project for development
