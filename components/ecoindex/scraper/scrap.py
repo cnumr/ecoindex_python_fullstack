@@ -11,7 +11,6 @@ from ecoindex.models.scraper import Requests
 from ecoindex.utils.screenshots import convert_screenshot_to_webp, set_screenshot_rights
 from playwright.async_api import async_playwright
 from playwright_stealth import stealth_async
-from slugify import slugify
 from typing_extensions import deprecated
 
 
@@ -36,12 +35,10 @@ class EcoindexScraper:
         self.screenshot_gid = screenshot_gid
         self.page_load_timeout = page_load_timeout
         self.all_requests = Requests()
-
         self.now = datetime.now()
-        slug = slugify(self.url)
-
-        self.slugified_session_name = f"ecoindex-{slug}-{uuid4()}"
-        self.har_temp_file_path = f"/tmp/{self.slugified_session_name}.har"
+        self.har_temp_file_path = (
+            f"/tmp/ecoindex-{self.now.strftime('%Y-%m-%d-%H-%M-%S-%f')}-{uuid4()}.har"
+        )
 
     @deprecated("This method is useless with new version of EcoindexScraper")
     def init_chromedriver(self):
@@ -65,6 +62,7 @@ class EcoindexScraper:
             self.page = await browser.new_page(
                 record_har_path=self.har_temp_file_path,
                 screen=self.window_size.model_dump(),
+                ignore_https_errors=True,
             )
             await stealth_async(self.page)
             response = await self.page.goto(self.url)

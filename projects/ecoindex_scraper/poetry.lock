@@ -398,16 +398,6 @@ files = [
 ]
 
 [[package]]
-name = "slugify"
-version = "0.0.1"
-description = "A generic slugifier."
-optional = false
-python-versions = "*"
-files = [
-    {file = "slugify-0.0.1.tar.gz", hash = "sha256:c5703cc11c1a6947536f3ce8bb306766b8bb5a84a53717f5a703ce0f18235e4c"},
-]
-
-[[package]]
 name = "typing-extensions"
 version = "4.8.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
@@ -421,4 +411,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "a0e8cdb93a29db0ac3f58c959c942d2fa3fe11c9a45e04eaa286f3266cc4e742"
+content-hash = "3cf13a0a361004041e91cf3e35d3e41fb4531fa90e325310a843783769f516b7"
