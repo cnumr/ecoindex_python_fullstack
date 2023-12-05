@@ -52,7 +52,7 @@ aiosqlite = "^0.19.0"
 alembic = "^1.12.1"
 celery = "^5.3.4"
 redis = "^5.0.1"
-sqlmodel = { git = "https://github.com/AntonDeMeester/sqlmodel.git", rev = "refs/pull/4/head" }
+sqlmodel = "^0.0.14"
 
 [tool.poetry.group.api-backend.dependencies]
 fastapi = "^0.104.0"

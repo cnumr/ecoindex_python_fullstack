@@ -37,7 +37,7 @@ pyyaml = "^6.0.1"
 redis = "^5.0.1"
 requests = "^2.31.0"
 python-slugify = "^8.0.1"
-sqlmodel = { git = "https://github.com/AntonDeMeester/sqlmodel.git", rev = "refs/pull/4/head" }
+sqlmodel = "^0.0.14"
 
 [tool.poetry.group.backend.dependencies]
 uvicorn = "^0.23.2"

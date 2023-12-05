@@ -122,6 +122,4 @@ async def get_latest_result(host: str) -> ApiEcoindex:
 
     result = await db.execute(statement)
 
-    print(result)
-
     return result.scalar_one_or_none()
