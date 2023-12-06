@@ -5,12 +5,12 @@ services:
     volumes:
       - db:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ecoindex
-      MYSQL_USER: ecoindex
-      MYSQL_PASSWORD: ecoindex
-      MYSQL_ROOT_PASSWORD: ecoindex
+      MYSQL_DATABASE: ${DB_NAME:-ecoindex}
+      MYSQL_USER: ${DB_USER:-ecoindex}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-ecoindex}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-ecoindex}
     ports:
-      - "3306:3306"
+      - "${DB_PORT:-3306}:3306"
     healthcheck:
       test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
       timeout: 5s
@@ -18,36 +18,43 @@ services:
       interval: 2s
 
   backend:
-    image: vvatelot/ecoindex-api-backend
+    image: vvatelot/ecoindex-api-backend:${API_VERSION:-latest}
     restart: always
+    env_file:
+      - .env
     ports:
-      - "8001:8000"
+      - "${API_PORT:-8001}:8000"
     environment:
-      DATABASE_URL: mysql+aiomysql://ecoindex:ecoindex@db/ecoindex?charset=utf8mb4
-      DEBUG: 0
-      REDIS_CACHE_HOST: redis
-      TZ: Europe/Paris
+      DATABASE_URL: mysql+aiomysql://${DB_USER:-ecoindex}:${DB_PASSWORD:-ecoindex}@db/${DB_NAME:-ecoindex}?charset=utf8mb4
+      DEBUG: ${DEBUG:-0}
+      REDIS_CACHE_HOST: ${REDIS_CACHE_HOST:-redis}
+      TZ: ${TZ:-Europe/Paris}
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./screenshots:/code/screenshots
 
   worker:
-    image: vvatelot/ecoindex-api-worker
+    image: vvatelot/ecoindex-api-worker:${API_VERSION:-latest}
     restart: always
+    env_file:
+      - .env
     environment:
-      DATABASE_URL: mysql+aiomysql://ecoindex:ecoindex@db/ecoindex?charset=utf8mb4
-      DEBUG: 0
-      REDIS_CACHE_HOST: redis
-      TZ: Europe/Paris
+      DATABASE_URL: mysql+aiomysql://${DB_USER:-ecoindex}:${DB_PASSWORD:-ecoindex}@db/${DB_NAME:-ecoindex}?charset=utf8mb4
+      DEBUG: ${DEBUG:-0}
+      REDIS_CACHE_HOST: ${REDIS_CACHE_HOST:-redis}
+      TZ: ${TZ:-Europe/Paris}
+      ENABLE_SCREENSHOT: ${ENABLE_SCREENSHOT:-0}
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./screenshots:/code/screenshots
 
   redis:
     image: redis:alpine
     restart: always
-    ports:
-      - '6379:6379'
     command: redis-server --save 20 1 --loglevel warning
     volumes:
       - redis:/data
@@ -55,10 +62,10 @@ services:
   flower:
     image: mher/flower
     ports:
-      - "5555:5555"
+      - "${FLOWER_PORT:-5555}:5555"
     environment:
-      CELERY_BROKER_URL: redis://redis/0
-      FLOWER_BASIC_AUTH: "username:$changeme$"
+      CELERY_BROKER_URL: redis://${REDIS_CACHE_HOST:-redis}/0
+      FLOWER_BASIC_AUTH: ${FLOWER_BASIC_AUTH:-ecoindex:ecoindex}
 
 volumes:
   db:

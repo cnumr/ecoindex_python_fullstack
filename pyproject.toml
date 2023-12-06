@@ -35,7 +35,6 @@ tomli = "^2.0.1"
 pillow = "^10.1.0"
 playwright = "^1.39.0"
 playwright-stealth = "^1.0.6"
-python-slugify = "^8.0.1"
 
 [tool.poetry.group.cli.dependencies]
 click-spinner = "^0.1.10"
@@ -52,7 +51,7 @@ aiosqlite = "^0.19.0"
 alembic = "^1.12.1"
 celery = "^5.3.4"
 redis = "^5.0.1"
-sqlmodel = { git = "https://github.com/AntonDeMeester/sqlmodel.git", rev = "refs/pull/4/head" }
+sqlmodel = "^0.0.14"
 
 [tool.poetry.group.api-backend.dependencies]
 fastapi = "^0.104.0"
@@ -65,6 +64,7 @@ pytest = "^7.4.2"
 pytest-asyncio = "^0.21.1"
 pytest-cov = "^4.1.0"
 ruff = "^0.1.1"
+watchdog = "^3.0.0"
 
 [build-system]
 requires = ["poetry-core"]

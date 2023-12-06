@@ -6,6 +6,18 @@ tasks:
     cmds:
       - poetry install
     silent: true
+  
+  add:
+    desc: Add a new dependency to {{.PROJECT_NAME}}
+    cmds:
+      - poetry add {{.CLI_ARGS}}
+    silent: true
+
+  remove:
+    desc: Remove a dependency from {{.PROJECT_NAME}}
+    cmds:
+      - poetry remove {{.CLI_ARGS}}
+    silent: true
 
   update:
     desc: Update dependencies of {{.PROJECT_NAME}}
@@ -37,6 +49,7 @@ tasks:
   install-playwright:
     desc: Install playwright
     cmds:
-      - poetry run playwright install
+      - poetry run playwright install chromium --with-deps
     silent: true
     internal: true
+    interactive: true
