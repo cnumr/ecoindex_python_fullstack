@@ -28,3 +28,12 @@ class TaskStatus(str, Enum):
 class BadgeTheme(str, Enum):
     dark = "dark"
     light = "light"
+
+
+class Grade(str, Enum):
+    A = "A"
+    B = "B"
+    C = "C"
+    D = "D"
+    E = "E"
+    F = "F"
