@@ -1,11 +1,12 @@
 name: Validate project quality
 
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, edited, synchronize, reopened]
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   validate-polylith:
@@ -20,12 +21,19 @@ jobs:
       - name: Install poetry and plugins
         run: |
           curl -sSL https://install.python-poetry.org | python -
-          poetry config virtualenvs.create false
+          poetry config virtualenvs.create true
           poetry self add poetry-multiproject-plugin
           poetry self add poetry-polylith-plugin
+      - name: Install dependencies
+        run: |
+          poetry install
       - name: Validate polylith project
         run: |
           task project-check
       - name: Validate code quality
         run: |
           task quality
+      - name: Pytest coverage comment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-xml-coverage-path: ./coverage.xml

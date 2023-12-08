@@ -19,7 +19,7 @@ class EcoindexCache:
         results = self._r.get(name=self.cache_key)
 
         if results:
-            return results.decode("utf-8")
+            return results.decode("utf-8")  # type: ignore
 
         return None
 

@@ -13,7 +13,7 @@ from sqlmodel import select
 
 
 async def get_count_analysis_db(
-    version: Version | None = Version.v1,
+    version: Version = Version.v1,
     host: str | None = None,
     date_from: date | None = None,
     date_to: date | None = None,
@@ -38,7 +38,7 @@ async def get_count_analysis_db(
 
 
 async def get_rank_analysis_db(
-    ecoindex: Result, version: Version | None = Version.v1
+    ecoindex: Result, version: Version = Version.v1
 ) -> int | None:
     statement = (
         "SELECT ranking FROM ("
@@ -56,12 +56,12 @@ async def get_rank_analysis_db(
 
 
 async def get_ecoindex_result_list_db(
-    version: Version | None = Version.v1,
+    version: Version = Version.v1,
     host: str | None = None,
     date_from: date | None = None,
     date_to: date | None = None,
-    page: int | None = 1,
-    size: int | None = 50,
+    page: int = 1,
+    size: int = 50,
     sort_params: list[Sort] = [],
 ) -> list[ApiEcoindex]:
     statement = (
@@ -77,7 +77,7 @@ async def get_ecoindex_result_list_db(
 
     for sort in sort_params:
         if sort.sort == "asc":
-            sort_parameter = asc(sort.clause)
+            sort_parameter = asc(sort.clause)  # type: ignore
         elif sort.sort == "desc":
             sort_parameter = desc(sort.clause)
 
@@ -89,7 +89,7 @@ async def get_ecoindex_result_list_db(
 
 
 async def get_ecoindex_result_by_id_db(
-    id: UUID, version: Version | None = Version.v1
+    id: UUID, version: Version = Version.v1
 ) -> ApiEcoindex:
     statement = (
         select(ApiEcoindex)

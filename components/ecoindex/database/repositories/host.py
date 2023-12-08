@@ -9,12 +9,12 @@ from sqlmodel import select
 
 
 async def get_host_list_db(
-    version: Version | None = Version.v1,
+    version: Version = Version.v1,
     host: str | None = None,
     date_from: date | None = None,
     date_to: date | None = None,
-    page: int | None = 1,
-    size: int | None = 50,
+    page: int = 1,
+    size: int = 50,
 ) -> list[str]:
     statement = (
         select(ApiEcoindex.host)
@@ -36,7 +36,7 @@ async def get_host_list_db(
 
 
 async def get_count_hosts_db(
-    version: Version | None = Version.v1,
+    version: Version = Version.v1,
     name: str | None = None,
     q: str | None = None,
     date_from: date | None = None,

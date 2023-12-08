@@ -36,9 +36,9 @@ router = APIRouter(prefix="/{version}/hosts", tags=["Host"])
 )
 async def get_host_list(
     response: Response,
+    host: Annotated[str, Depends(host_parameter)],
     version: Annotated[Version, Depends(version_parameter)] = Version.v1,
     date_range: Annotated[DateRange, Depends(date_parameters)] = DateRange(),
-    host: Annotated[str, Depends(host_parameter)] = None,
     pagination: Annotated[Pagination, Depends(pagination_parameters)] = Pagination(),
     q: str = Query(
         default=None,
