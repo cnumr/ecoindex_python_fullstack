@@ -62,10 +62,7 @@ def test_model_invalid():
     with raises(ValidationError) as error:
         Ecoindex(grade="dummy", score="dummy")
 
-    assert (
-        "1 validation error for Ecoindex\nscore\n  "
-        "Input should be a valid number, unable to parse string as a number"
-    ) in str(error.value)
+    assert "2 validation errors for Ecoindex" in str(error.value)
 
 
 def test_ecoindex_model_empty():

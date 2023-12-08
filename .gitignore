@@ -3,3 +3,4 @@ dist
 *.webp
 *.sqlite3
 .coverage
+coverage.xml

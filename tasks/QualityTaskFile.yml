@@ -9,7 +9,7 @@ tasks:
   tests-coverage:
     desc: Run tests with coverage
     cmds:
-      - poetry run pytest --cov-report term-missing:skip-covered --cov=. --cov-config=.coveragerc test
+      - poetry run pytest --cov-report "xml:coverage.xml" --cov=. test
 
   mypy:
     desc: Run mypy
