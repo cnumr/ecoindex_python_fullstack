@@ -28,6 +28,9 @@ def test_model_webpage_invalid_url() -> None:
         "[type=url_parsing, input_value='toto', input_type=str]\n"
     ) in str(error.value)
 
+    with raises(ValidationError):
+        WebPage(url="about:config")
+
 
 def test_model_webpage_wrong_size() -> None:
     with raises(ValidationError) as error:

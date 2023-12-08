@@ -103,6 +103,7 @@ class WebPage(BaseModel):
     @classmethod
     def url_as_http_url(cls, v: str) -> str:
         url_object = AnyHttpUrl(url=v)
+        assert url_object.scheme in {"http", "https"}, "scheme must be http or https"
 
         return url_object.unicode_string()
 
