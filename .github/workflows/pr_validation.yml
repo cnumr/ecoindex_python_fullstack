@@ -6,7 +6,8 @@ on:
 
 permissions:
   pull-requests: read
-
+  contents: write
+  
 jobs:
   pr-lint:
     name: Validate PR title
