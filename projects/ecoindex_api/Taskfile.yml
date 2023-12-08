@@ -110,9 +110,7 @@ tasks:
   
   up:
     desc: Start the docker-compose API
-    deps: [init-env]
-    preconditions:
-      - test -f docker-compose.yml
+    deps: [init-env, init-docker-compose]
     cmds:
       - docker compose up {{.CLI_ARGS}}
     silent: true
@@ -208,3 +206,13 @@ tasks:
       - task: migration-upgrade
       - echo "All done!"
     silent: true
+
+  init-docker-compose:
+    desc: Initialize the docker-compose API
+    internal: true
+    cmds:
+      - echo "Initialize the docker-compose API"
+      - cp docker-compose.yml.template docker-compose.yml
+    silent: true
+    status:
+      - test -f docker-compose.yml
