@@ -23,6 +23,9 @@ jobs:
           poetry config virtualenvs.create false
           poetry self add poetry-multiproject-plugin
           poetry self add poetry-polylith-plugin
+      - name: Install dependencies
+        run: |
+          poetry install
       - name: Validate polylith project
         run: |
           task project-check
