@@ -25,9 +25,7 @@ jobs:
           poetry self add poetry-polylith-plugin
       - name: Validate polylith project
         run: |
-          source $HOME/.poetry/env
           task project-check
       - name: Validate code quality
         run: |
-          source $HOME/.poetry/env
           task quality
