@@ -1,0 +1,43 @@
+name: "Validationg PR"
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  pr-lint:
+    name: Validate PR title
+    runs-on: ubuntu-latest
+    concurrency: pr-lint
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  triage:
+    runs-on: ubuntu-latest
+    concurrency: triage
+    steps:
+      - uses: actions/labeler@v4
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+
+  size-label:
+    runs-on: ubuntu-latest
+    concurrency: size-label
+    steps:
+      - name: size-label
+        uses: "pascalgn/size-label-action@v0.5.0"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          sizes: >
+            {
+              "0": "XS",
+              "20": "S",
+              "50": "M",
+              "250": "Too Large"
+            }

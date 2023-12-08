@@ -6,7 +6,7 @@ from pydantic import ValidationError
 from pytest import raises
 
 
-def test_model_webpage_no_url():
+def test_model_webpage_no_url() -> None:
     with raises(ValidationError) as error:
         WebPage()
 
@@ -17,7 +17,7 @@ def test_model_webpage_no_url():
     ) in str(error.value)
 
 
-def test_model_webpage_invalid_url():
+def test_model_webpage_invalid_url() -> None:
     with raises(ValidationError) as error:
         WebPage(url="toto")
 
@@ -29,20 +29,21 @@ def test_model_webpage_invalid_url():
     ) in str(error.value)
 
 
-def test_model_webpage_wrong_size():
+def test_model_webpage_wrong_size() -> None:
     with raises(ValidationError) as error:
         WebPage(url="https://www.google.fr", width=0, height=0)
-        print(error.value)
 
     assert (
         "2 validation errors for WebPage\nwidth\n  "
-        "Input should be greater than or equal to 100 [type=greater_than_equal, input_value=0, input_type=int]\n    "
-        "For further information visit https://errors.pydantic.dev/2.4/v/greater_than_equal\nheight\n  "
-        "Input should be greater than or equal to 50 [type=greater_than_equal, input_value=0, input_type=int]\n"
+        "Input should be greater than or equal to 100 [type=greater_than_equal, input_value=0, input_type=int]"
+    ) in str(error.value)
+    assert (
+        "height\n  "
+        "Input should be greater than or equal to 50 [type=greater_than_equal, input_value=0, input_type=int]"
     ) in str(error.value)
 
 
-def test_model_webpage_default_size():
+def test_model_webpage_default_size() -> None:
     webpage = WebPage(url="https://www.google.fr")
     assert webpage.height == 1080
     assert webpage.width == 1920

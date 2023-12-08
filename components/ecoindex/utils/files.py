@@ -58,11 +58,12 @@ def write_results_to_file(
     export_format: ExportFormat | None = ExportFormat.csv,
 ) -> None:
     if export_format == ExportFormat.csv:
-        file = CsvFile(filename=filename, results=results, export_format=export_format)
-    elif export_format == ExportFormat.json:
-        file = JsonFile(filename=filename, results=results, export_format=export_format)
+        CsvFile(filename=filename, results=results, export_format=export_format).write()
 
-    file.write()
+    if export_format == ExportFormat.json:
+        JsonFile(
+            filename=filename, results=results, export_format=export_format
+        ).write()
 
 
 def write_urls_to_file(file_prefix: str, urls: list[str]) -> None:

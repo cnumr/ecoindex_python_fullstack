@@ -19,6 +19,8 @@ includes:
 
   poetry: ./tasks/PoetryTaskfile.yml
 
+  quality: ./tasks/QualityTaskFile.yml
+
 tasks:
   project-check:
     desc: Check polylith structure project
@@ -29,16 +31,6 @@ tasks:
     desc: Sync polylith structure project
     cmds:
       - poetry poly sync
-  
-  tests:
-    desc: Run tests
-    cmds:
-      - poetry run pytest
-
-  tests-coverage:
-    desc: Run tests with coverage
-    cmds:
-      - poetry run pytest --cov-report term-missing:skip-covered --cov=. --cov-config=.coveragerc test
 
   bump:
     desc: Bump the Main project version with rules:major, minor, patch, premajor, preminor, prepatch or prerelease.

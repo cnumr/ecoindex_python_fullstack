@@ -1,0 +1,31 @@
+name: Validate project quality
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  validate-polylith:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Task
+        uses: arduino/setup-task@v1
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install poetry and plugins
+        run: |
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+          source $HOME/.poetry/env
+          poetry config virtualenvs.create false
+          poetry self add poetry-multiproject-plugin
+          poetry self add poetry-polylith-plugin
+      - name: Validate polylith project
+        run: |
+          source $HOME/.poetry/env
+          task project-check
+      - name: Validate code quality
+        run: |
+          source $HOME/.poetry/env
+          task quality
