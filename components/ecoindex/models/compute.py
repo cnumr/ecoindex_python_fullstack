@@ -4,6 +4,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+from ecoindex.models.enums import Grade
 from pydantic import AnyHttpUrl, BaseModel, Field, field_validator
 
 PageType = str
@@ -19,7 +20,7 @@ def get_compute_version() -> str:
 
 
 class Ecoindex(BaseModel):
-    grade: str | None = Field(
+    grade: Grade | None = Field(
         default=None,
         title="Ecoindex grade",
         description="Is the corresponding ecoindex grade of the page (from A to G)",
