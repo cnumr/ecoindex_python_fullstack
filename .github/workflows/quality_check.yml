@@ -20,7 +20,7 @@ jobs:
       - name: Install poetry and plugins
         run: |
           curl -sSL https://install.python-poetry.org | python -
-          poetry config virtualenvs.create false
+          poetry config virtualenvs.create true
           poetry self add poetry-multiproject-plugin
           poetry self add poetry-polylith-plugin
       - name: Install dependencies

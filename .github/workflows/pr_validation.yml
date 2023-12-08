@@ -6,10 +6,9 @@ on:
 
 permissions:
   pull-requests: read
-  contents: write
   
 jobs:
-  pr-lint:
+  title-lint:
     name: Validate PR title
     runs-on: ubuntu-latest
     concurrency: pr-lint
@@ -19,6 +18,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   triage:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     concurrency: triage
     steps:
@@ -28,6 +29,8 @@ jobs:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
 
   size-label:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     concurrency: size-label
     steps:
