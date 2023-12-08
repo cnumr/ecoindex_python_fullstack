@@ -1,4 +1,5 @@
 from tempfile import NamedTemporaryFile
+from typing import Set
 from urllib.parse import urlparse
 
 from ecoindex.cli.crawl import EcoindexSpider
@@ -9,7 +10,7 @@ from scrapy.crawler import CrawlerProcess
 
 
 @validate_call
-def validate_list_of_urls(urls: list[AnyHttpUrl]) -> tuple[AnyHttpUrl]:
+def validate_list_of_urls(urls: list[AnyHttpUrl]) -> Set[str]:
     result = set()
 
     for url in urls:
@@ -20,7 +21,7 @@ def validate_list_of_urls(urls: list[AnyHttpUrl]) -> tuple[AnyHttpUrl]:
 
 
 @validate_call
-def get_urls_from_file(urls_file: FilePath) -> list[AnyHttpUrl]:
+def get_urls_from_file(urls_file: FilePath) -> Set[str]:
     with open(urls_file) as fp:
         urls_from_file = set()
 
@@ -30,10 +31,10 @@ def get_urls_from_file(urls_file: FilePath) -> list[AnyHttpUrl]:
             if url:
                 urls_from_file.add(url)
 
-    return validate_list_of_urls(urls_from_file)
+    return validate_list_of_urls(urls_from_file)  # type: ignore
 
 
-def get_urls_recursive(main_url: str) -> tuple[str]:
+def get_urls_recursive(main_url: str) -> Set[str]:
     parsed_url = urlparse(main_url)
     domain = parsed_url.netloc
     main_url = f"{parsed_url.scheme}://{domain}"
@@ -50,7 +51,7 @@ def get_urls_recursive(main_url: str) -> tuple[str]:
         temp_file.seek(0)
         urls = temp_file.readlines()
 
-    return validate_list_of_urls(urls)
+    return validate_list_of_urls(urls)  # type: ignore
 
 
 @validate_call

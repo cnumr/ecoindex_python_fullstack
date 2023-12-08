@@ -13,11 +13,11 @@ class EcoindexSpider(CrawlSpider):
         self,
         allowed_domains: list[str],
         start_urls: list[str],
-        temp_file: NamedTemporaryFile,
+        temp_file: NamedTemporaryFile,  # type: ignore
         *a,
         **kw,
     ):
-        self.links = set()
+        self.links: set[str] = set()
         self.allowed_domains = allowed_domains
         self.start_urls = start_urls
         self.temp_file = temp_file

@@ -13,7 +13,7 @@ from ecoindex.models.enums import Version
 async def save_ecoindex_result_db(
     id: UUID,
     ecoindex_result: Result,
-    version: Version | None = Version.v1,
+    version: Version = Version.v1,
 ) -> ApiEcoindex:
     ranking = await get_rank_analysis_db(ecoindex=ecoindex_result, version=version)
     total_results = await get_count_analysis_db(version=version)

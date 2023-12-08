@@ -1,0 +1,28 @@
+ci/cd:
+  - .github/workflows/*
+
+documentation:
+  - README.md
+  - ./**/*.md
+
+tooling:
+  - ./**/*TaskFile.yml
+
+tests:
+  - test/**
+
+compute:
+  - components/ecoindex/compute/**
+
+scraper:
+  - components/ecoindex/scraper/**
+
+cli:
+  - bases/ecoindex/cli/**
+
+api:
+  - bases/ecoindex/backend/**
+  - bases/ecoindex/worker/**
+
+components:
+  - components
