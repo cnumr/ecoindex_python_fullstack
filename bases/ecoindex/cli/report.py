@@ -28,10 +28,10 @@ class Report:
     ) -> None:
         self.results_file = results_file
 
-        if "csv" in results_file:
+        if "csv" in str(results_file):
             self.dataframe = read_csv(results_file)
 
-        if "json" in results_file:
+        if "json" in str(results_file):
             self.dataframe = read_json(results_file)
 
         self.date = date

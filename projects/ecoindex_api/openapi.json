@@ -45,7 +45,7 @@
           "grade": {
             "anyOf": [
               {
-                "type": "string"
+                "$ref": "#/components/schemas/Grade"
               },
               {
                 "type": "null"
@@ -202,7 +202,10 @@
           "url",
           "size",
           "nodes",
-          "requests"
+          "requests",
+          "host",
+          "initial_ranking",
+          "initial_total_results"
         ],
         "title": "ApiEcoindex",
         "type": "object"
@@ -246,7 +249,7 @@
           "grade": {
             "anyOf": [
               {
-                "type": "string"
+                "$ref": "#/components/schemas/Grade"
               },
               {
                 "type": "null"
@@ -324,6 +327,18 @@
         ],
         "title": "EcoindexSearchResults",
         "type": "object"
+      },
+      "Grade": {
+        "enum": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ],
+        "title": "Grade",
+        "type": "string"
       },
       "HTTPValidationError": {
         "properties": {
@@ -428,7 +443,38 @@
         "title": "Host",
         "type": "object"
       },
-      "PageApiEcoindexes": {
+      "PageApiEcoindexes-Input": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ApiEcoindex"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "page": {
+            "title": "Page",
+            "type": "integer"
+          },
+          "size": {
+            "title": "Size",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "size"
+        ],
+        "title": "PageApiEcoindexes",
+        "type": "object"
+      },
+      "PageApiEcoindexes-Output": {
         "properties": {
           "items": {
             "items": {
@@ -495,7 +541,7 @@
           "ecoindex_result": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/QueueTaskResult"
+                "$ref": "#/components/schemas/QueueTaskResult-Input"
               },
               {
                 "type": "null"
@@ -533,7 +579,7 @@
           "ecoindex_result": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/QueueTaskResult"
+                "$ref": "#/components/schemas/QueueTaskResult-Output"
               },
               {
                 "type": "null"
@@ -617,7 +663,47 @@
         "title": "QueueTaskError",
         "type": "object"
       },
-      "QueueTaskResult": {
+      "QueueTaskResult-Input": {
+        "properties": {
+          "detail": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Result"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result of the ecoindex analysis once it was successfuly completed"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueueTaskError"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail of the ecoindex error if it is not successful"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "While the task is pending or the analysis is running, it is null. But once the analysis is complete, it should return SUCCESS or FAILURE.",
+            "title": "Status of the ecoindex analysis."
+          }
+        },
+        "title": "QueueTaskResult",
+        "type": "object"
+      },
+      "QueueTaskResult-Output": {
         "properties": {
           "detail": {
             "anyOf": [
@@ -701,7 +787,7 @@
           "grade": {
             "anyOf": [
               {
-                "type": "string"
+                "$ref": "#/components/schemas/Grade"
               },
               {
                 "type": "null"
@@ -1044,6 +1130,17 @@
             },
             "description": "Identifier of the task that has been created in queue"
           },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response 403 Add New Ecoindex Analysis Task To The Waiting Queue V1 Tasks Ecoindexes Post",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -1232,6 +1329,24 @@
             }
           },
           {
+            "description": "Host name you want to filter (can be partial)",
+            "in": "query",
+            "name": "host",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Host name you want to filter (can be partial)",
+              "title": "Host"
+            }
+          },
+          {
             "description": "Start date of the filter elements (example: 2020-01-01)",
             "in": "query",
             "name": "date_from",
@@ -1270,24 +1385,6 @@
             }
           },
           {
-            "description": "Host name you want to filter (can be partial)",
-            "in": "query",
-            "name": "host",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Host name you want to filter (can be partial)",
-              "title": "Host"
-            }
-          },
-          {
             "description": "Page number",
             "in": "query",
             "name": "page",
@@ -1320,7 +1417,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageApiEcoindexes"
+                  "$ref": "#/components/schemas/PageApiEcoindexes-Output"
                 }
               }
             },
@@ -1330,7 +1427,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageApiEcoindexes"
+                  "$ref": "#/components/schemas/PageApiEcoindexes-Input"
                 }
               }
             },
@@ -1340,7 +1437,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageApiEcoindexes"
+                  "$ref": "#/components/schemas/PageApiEcoindexes-Input"
                 }
               }
             },

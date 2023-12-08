@@ -121,7 +121,6 @@ def analyze(
         window_sizes = get_window_sizes_from_args(window_size)
         tmp_folder = "/tmp/ecoindex-cli"
 
-        urls = set()
         if url and recursive:
             secho(f"⏲️ Crawling root url {url[0]} -> Wait a minute!", fg=colors.MAGENTA)
             with spinner():
@@ -236,7 +235,7 @@ def analyze(
 
                 except Exception as e:
                     count_errors += 1
-                    url, _, _ = future_to_analysis[future]
+                    url, _, _, _, _ = future_to_analysis[future]
                     logger.error(f"{url} -- {e.msg if hasattr(e, 'msg') else e}")
 
                 progress.update(task, advance=1)
@@ -256,10 +255,10 @@ def analyze(
 
     time_now = datetime.now()
 
-    output_folder = (
+    output_folder = Path(
         f"{tmp_folder}/output/{file_prefix}/{time_now.strftime('%Y-%m-%d_%H%M%S')}"
     )
-    output_filename = f"{output_folder}/results.{export_format.value}"
+    output_filename = Path(f"{output_folder}/results.{export_format.value}")
 
     if output_file and not html_report:
         output_filename = output_file.resolve()
