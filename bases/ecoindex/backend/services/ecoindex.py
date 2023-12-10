@@ -7,10 +7,11 @@ from ecoindex.models.enums import Version
 from ecoindex.models.sort import Sort
 from pydantic import AnyHttpUrl
 from requests import get
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 
 async def get_latest_result_by_url(
-    url: AnyHttpUrl, refresh: bool, version: Version
+    session: AsyncSession, url: AnyHttpUrl, refresh: bool, version: Version
 ) -> EcoindexSearchResults:
     """
     Get the latest ecoindex result for a given url. This function will first try to find
@@ -35,6 +36,7 @@ async def get_latest_result_by_url(
         return EcoindexSearchResults(**json.loads(cached_results))
 
     ecoindexes = await get_ecoindex_result_list_db(
+        session=session,
         host=str(url.host),
         version=version,
         size=20,
@@ -72,7 +74,7 @@ async def get_latest_result_by_url(
 
 
 async def get_badge(
-    url: AnyHttpUrl, refresh: bool, version: Version, theme: str
+    session: AsyncSession, url: AnyHttpUrl, refresh: bool, version: Version, theme: str
 ) -> str:
     """
     Get the badge for a given url. This function will use the method `get_latest_result_by_url`.
@@ -89,7 +91,9 @@ async def get_badge(
     returns:
         str: the badge image
     """
-    results = await get_latest_result_by_url(url=url, refresh=refresh, version=version)
+    results = await get_latest_result_by_url(
+        session=session, url=url, refresh=refresh, version=version
+    )
 
     grade = results.latest_result.grade if results.latest_result else "unknown"
     ecoindex_cache = cache.set_cache_key(key=f"badge-{grade}-{theme}")

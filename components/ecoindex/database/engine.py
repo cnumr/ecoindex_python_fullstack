@@ -6,30 +6,23 @@ from sqlalchemy.pool import NullPool
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-
-class AsyncDatabaseSession:
-    def __init__(self):
-        self._session = None
-        self._engine = None
-
-    def __getattr__(self, name):
-        return getattr(self._session, name)
-
-    def init(self):
-        self._engine = create_async_engine(
-            Settings().DATABASE_URL,
-            future=True,
-            pool_pre_ping=True,
-            poolclass=NullPool,
-            echo=Settings().DEBUG,
-        )
-        self._session = sessionmaker(
-            bind=self._engine, expire_on_commit=False, class_=AsyncSession
-        )()
-
-    async def create_all(self):
-        async with self._engine.begin() as conn:
-            await conn.run_sync(SQLModel.metadata.create_all)
+engine = create_async_engine(
+    Settings().DATABASE_URL,
+    future=True,
+    pool_pre_ping=True,
+    poolclass=NullPool,
+    echo=Settings().DEBUG,
+)
 
 
-db = AsyncDatabaseSession()
+async def init_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.create_all)
+
+
+async def get_session() -> AsyncSession:
+    async_session = sessionmaker(
+        bind=engine, class_=AsyncSession, expire_on_commit=False
+    )
+    async with async_session() as session:
+        yield session

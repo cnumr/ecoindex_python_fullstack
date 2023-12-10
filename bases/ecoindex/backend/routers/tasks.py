@@ -6,6 +6,7 @@ from celery.result import AsyncResult
 from ecoindex.backend.dependencies import id_parameter
 from ecoindex.backend.utils import check_quota
 from ecoindex.config.settings import Settings
+from ecoindex.database.engine import get_session
 from ecoindex.models import WebPage
 from ecoindex.models.enums import TaskStatus
 from ecoindex.models.response_examples import example_daily_limit_response
@@ -14,6 +15,7 @@ from ecoindex.worker.tasks import ecoindex_task
 from ecoindex.worker_component import app as task_app
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.params import Body
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 router = APIRouter()
 
@@ -38,9 +40,12 @@ async def add_ecoindex_analysis_task(
         title="Web page to analyze defined by its url and its screen resolution",
         example=WebPage(url="https://www.ecoindex.fr", width=1920, height=1080),
     ),
+    session: AsyncSession = Depends(get_session),
 ) -> str:
     if Settings().DAILY_LIMIT_PER_HOST:
-        remaining_quota = await check_quota(host=web_page.get_url_host())
+        remaining_quota = await check_quota(
+            session=session, host=web_page.get_url_host()
+        )
         response.headers["X-Remaining-Daily-Requests"] = str(remaining_quota - 1)
 
     if (
@@ -53,7 +58,7 @@ async def add_ecoindex_analysis_task(
         )
 
     task_result = ecoindex_task.delay(
-        str(web_page.url), web_page.width, web_page.height
+        url=str(web_page.url), width=web_page.width, height=web_page.height
     )
 
     return task_result.id

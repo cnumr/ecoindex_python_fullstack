@@ -1,20 +1,18 @@
 from ecoindex.backend import get_api_version
 from ecoindex.backend.routers import router
 from ecoindex.backend.services.cache import cache
-from ecoindex.database import db
+from ecoindex.database.engine import init_db
 from fastapi import FastAPI
 from fastapi.concurrency import asynccontextmanager
 
 
 def init_app():
-    db.init()
     cache.init()
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        await db.create_all()
+        await init_db()
         yield
-        await db._session.close()
 
     app = FastAPI(
         title="Ecoindex API",

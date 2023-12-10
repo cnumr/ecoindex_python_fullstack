@@ -1,7 +1,8 @@
-from ecoindex.database.engine import db
+from ecoindex.database.engine import get_session
 from ecoindex.models.api import HealthResponse
 from ecoindex.worker.health import is_worker_healthy
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 router = APIRouter(prefix="/health", tags=["Infra"])
 
@@ -11,5 +12,5 @@ router = APIRouter(prefix="/health", tags=["Infra"])
     path="",
     description="This returns the health of the service",
 )
-async def health_check() -> HealthResponse:
-    return HealthResponse(database=db._session.is_active, workers=is_worker_healthy())
+async def health_check(session: AsyncSession = Depends(get_session)) -> HealthResponse:
+    return HealthResponse(database=session.is_active, workers=is_worker_healthy())

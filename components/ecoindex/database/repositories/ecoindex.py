@@ -1,7 +1,6 @@
 from datetime import date
 from uuid import UUID
 
-from ecoindex.database.engine import db
 from ecoindex.database.helper import date_filter
 from ecoindex.database.models import ApiEcoindex
 from ecoindex.models import Result
@@ -10,9 +9,11 @@ from ecoindex.models.sort import Sort
 from sqlalchemy import func, text
 from sqlalchemy.sql.expression import asc, desc
 from sqlmodel import select
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 
 async def get_count_analysis_db(
+    session: AsyncSession,
     version: Version = Version.v1,
     host: str | None = None,
     date_from: date | None = None,
@@ -32,13 +33,13 @@ async def get_count_analysis_db(
     if date_to:
         statement += f" AND date <= '{date_to}'"
 
-    result = await db.execute(statement=text(statement))
+    result = await session.execute(statement=text(statement))
 
     return result.scalar()
 
 
 async def get_rank_analysis_db(
-    ecoindex: Result, version: Version = Version.v1
+    session: AsyncSession, ecoindex: Result, version: Version = Version.v1
 ) -> int | None:
     statement = (
         "SELECT ranking FROM ("
@@ -50,12 +51,13 @@ async def get_rank_analysis_db(
         "LIMIT 1;"
     )
 
-    result = await db.execute(text(statement))
+    result = await session.execute(text(statement))
 
     return result.scalar()
 
 
 async def get_ecoindex_result_list_db(
+    session: AsyncSession,
     version: Version = Version.v1,
     host: str | None = None,
     date_from: date | None = None,
@@ -83,13 +85,13 @@ async def get_ecoindex_result_list_db(
 
         statement = statement.order_by(sort_parameter)
 
-    ecoindexes = await db.execute(statement)
+    ecoindexes = await session.execute(statement)
 
     return ecoindexes.scalars().all()
 
 
 async def get_ecoindex_result_by_id_db(
-    id: UUID, version: Version = Version.v1
+    session: AsyncSession, id: UUID, version: Version = Version.v1
 ) -> ApiEcoindex:
     statement = (
         select(ApiEcoindex)
@@ -97,22 +99,22 @@ async def get_ecoindex_result_by_id_db(
         .where(ApiEcoindex.version == version.get_version_number())
     )
 
-    ecoindex = await db.execute(statement)
+    ecoindex = await session.execute(statement)
 
     return ecoindex.scalar_one_or_none()
 
 
-async def get_count_daily_request_per_host(host: str) -> int:
+async def get_count_daily_request_per_host(session: AsyncSession, host: str) -> int:
     statement = select(ApiEcoindex).where(
         func.date(ApiEcoindex.date) == date.today(), ApiEcoindex.host == host
     )
 
-    results = await db.execute(statement)
+    results = await session.execute(statement)
 
     return len(results.all())
 
 
-async def get_latest_result(host: str) -> ApiEcoindex:
+async def get_latest_result(session: AsyncSession, host: str) -> ApiEcoindex:
     statement = (
         select(ApiEcoindex)
         .where(ApiEcoindex.host == host)
@@ -120,6 +122,6 @@ async def get_latest_result(host: str) -> ApiEcoindex:
         .limit(1)
     )
 
-    result = await db.execute(statement)
+    result = await session.execute(statement)
 
     return result.scalar_one_or_none()

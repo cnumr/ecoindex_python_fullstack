@@ -1,14 +1,15 @@
 from datetime import date
 
-from ecoindex.database.engine import db
 from ecoindex.database.helper import date_filter
 from ecoindex.database.models import ApiEcoindex
 from ecoindex.models.enums import Version
 from sqlalchemy import text
 from sqlmodel import select
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 
 async def get_host_list_db(
+    session: AsyncSession,
     version: Version = Version.v1,
     host: str | None = None,
     date_from: date | None = None,
@@ -30,12 +31,13 @@ async def get_host_list_db(
 
     statement = statement.group_by(ApiEcoindex.host).order_by(ApiEcoindex.host)
 
-    hosts = await db.execute(statement=statement)
+    hosts = await session.execute(statement=statement)
 
     return hosts.scalars().all()
 
 
 async def get_count_hosts_db(
+    session: AsyncSession,
     version: Version = Version.v1,
     name: str | None = None,
     q: str | None = None,
@@ -63,6 +65,6 @@ async def get_count_hosts_db(
 
     statement = f"SELECT count(*) FROM ({sub_statement}) t"
 
-    result = await db.execute(text(statement))
+    result = await session.execute(text(statement))
 
     return result.scalar()

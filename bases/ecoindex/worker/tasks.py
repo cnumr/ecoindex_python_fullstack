@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 from ecoindex.backend.utils import check_quota, format_exception_response
 from ecoindex.config.settings import Settings
-from ecoindex.database.engine import db
+from ecoindex.database.engine import get_session
 from ecoindex.database.exceptions.quota import QuotaExceededException
 from ecoindex.database.repositories.worker import save_ecoindex_result_db
 from ecoindex.exceptions.scraper import EcoindexScraperStatusException
@@ -21,8 +21,6 @@ from ecoindex.scraper.scrap import EcoindexScraper
 from ecoindex.worker_component import app
 from playwright._impl._errors import Error as WebDriverException
 
-db.init()
-
 
 @app.task(
     name="Make ecoindex analysis",
@@ -35,16 +33,24 @@ db.init()
     dont_autoretry_for=[EcoindexScraperStatusException, TypeError],
 )
 def ecoindex_task(self, url: str, width: int, height: int) -> str:
-    queue_task_result = run(async_ecoindex_task(self, url, width, height))
+    queue_task_result = run(
+        async_ecoindex_task(self, url=url, width=width, height=height)
+    )
 
     return queue_task_result.model_dump_json()
 
 
 async def async_ecoindex_task(
-    self, url: str, width: int, height: int
+    self,
+    url: str,
+    width: int,
+    height: int,
 ) -> QueueTaskResult:
     try:
-        await check_quota(host=urlparse(url=url).netloc)
+        session_generator = get_session()
+        session = await session_generator.__anext__()
+
+        await check_quota(session=session, host=urlparse(url=url).netloc)
 
         ecoindex = await EcoindexScraper(
             url=url,
@@ -61,6 +67,7 @@ async def async_ecoindex_task(
         ).get_page_analysis()
 
         db_result = await save_ecoindex_result_db(
+            session=session,
             id=self.request.id,
             ecoindex_result=ecoindex,
         )
@@ -122,16 +129,14 @@ async def async_ecoindex_task(
         )
 
     except TypeError as exc:
-        error = exc.args[0]
-
         return QueueTaskResult(
             status=TaskStatus.FAILURE,
             error=QueueTaskError(
                 url=url,
                 exception=EcoindexContentTypeError.__name__,
                 status_code=520,
-                message=error["message"],
-                detail={"mimetype": error["mimetype"]},
+                message=exc.args[0],
+                detail={"mimetype": None},
             ),
         )
 
