@@ -13,6 +13,7 @@ from ecoindex.backend.dependencies import (
 from ecoindex.backend.services.ecoindex import get_badge, get_latest_result_by_url
 from ecoindex.backend.utils import get_sort_parameters, get_status_code
 from ecoindex.config.settings import Settings
+from ecoindex.database.engine import get_session
 from ecoindex.database.models import (
     ApiEcoindex,
     EcoindexSearchResults,
@@ -33,6 +34,7 @@ from fastapi import APIRouter, Depends, Response, status
 from fastapi.exceptions import HTTPException
 from fastapi.params import Query
 from fastapi.responses import FileResponse, RedirectResponse
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 router = APIRouter(prefix="/{version}/ecoindexes", tags=["Ecoindex"])
 
@@ -67,8 +69,10 @@ async def get_ecoindex_analysis_list(
             )
         ),
     ] = ["date:desc"],
+    session: AsyncSession = Depends(get_session),
 ) -> PageApiEcoindexes:
     ecoindexes = await get_ecoindex_result_list_db(
+        session=session,
         date_from=date_range.date_from,
         date_to=date_range.date_to,
         host=host,
@@ -80,6 +84,7 @@ async def get_ecoindex_analysis_list(
         ),  # type: ignore
     )
     total_results = await get_count_analysis_db(
+        session=session,
         version=version,
         date_from=date_range.date_from,
         date_to=date_range.date_to,
@@ -106,6 +111,7 @@ async def get_ecoindex_analysis_list(
 async def get_latest_results(
     response: Response,
     parameters: Annotated[BffParameters, Depends(bff_parameters)],
+    session: AsyncSession = Depends(get_session),
 ) -> EcoindexSearchResults:
     """
     This returns the latest results for a given url. This feature is used by the Ecoindex
@@ -114,7 +120,10 @@ async def get_latest_results(
     If the url is not found in the database, the response status code will be 404.
     """
     latest_result = await get_latest_result_by_url(
-        url=parameters.url, refresh=parameters.refresh, version=parameters.version
+        session=session,
+        url=parameters.url,
+        refresh=parameters.refresh,
+        version=parameters.version,
     )
 
     if latest_result.count == 0:
@@ -135,6 +144,7 @@ async def get_badge_enpoint(
     theme: Annotated[
         BadgeTheme, Query(description="Theme of the badge")
     ] = BadgeTheme.light,
+    session: AsyncSession = Depends(get_session),
 ) -> Response:
     """
     This returns the SVG badge of the given url. This feature is used by the Ecoindex
@@ -144,6 +154,7 @@ async def get_badge_enpoint(
     """
     return Response(
         content=await get_badge(
+            session=session,
             url=parameters.url,
             refresh=parameters.refresh,
             version=parameters.version,
@@ -161,6 +172,7 @@ async def get_badge_enpoint(
 )
 async def get_latest_result_redirect(
     parameters: Annotated[BffParameters, Depends(bff_parameters)],
+    session: AsyncSession = Depends(get_session),
 ) -> RedirectResponse:
     """
     This redirects to the latest results on the frontend website for the given url.
@@ -169,7 +181,10 @@ async def get_latest_result_redirect(
     If the url is not found in the database, the response status code will be 404.
     """
     latest_result = await get_latest_result_by_url(
-        url=parameters.url, refresh=parameters.refresh, version=parameters.version
+        session=session,
+        url=parameters.url,
+        refresh=parameters.refresh,
+        version=parameters.version,
     )
 
     if latest_result.count == 0:
@@ -194,8 +209,11 @@ async def get_latest_result_redirect(
 async def get_ecoindex_analysis_by_id(
     id: Annotated[UUID, Depends(id_parameter)],
     version: Annotated[Version, Depends(version_parameter)] = Version.v1,
+    session: AsyncSession = Depends(get_session),
 ) -> ApiEcoindex:
-    ecoindex = await get_ecoindex_result_by_id_db(id=id, version=version)
+    ecoindex = await get_ecoindex_result_by_id_db(
+        session=session, id=id, version=version
+    )
 
     if not ecoindex:
         raise HTTPException(

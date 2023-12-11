@@ -1,6 +1,5 @@
 from uuid import UUID
 
-from ecoindex.database.engine import db
 from ecoindex.database.models import ApiEcoindex
 from ecoindex.database.repositories.ecoindex import (
     get_count_analysis_db,
@@ -8,15 +7,19 @@ from ecoindex.database.repositories.ecoindex import (
 )
 from ecoindex.models import Result
 from ecoindex.models.enums import Version
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 
 async def save_ecoindex_result_db(
+    session: AsyncSession,
     id: UUID,
     ecoindex_result: Result,
     version: Version = Version.v1,
 ) -> ApiEcoindex:
-    ranking = await get_rank_analysis_db(ecoindex=ecoindex_result, version=version)
-    total_results = await get_count_analysis_db(version=version)
+    ranking = await get_rank_analysis_db(
+        session=session, ecoindex=ecoindex_result, version=version
+    )
+    total_results = await get_count_analysis_db(session=session, version=version)
 
     db_ecoindex = ApiEcoindex(
         id=id,
@@ -39,14 +42,14 @@ async def save_ecoindex_result_db(
         ecoindex_version=ecoindex_result.ecoindex_version,
     )
 
-    db.add(db_ecoindex)
+    session.add(db_ecoindex)
     try:
-        await db.commit()
-        await db.refresh(db_ecoindex)
+        await session.commit()
+        await session.refresh(db_ecoindex)
     except Exception:
-        await db.rollback()
+        await session.rollback()
         raise
     finally:
-        await db.close()
+        await session.close()
 
     return db_ecoindex

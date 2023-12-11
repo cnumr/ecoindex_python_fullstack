@@ -108,14 +108,14 @@ tasks:
       - docker compose pull
     silent: true
   
-  up:
+  docker-up:
     desc: Start the docker-compose API
     deps: [init-env, init-docker-compose]
     cmds:
       - docker compose up {{.CLI_ARGS}}
     silent: true
 
-  down:
+  docker-down:
     desc: Stop the docker-compose API
     preconditions:
       - test -f docker-compose.yml
@@ -123,7 +123,7 @@ tasks:
       - docker compose down {{.CLI_ARGS}}
     silent: true
 
-  exec:
+  docker-exec:
     desc: Execute a command in the docker-compose API
     preconditions:
       - test -f docker-compose.yml
@@ -132,7 +132,7 @@ tasks:
       - docker compose exec {{.CLI_ARGS}}
     silent: true
 
-  logs:
+  docker-logs:
     desc: Show the logs of the docker-compose API
     preconditions:
       - test -f docker-compose.yml

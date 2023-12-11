@@ -25,7 +25,7 @@ services:
     ports:
       - "${API_PORT:-8001}:8000"
     environment:
-      DATABASE_URL: mysql+aiomysql://${DB_USER:-ecoindex}:${DB_PASSWORD:-ecoindex}@db/${DB_NAME:-ecoindex}?charset=utf8mb4
+      DATABASE_URL: mysql+aiomysql://${DB_USER:-ecoindex}:${DB_PASSWORD:-ecoindex}@${DB_HOST:-db}/${DB_NAME:-ecoindex}?charset=utf8mb4
       DEBUG: ${DEBUG:-0}
       REDIS_CACHE_HOST: ${REDIS_CACHE_HOST:-redis}
       TZ: ${TZ:-Europe/Paris}
@@ -43,7 +43,7 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: mysql+aiomysql://${DB_USER:-ecoindex}:${DB_PASSWORD:-ecoindex}@db/${DB_NAME:-ecoindex}?charset=utf8mb4
+      DATABASE_URL: mysql+aiomysql://${DB_USER:-ecoindex}:${DB_PASSWORD:-ecoindex}@${DB_HOST:-db}/${DB_NAME:-ecoindex}?charset=utf8mb4
       DEBUG: ${DEBUG:-0}
       REDIS_CACHE_HOST: ${REDIS_CACHE_HOST:-redis}
       TZ: ${TZ:-Europe/Paris}

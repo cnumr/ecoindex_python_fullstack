@@ -12,6 +12,7 @@ from ecoindex.models.api import ExceptionResponse
 from ecoindex.models.sort import Sort
 from fastapi import HTTPException, status
 from pydantic import BaseModel
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 
 async def format_exception_response(exception: Exception) -> ExceptionResponse:
@@ -78,15 +79,18 @@ async def get_sort_parameters(query_params: list[str], model: BaseModel) -> list
 
 
 async def check_quota(
+    session: AsyncSession,
     host: str,
 ) -> int | None:
     if not Settings().DAILY_LIMIT_PER_HOST:
         return None
 
-    count_daily_request_per_host = await get_count_daily_request_per_host(host=host)
+    count_daily_request_per_host = await get_count_daily_request_per_host(
+        session=session, host=host
+    )
 
     if count_daily_request_per_host >= Settings().DAILY_LIMIT_PER_HOST:
-        latest_result = await get_latest_result(host=host)
+        latest_result = await get_latest_result(session=session, host=host)
         raise QuotaExceededException(
             limit=Settings().DAILY_LIMIT_PER_HOST,
             host=host,

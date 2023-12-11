@@ -37,3 +37,4 @@ class Grade(str, Enum):
     D = "D"
     E = "E"
     F = "F"
+    G = "G"
