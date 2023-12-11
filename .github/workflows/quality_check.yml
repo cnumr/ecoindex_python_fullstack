@@ -9,7 +9,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  validate-polylith:
+  project-quality:
+    name: Validate project quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
