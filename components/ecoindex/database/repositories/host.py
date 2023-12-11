@@ -31,9 +31,9 @@ async def get_host_list_db(
 
     statement = statement.group_by(ApiEcoindex.host).order_by(ApiEcoindex.host)
 
-    hosts = await session.execute(statement=statement)
+    hosts = await session.exec(statement=statement)
 
-    return hosts.scalars().all()
+    return [str(host) for host in hosts.all()]
 
 
 async def get_count_hosts_db(
@@ -65,6 +65,6 @@ async def get_count_hosts_db(
 
     statement = f"SELECT count(*) FROM ({sub_statement}) t"
 
-    result = await session.execute(text(statement))
+    result = await session.exec(statement=text(statement))  # type: ignore
 
-    return result.scalar()
+    return result.scalar_one()

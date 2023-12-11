@@ -33,9 +33,9 @@ async def get_count_analysis_db(
     if date_to:
         statement += f" AND date <= '{date_to}'"
 
-    result = await session.execute(statement=text(statement))
+    result = await session.exec(statement=text(statement))  # type: ignore
 
-    return result.scalar()
+    return result.scalar_one()
 
 
 async def get_rank_analysis_db(
@@ -51,9 +51,9 @@ async def get_rank_analysis_db(
         "LIMIT 1;"
     )
 
-    result = await session.execute(text(statement))
+    result = await session.exec(text(statement))  # type: ignore
 
-    return result.scalar()
+    return result.scalar_one_or_none()
 
 
 async def get_ecoindex_result_list_db(
@@ -85,9 +85,9 @@ async def get_ecoindex_result_list_db(
 
         statement = statement.order_by(sort_parameter)
 
-    ecoindexes = await session.execute(statement)
+    ecoindexes = await session.exec(statement)
 
-    return ecoindexes.scalars().all()
+    return [ecoindex for ecoindex in ecoindexes.all()]
 
 
 async def get_ecoindex_result_by_id_db(
@@ -99,9 +99,9 @@ async def get_ecoindex_result_by_id_db(
         .where(ApiEcoindex.version == version.get_version_number())
     )
 
-    ecoindex = await session.execute(statement)
+    ecoindex = await session.exec(statement)
 
-    return ecoindex.scalar_one_or_none()
+    return ecoindex.one_or_none()
 
 
 async def get_count_daily_request_per_host(session: AsyncSession, host: str) -> int:
@@ -109,7 +109,7 @@ async def get_count_daily_request_per_host(session: AsyncSession, host: str) -> 
         func.date(ApiEcoindex.date) == date.today(), ApiEcoindex.host == host
     )
 
-    results = await session.execute(statement)
+    results = await session.exec(statement)
 
     return len(results.all())
 
@@ -122,6 +122,6 @@ async def get_latest_result(session: AsyncSession, host: str) -> ApiEcoindex:
         .limit(1)
     )
 
-    result = await session.execute(statement)
+    result = await session.exec(statement)
 
-    return result.scalar_one_or_none()
+    return result.one_or_none()
