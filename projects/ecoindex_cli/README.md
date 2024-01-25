@@ -6,13 +6,13 @@ This tool provides an easy way to analyze websites with [Ecoindex](https://www.e
 - Define multiple screen resolution
 - Make a recursive analysis from a given website
 
-This CLI is built on top of [ecoindex-python](https://pypi.org/project/ecoindex/) with [Typer](https://typer.tiangolo.com/)
+This CLI is built on top of [ecoindex-scraper](https://pypi.org/project/ecoindex-scraper/) with [Typer](https://typer.tiangolo.com/)
 
 The output is a CSV or JSON file with the results of the analysis.
 
 ## Requirements
 
-- [Docker](https://docs.docker.com/get-docker/)
+- [Docker](https://docs.docker.com/get-docker/) (optional)
 
 ## Quickstart
 
@@ -293,14 +293,13 @@ width,height,url,size,nodes,requests,grade,score,ges,water,date,page_type
 
 - Python 3.10+
 - [Poetry](https://python-poetry.org/)
+- [Task](https://taskfile.dev/#/installation)
 
 ### Installation
 
 At first, you need to install dependencies:
 
 ```bash
-git clone
-cd ecoindex-cli
 poetry install
 poetry run playwright install chromium --with-deps
 ```
