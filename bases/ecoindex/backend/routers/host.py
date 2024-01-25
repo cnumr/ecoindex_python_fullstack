@@ -1,17 +1,17 @@
 from typing import Annotated
 
-from ecoindex.backend.dependencies import (
-    date_parameters,
-    host_parameter,
-    pagination_parameters,
-    version_parameter,
+from ecoindex.backend.models.dependencies_parameters.dates import DateRangeParameters
+from ecoindex.backend.models.dependencies_parameters.host import HostParameter
+from ecoindex.backend.models.dependencies_parameters.pagination import (
+    PaginationParameters,
 )
+from ecoindex.backend.models.dependencies_parameters.version import VersionParameter
+from ecoindex.backend.models.parameters import DateRange, Pagination
 from ecoindex.backend.utils import check_quota, get_status_code
 from ecoindex.database.engine import get_session
 from ecoindex.database.repositories.host import get_count_hosts_db, get_host_list_db
 from ecoindex.models.api import Host, PageHosts
 from ecoindex.models.enums import Version
-from ecoindex.models.parameters import DateRange, Pagination
 from ecoindex.models.response_examples import example_daily_limit_response
 from fastapi import Depends, Path, status
 from fastapi.param_functions import Query
@@ -38,10 +38,10 @@ router = APIRouter(prefix="/{version}/hosts", tags=["Host"])
 )
 async def get_host_list(
     response: Response,
-    host: Annotated[str, Depends(host_parameter)],
-    version: Annotated[Version, Depends(version_parameter)] = Version.v1,
-    date_range: Annotated[DateRange, Depends(date_parameters)] = DateRange(),
-    pagination: Annotated[Pagination, Depends(pagination_parameters)] = Pagination(),
+    host: HostParameter,
+    version: VersionParameter = Version.v1,
+    date_range: DateRangeParameters = DateRange(),
+    pagination: PaginationParameters = Pagination(),
     q: str = Query(
         default=None,
         description="Filter by partial host name (replaced by `host`)",
@@ -90,7 +90,7 @@ async def get_host_list(
 )
 async def get_daily_remaining(
     host: Annotated[str, Path(..., description="Exact matching host name")],
-    version: Annotated[Version, Depends(version_parameter)] = Version.v1,
+    version: VersionParameter = Version.v1,
     session: AsyncSession = Depends(get_session),
 ) -> Host:
     return Host(

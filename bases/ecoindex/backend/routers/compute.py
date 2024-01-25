@@ -1,10 +1,7 @@
-from typing import Annotated
-
-from ecoindex.backend.dependencies import compute_parameters
+from ecoindex.backend.models.dependencies_parameters.compute import ComputeDepParameters
 from ecoindex.compute.ecoindex import compute_ecoindex
 from ecoindex.models.compute import Ecoindex
-from ecoindex.models.parameters import ComputeParameters
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
 router = APIRouter(prefix="/ecoindex", tags=["Ecoindex"])
 
@@ -18,9 +15,7 @@ router = APIRouter(prefix="/ecoindex", tags=["Ecoindex"])
         "DOM (number of DOM nodes), size (total size in Kb) and requests"
     ),
 )
-async def compute_ecoindex_api(
-    parameters: Annotated[ComputeParameters, Depends(compute_parameters)]
-) -> Ecoindex:
+async def compute_ecoindex_api(parameters: ComputeDepParameters) -> Ecoindex:
     return await compute_ecoindex(
         nodes=parameters.dom, size=parameters.size, requests=parameters.requests
     )
