@@ -1,5 +1,16 @@
 # Ecoindex Python Fullstack
 
+- [Ecoindex Python Fullstack](#ecoindex-python-fullstack)
+  - [Projects](#projects)
+  - [Getting started](#getting-started)
+    - [Requirements](#requirements)
+    - [Installation](#installation)
+    - [Usage](#usage)
+  - [Disclaimer](#disclaimer)
+  - [License](#license)
+  - [Contributing](#contributing)
+  - [Code of conduct](#code-of-conduct)
+
 This project is a polylith repository for the Ecoindex project. It is called "fullstack" because it contains all the components of the project, including the backend that is used in production, but also a CLI tool and modules that can be used in other projects.
 
 You can get more information about polylith in the [official documentation](https://polylith.gitbook.io/polylith) and in the [python-polylith tool](https://github.com/DavidVujic/python-polylith) that is used to manage this repository.
