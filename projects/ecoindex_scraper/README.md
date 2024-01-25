@@ -1,6 +1,6 @@
 # Ecoindex Scraper
 
-This module provides a simple interface to get the [Ecoindex](http://www.ecoindex.fr) of a given webpage using module [ecoindex-python](https://pypi.org/project/ecoindex/)
+This module provides a simple interface to get the [Ecoindex](http://www.ecoindex.fr) of a given webpage using module [ecoindex-compute](https://pypi.org/project/ecoindex-compute/)
 
 ## Requirements
 
@@ -32,9 +32,7 @@ from ecoindex.scrap import EcoindexScraper
 
 pprint(
     asyncio.run(
-        EcoindexScraper(url="http://ecoindex.fr")
-        .init_chromedriver()
-        .get_page_analysis()
+        EcoindexScraper(url="http://ecoindex.fr").get_page_analysis()
     )
 )
 ```
@@ -71,7 +69,6 @@ pprint(
             url="http://www.ecoindex.fr/",
             screenshot=ScreenShot(id=str(uuid1()), folder="./screenshots"),
         )
-        .init_chromedriver()
         .get_page_analysis()
     )
 )
@@ -90,7 +87,6 @@ from ecoindex.scrap import EcoindexScraper
 def run_page_analysis(url):
     return asyncio.run(
         EcoindexScraper(url=url)
-        .init_chromedriver()
         .get_page_analysis()
     )
 
