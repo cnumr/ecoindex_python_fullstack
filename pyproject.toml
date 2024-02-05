@@ -54,7 +54,7 @@ redis = "^5.0.1"
 sqlmodel = "^0.0.14"
 
 [tool.poetry.group.api-backend.dependencies]
-fastapi = "^0.104.0"
+fastapi = "^0.109.1"
 uvicorn = "^0.23.2"
 
 [tool.poetry.group.dev.dependencies]
