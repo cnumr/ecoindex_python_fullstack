@@ -14,4 +14,7 @@ async def get_category_of_resource(mime_type: str) -> str:
     if "javascript" in mime_type:
         return "javascript"
 
+    if "html" in mime_type:
+        return "html"
+
     return "other"

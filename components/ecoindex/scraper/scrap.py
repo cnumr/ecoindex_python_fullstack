@@ -60,7 +60,7 @@ class EcoindexScraper:
     async def get_all_requests(self) -> list[RequestItem]:
         return self.all_requests.items
 
-    async def get_requests_aggregation(self) -> MimetypeAggregation:
+    async def get_requests_by_category(self) -> MimetypeAggregation:
         return self.all_requests.aggregation
 
     async def scrap_page(self) -> PageMetrics:
