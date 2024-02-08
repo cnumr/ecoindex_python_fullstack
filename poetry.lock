@@ -2308,6 +2308,20 @@ pytest = ">=4.6"
 testing = ["fields", "hunter", "process-tests", "pytest-xdist", "six", "virtualenv"]
 
 [[package]]
+name = "pytest-picked"
+version = "0.5.0"
+description = "Run the tests related to the changed files"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pytest-picked-0.5.0.tar.gz", hash = "sha256:b39cd43b1f5e6efd2fc896f318e23c2c77effde8dd6efa58653a2940d8a384d9"},
+    {file = "pytest_picked-0.5.0-py3-none-any.whl", hash = "sha256:6d22771a857a2cd8691fc0802f3e1371fe4063fa1ecbd216d9584bbe089fcfd3"},
+]
+
+[package.dependencies]
+pytest = ">=3.7.0"
+
+[[package]]
 name = "python-dateutil"
 version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
