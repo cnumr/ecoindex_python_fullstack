@@ -38,3 +38,6 @@ jobs:
         uses: MishaKav/pytest-coverage-comment@main
         with:
           pytest-xml-coverage-path: ./coverage.xml
+          title: Branch coverage
+          badge-title: Coverage PR ${{ github.event.pull_request.number }}
+          report-only-changed-files: true

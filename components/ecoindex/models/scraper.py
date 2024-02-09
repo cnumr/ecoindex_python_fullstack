@@ -15,6 +15,7 @@ class MimetypeMetrics(BaseModel):
 
 
 class MimetypeAggregation(BaseModel):
+    audio: MimetypeMetrics = MimetypeMetrics()
     css: MimetypeMetrics = MimetypeMetrics()
     font: MimetypeMetrics = MimetypeMetrics()
     html: MimetypeMetrics = MimetypeMetrics()

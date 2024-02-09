@@ -28,7 +28,7 @@ tasks:
   
   quality-branch:
     desc: Run quality checks
-    deps: [tests-coverage, mypy, ruff]
+    deps: [tests-coverage-branch, mypy, ruff]
     cmds:
       - echo "Quality checks passed"
 
