@@ -23,6 +23,16 @@ class MimetypeAggregation(BaseModel):
     other: MimetypeMetrics = MimetypeMetrics()
     video: MimetypeMetrics = MimetypeMetrics()
 
+    @classmethod
+    async def get_category_of_resource(cls, mimetype: str) -> str:
+        mimetypes = [type for type in cls.model_fields.keys()]
+
+        for type in mimetypes:
+            if type in mimetype:
+                return type
+
+        return "other"
+
 
 class Requests(BaseModel):
     aggregation: MimetypeAggregation = MimetypeAggregation()

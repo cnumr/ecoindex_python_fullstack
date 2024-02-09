@@ -9,7 +9,7 @@ async def get_page_analysis(url: str):
     return (
         await scraper.get_page_analysis(),
         await scraper.get_all_requests(),
-        await scraper.get_requests_aggregation(),
+        await scraper.get_requests_by_category(),
     )
 
 

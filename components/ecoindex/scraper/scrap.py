@@ -8,7 +8,6 @@ from ecoindex.compute import compute_ecoindex
 from ecoindex.exceptions.scraper import EcoindexScraperStatusException
 from ecoindex.models.compute import PageMetrics, Result, ScreenShot, WindowSize
 from ecoindex.models.scraper import MimetypeAggregation, RequestItem, Requests
-from ecoindex.utils.mimetype import get_category_of_resource
 from ecoindex.utils.screenshots import convert_screenshot_to_webp, set_screenshot_rights
 from playwright.async_api import async_playwright
 from playwright_stealth import stealth_async
@@ -118,7 +117,7 @@ class EcoindexScraper:
             for entry in trace["log"]["entries"]:
                 url = entry["request"]["url"]
                 mime_type = entry["response"]["content"]["mimeType"]
-                category = await get_category_of_resource(mime_type)
+                category = await MimetypeAggregation.get_category_of_resource(mime_type)
                 size = entry["response"]["_transferSize"]
                 aggregation[category]["total_count"] += 1
                 aggregation[category]["total_size"] += size
