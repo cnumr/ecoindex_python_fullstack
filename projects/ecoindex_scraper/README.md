@@ -110,3 +110,60 @@ with ThreadPoolExecutor(max_workers=8) as executor:
         except Exception as e:
             print(e)
 ```
+## Get requests details from an analysis
+
+You can get the details of the requests made by the page by calling the function `get_all_requests()` and also get the aggregation of requests by category by calling the function `get_requests_by_category()`:
+
+```python
+import asyncio
+from pprint import pprint
+
+from ecoindex.scraper import EcoindexScraper
+
+scraper = EcoindexScraper(url="http://www.ecoindex.fr")
+
+result = asyncio.run(scraper.get_page_analysis())
+all_requests = asyncio.run(scraper.get_all_requests())
+requests_by_category = asyncio.run(scraper.get_requests_by_category())
+
+pprint([request.model_dump() for request in all_requests])
+# [{'category': 'html',
+#   'mime_type': 'text/html; charset=iso-8859-1',
+#   'size': 475.0,
+#   'status': 301,
+#   'url': 'http://www.ecoindex.fr/'},
+#  {'category': 'html',
+#   'mime_type': 'text/html',
+#   'size': 7772.0,
+#   'status': 200,
+#   'url': 'https://www.ecoindex.fr/'},
+#  {'category': 'css',
+#   'mime_type': 'text/css',
+#   'size': 9631.0,
+#   'status': 200,
+#   'url': 'https://www.ecoindex.fr/css/bundle.min.d38033feecefa0352173204171412aec01f58eee728df0ac5c917a396ca0bc14.css'},
+#  {'category': 'javascript',
+#   'mime_type': 'application/javascript',
+#   'size': 9823.0,
+#   'status': 200,
+#   'url': 'https://www.ecoindex.fr/fr/js/bundle.8781a9ae8d87b4ebaa689167fc17b7d71193cf514eb8bb40aac9bf4548e14533.js'},
+#  {'category': 'other',
+#   'mime_type': 'x-unknown',
+#   'size': 892.0,
+#   'status': 200,
+#   'url': 'https://www.ecoindex.fr/images/logo-neutral-it.webp'},
+#  {'category': 'image',
+#   'mime_type': 'image/svg+xml',
+#   'size': 3298.0,
+#   'status': 200,
+#   'url': 'https://www.ecoindex.fr/images/logo-greenit.svg'}]
+
+pprint(requests_by_category.model_dump())
+# {'css': {'total_count': 1, 'total_size': 9631.0},
+#  'font': {'total_count': 0, 'total_size': 0.0},
+#  'html': {'total_count': 2, 'total_size': 8247.0},
+#  'image': {'total_count': 1, 'total_size': 3298.0},
+#  'javascript': {'total_count': 1, 'total_size': 9823.0},
+#  'other': {'total_count': 1, 'total_size': 892.0},
+#  'video': {'total_count': 0, 'total_size': 0.0}}
+```

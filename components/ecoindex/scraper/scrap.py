@@ -7,7 +7,7 @@ from uuid import uuid4
 from ecoindex.compute import compute_ecoindex
 from ecoindex.exceptions.scraper import EcoindexScraperStatusException
 from ecoindex.models.compute import PageMetrics, Result, ScreenShot, WindowSize
-from ecoindex.models.scraper import Requests
+from ecoindex.models.scraper import MimetypeAggregation, RequestItem, Requests
 from ecoindex.utils.screenshots import convert_screenshot_to_webp, set_screenshot_rights
 from playwright.async_api import async_playwright
 from playwright_stealth import stealth_async
@@ -55,6 +55,12 @@ class EcoindexScraper:
             date=self.now,
             url=self.url,
         )
+
+    async def get_all_requests(self) -> list[RequestItem]:
+        return self.all_requests.items
+
+    async def get_requests_by_category(self) -> MimetypeAggregation:
+        return self.all_requests.aggregation
 
     async def scrap_page(self) -> PageMetrics:
         async with async_playwright() as p:
@@ -106,20 +112,28 @@ class EcoindexScraper:
     async def get_requests_from_har_file(self):
         with open(self.har_temp_file_path, "r") as f:
             trace = json.load(f)
+            aggregation = self.all_requests.aggregation.model_dump()
 
             for entry in trace["log"]["entries"]:
+                url = entry["request"]["url"]
+                mime_type = entry["response"]["content"]["mimeType"]
+                category = await MimetypeAggregation.get_category_of_resource(mime_type)
+                size = entry["response"]["_transferSize"]
+                aggregation[category]["total_count"] += 1
+                aggregation[category]["total_size"] += size
                 self.all_requests.items.append(
-                    {
-                        "url": entry["request"]["url"],
-                        "mime_type": entry["response"]["content"]["mimeType"],
-                        "status": entry["response"]["status"],
-                        "size": entry["response"]["_transferSize"],
-                    }
+                    RequestItem(
+                        url=url,
+                        mime_type=mime_type,
+                        status=entry["response"]["status"],
+                        size=size,
+                        category=category,
+                    )
                 )
 
                 self.all_requests.total_count += 1
                 self.all_requests.total_size += entry["response"]["_transferSize"]
-
+            self.all_requests.aggregation = MimetypeAggregation(**aggregation)
         os.remove(self.har_temp_file_path)
 
     async def get_nodes_count(self) -> int:

@@ -10,6 +10,11 @@ tasks:
     desc: Run tests with coverage
     cmds:
       - poetry run pytest --cov-report "xml:coverage.xml" --cov=. test
+    
+  tests-coverage-branch:
+    desc: Run tests with coverage for current branch
+    cmds:
+      - poetry run pytest --cov-report "xml:coverage.xml" --cov=. --picked --mode=branch test
 
   mypy:
     desc: Run mypy
@@ -20,6 +25,12 @@ tasks:
     desc: Run ruff
     cmds:
       - poetry run ruff .
+  
+  quality-branch:
+    desc: Run quality checks
+    deps: [tests-coverage-branch, mypy, ruff]
+    cmds:
+      - echo "Quality checks passed"
 
   default:
     desc: Run quality checks
