@@ -63,7 +63,7 @@ jobs:
 
       - name: Output wheel
         id: wheel
-        run: echo "wheel=ecoindex_api/dist/ecoindex_api-${{ steps.version.outputs.api_version }}-py3-none-any.whl" >> $GITHUB_OUTPUT
+        run: echo "wheel=ecoindex_api-${{ steps.version.outputs.api_version }}-py3-none-any.whl" >> $GITHUB_OUTPUT
 
       - name: Output summary
         run: |
