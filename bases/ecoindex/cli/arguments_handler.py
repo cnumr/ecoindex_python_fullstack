@@ -1,6 +1,6 @@
 from tempfile import NamedTemporaryFile
 from typing import Set
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 
 from ecoindex.cli.crawl import EcoindexSpider
 from ecoindex.models import WindowSize
@@ -36,8 +36,12 @@ def get_urls_from_file(urls_file: FilePath) -> Set[str]:
 
 def get_urls_recursive(main_url: str) -> Set[str]:
     parsed_url = urlparse(main_url)
-    domain = parsed_url.netloc
-    main_url = f"{parsed_url.scheme}://{domain}"
+    netloc = parsed_url.netloc
+    domain = netloc
+    if (parsed_url.hostname == "localhost"):
+        domain = "host.docker.internal"
+        netloc = netloc.replace('localhost', 'host.docker.internal')
+    main_url = f"{parsed_url.scheme}://{netloc}"
     process = CrawlerProcess()
 
     with NamedTemporaryFile(mode="w+t") as temp_file:
@@ -58,6 +62,10 @@ def get_urls_recursive(main_url: str) -> Set[str]:
 def get_url_from_args(urls_arg: list[AnyHttpUrl]) -> set[AnyHttpUrl]:
     urls_from_args = set()
     for url in urls_arg:
+        parsed_url = urlparse(str(url))
+        if (parsed_url.hostname == "localhost"):
+            replaced_netloc = parsed_url.netloc.replace('localhost', 'host.docker.internal')            
+            url = urlunparse((parsed_url.scheme, replaced_netloc, parsed_url.path, parsed_url.params, parsed_url.query, parsed_url.fragment))
         urls_from_args.add(url)
 
     return urls_from_args

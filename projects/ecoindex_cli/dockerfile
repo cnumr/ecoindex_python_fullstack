@@ -9,7 +9,11 @@ RUN poetry export --output=requirements.txt --without-hashes
 
 FROM python:3.12-slim
 
-ARG wheel=ecoindex_cli-2.23.0-py3-none-any.whl
+# Install curl
+RUN apt-get update && \
+    apt-get install -y curl
+    
+ARG wheel=ecoindex_cli-2.24.1-py3-none-any.whl
 
 WORKDIR /code
 
