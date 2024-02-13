@@ -108,7 +108,7 @@ jobs:
           context: projects/ecoindex_api
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }},${{ needs.python_project.outputs.api_version }}
+          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.api_version }}
           labels: ${{ steps.meta.outputs.labels }}
           file: projects/ecoindex_api/docker/backend/dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
@@ -151,7 +151,7 @@ jobs:
           context: projects/ecoindex_api
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }},${{ needs.python_project.outputs.api_version }}
+          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-worker:${{ needs.python_project.outputs.api_version }}
           labels: ${{ steps.meta.outputs.labels }}
           file: projects/ecoindex_api/docker/worker/dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
