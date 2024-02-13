@@ -104,7 +104,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: dockerfile
+          file: projects/ecoindex_api/docker/backend/dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
 
   worker_image:
@@ -141,5 +141,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: dockerfile
+          file: projects/ecoindex_api/docker/worker/dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
