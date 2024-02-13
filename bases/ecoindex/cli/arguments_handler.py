@@ -65,7 +65,7 @@ def get_url_from_args(urls_arg: list[AnyHttpUrl]) -> set[AnyHttpUrl]:
         parsed_url = urlparse(str(url))
         if (parsed_url.hostname == "localhost"):
             replaced_netloc = parsed_url.netloc.replace('localhost', 'host.docker.internal')            
-            url = urlunparse((parsed_url.scheme, replaced_netloc, parsed_url.path, parsed_url.params, parsed_url.query, parsed_url.fragment))
+            url = AnyHttpUrl(urlunparse((parsed_url.scheme, replaced_netloc, parsed_url.path, parsed_url.params, parsed_url.query, parsed_url.fragment)))
         urls_from_args.add(url)
 
     return urls_from_args
