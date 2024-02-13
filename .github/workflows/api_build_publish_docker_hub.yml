@@ -42,6 +42,9 @@ jobs:
       - name: Install poetry
         uses: abatilo/actions-poetry@v2
 
+      - name: Install poetry build project
+        run: pip install poetry-multiproject-plugin
+
       - name: Bump version
         run: task api:bump -- ${{ github.event.inputs.bump }}
 
