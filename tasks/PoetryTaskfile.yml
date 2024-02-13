@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 tasks:
   install:
@@ -6,7 +6,7 @@ tasks:
     cmds:
       - poetry install
     silent: true
-  
+
   add:
     desc: Add a new dependency to {{.PROJECT_NAME}}
     cmds:
@@ -34,7 +34,7 @@ tasks:
 
   bump:
     internal: true
-    preconditions: 
+    preconditions:
       - sh: '[[ "{{.CLI_ARGS}}" =~ ^(major|minor|patch|premajor|preminor|prepatch|prerelease)$ ]]'
         msg: "Invalid version rule: `{{.CLI_ARGS}}` must be major, minor, patch, premajor, preminor, prepatch or prerelease."
     cmds:
@@ -44,6 +44,12 @@ tasks:
       - echo "Bumped version:$(cat /tmp/version-bump-output-{{.PROJECT_NAME}})"
       - echo "Update {{.VERSION_FILE_PATH}}"
       - echo "$(cat /tmp/version-bump-output-{{.PROJECT_NAME}})" > {{.VERSION_FILE_PATH}}
+    silent: true
+
+  version-short:
+    desc: Show the current version of {{.PROJECT_NAME}}
+    cmds:
+      - poetry version -s
     silent: true
 
   install-playwright:
