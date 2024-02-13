@@ -99,7 +99,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: projects/ecoindex_api/docker/backend/
+          context: projects/ecoindex_api
           platforms: linux/amd64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
@@ -136,7 +136,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: projects/ecoindex_api/docker/worker/
+          context: projects/ecoindex_api
           platforms: linux/amd64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
