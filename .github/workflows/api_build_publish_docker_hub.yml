@@ -99,12 +99,12 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: projects/ecoindex_api/docker/backend/
           platforms: linux/amd64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: projects/ecoindex_api/docker/backend/dockerfile
+          file: dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
 
   worker_image:
@@ -136,10 +136,10 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: projects/ecoindex_api/docker/worker/
           platforms: linux/amd64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: projects/ecoindex_api/docker/worker/dockerfile
+          file: dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
