@@ -65,6 +65,11 @@ jobs:
         id: wheel
         run: echo "wheel=$(ls projects/ecoindex_api/dist/*.whl)" >> $GITHUB_OUTPUT
 
+      - name: Output summary
+        run: |
+          echo "API version ${{ steps.version.outputs.api_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "Wheel ${{ steps.wheel.outputs.wheel }}" >> $GITHUB_STEP_SUMMARY
+
   backend_image:
     name: Build and push backend image to docker hub
     runs-on: ubuntu-latest
