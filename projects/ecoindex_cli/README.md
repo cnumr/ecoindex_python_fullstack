@@ -35,6 +35,12 @@ Then you can use the cli as if it was installed on your computer:
 ecoindex-cli --help
 ```
 
+If you are on linux and you want to perform analysis on local project you need to add the ```--add-host=host.docker.internal:host-gateway``` flag to the docker run command as follow :
+
+```bash
+alias ecoindex-cli="docker run -it --rm --add-host=host.docker.internal:host-gateway -v /tmp/ecoindex-cli:/tmp/ecoindex-cli vvatelot/ecoindex-cli:latest ecoindex-cli"
+```
+
 ## Use case
 
 The docker image [vvatelot/ecoindex-cli](https://hub.docker.com/r/vvatelot/ecoindex-cli) is available for `linux/amd64` and `linux/arm64` platforms and provides you an easy way to use this CLI on your environment.
