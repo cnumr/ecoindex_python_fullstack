@@ -176,24 +176,15 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Download version from artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: version
-          path: bases/ecoindex/backend/VERSION
-
-      - name: Download pyproject.toml from artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: pyproject
-          path: projects/ecoindex_api/pyproject.toml
-
       - name: Commit files
         uses: EndBug/add-and-commit@v9
         with:
           message: "Bump API version to ${{ needs.python_project.outputs.api_version }}"
           tag: v${{ needs.python_project.outputs.api_version }}@api
           tag_push: "--force"
+          add: |
+            bases/ecoindex/backend/VERSION
+            projects/ecoindex_api/pyproject.toml
 
       - name: Create release
         id: create_release
