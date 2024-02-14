@@ -82,6 +82,7 @@ class EcoindexScraper:
             await self.page.wait_for_load_state()
             sleep(self.wait_before_scroll)
             await self.generate_screenshot()
+            await self.page.keyboard.press('ArrowDown')
             await self.page.evaluate(
                 "window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })"
             )
