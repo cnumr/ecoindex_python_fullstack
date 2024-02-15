@@ -1,4 +1,5 @@
-import os
+from typing import List  # Add the missing import statement
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -9,10 +10,10 @@ class Settings(BaseSettings):
     CORS_ALLOWED_ORIGINS: list = ["*"]
     DAILY_LIMIT_PER_HOST: int = 0
     DATABASE_URL: str = "sqlite+aiosqlite:///db.sqlite3"
-    DOCKER_CONTAINER: bool = os.environ.get('DOCKER_CONTAINER', default='False').lower() == 'true'
+    DOCKER_CONTAINER: bool = False
     DEBUG: bool = False
     ENABLE_SCREENSHOT: bool = False
-    EXCLUDED_HOSTS: list[str] = ["localhost", "127.0.0.1"]
+    EXCLUDED_HOSTS: List[str] = ["localhost", "127.0.0.1"]  # Update the type annotation
     FRONTEND_BASE_URL: str = "https://www.ecoindex.fr"
     REDIS_CACHE_HOST: str = "localhost"
     SCREENSHOTS_GID: int | None = None
