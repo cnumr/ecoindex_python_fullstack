@@ -171,7 +171,7 @@ jobs:
           token: ${{ github.token }}
           fromTag: v${{ needs.python_project.outputs.compute_version }}@compute
           toTag: ${{ steps.last_tag.outputs.last_tag }}
-          excludeScopes: api,cli,compute
+          excludeScopes: api,cli,scraper
           changelogFilePath: /tmp/changelog.md
 
       - name: Update changelog content with dockerhub links
