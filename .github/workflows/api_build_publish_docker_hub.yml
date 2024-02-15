@@ -176,6 +176,9 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
+      - name: Git pull
+        run: git pull
+
       - name: Download pyproject.toml to a temporary file
         uses: actions/download-artifact@v4
         with:
@@ -200,7 +203,6 @@ jobs:
           tag: v${{ needs.python_project.outputs.api_version }}@api
           tag_push: "--force"
           push: true
-          pull: "--rebase"
 
       - name: Get last tag (that is not a `pre` tag) for api
         id: last_tag
