@@ -1,4 +1,4 @@
-FROM python:3 as requirements-stage
+FROM python:3-slim as requirements-stage
 
 WORKDIR /tmp
 
@@ -7,7 +7,7 @@ COPY pyproject.toml poetry.lock /tmp/
 RUN poetry export --with=worker --output=requirements.txt --without-hashes
 
 
-FROM python:3
+FROM python:3-slim
 
 ARG wheel=ecoindex_api-3.1.0-py3-none-any.whl
 

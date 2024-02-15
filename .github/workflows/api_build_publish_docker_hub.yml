@@ -176,27 +176,58 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
+      - name: Download pyproject.toml to a temporary file
+        uses: actions/download-artifact@v4
+        with:
+          name: pyproject
+          path: tmp/pyproject.toml
+
+      - name: Download VERSION to a temporary file
+        uses: actions/download-artifact@v4
+        with:
+          name: version
+          path: tmp/VERSION
+
+      - name: Move temporary files to the right place
+        run: |
+          mv tmp/pyproject.toml projects/ecoindex_api/pyproject.toml
+          mv tmp/VERSION bases/ecoindex/backend/VERSION
+
       - name: Commit files
         uses: EndBug/add-and-commit@v9
         with:
-          message: "Bump API version to ${{ needs.python_project.outputs.api_version }}"
+          message: "chore(api): Bump API version to ${{ needs.python_project.outputs.api_version }}"
           tag: v${{ needs.python_project.outputs.api_version }}@api
           tag_push: "--force"
-          add: |
-            bases/ecoindex/backend/VERSION
-            projects/ecoindex_api/pyproject.toml
+          push: true
 
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get last tag (that is not a `pre` tag) for api
+        id: last_tag
+        run: echo "last_tag=$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+@api$' | sort -r | head -n 1)" >> $GITHUB_OUTPUT
+
+      - name: Update CHANGELOG
+        id: changelog
+        uses: requarks/changelog-action@v1
         with:
-          tag_name: v${{ needs.python_project.outputs.api_version }}@api
-          release_name: v${{ needs.python_project.outputs.api_version }}@api
-          prerelease: ${{ env.DRAFT }}
-          body: |
-            Changes in this Release
-            - Bump version to ${{ needs.python_project.outputs.api_version }}
-            - Update backend image to vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.api_version }}
-            - Update worker image to vvatelot/ecoindex-api-worker:${{ needs.python_project.outputs.api_version }}
+          token: ${{ github.token }}
+          fromTag: v${{ needs.python_project.outputs.api_version }}@api
+          toTag: ${{ steps.last_tag.outputs.last_tag }}
+          excludeScopes: cli,scraper,compute
+
+      - name: Update changelog content with dockerhub links
+        run: |
+          echo ${{ steps.changelog.outputs.changes }} > tmp/changelog.md
+          echo "## Docker images" >> tmp/changelog.md
+          echo "- **Backend**: [vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.api_version }}](https://hub.docker.com/r/vvatelot/ecoindex-api-backend/tags?page=1&name=${{ needs.python_project.outputs.api_version }})" >> tmp/changelog.md
+          echo "- **Worker**: [vvatelot/ecoindex-api-worker:${{ needs.python_project.outputs.api_version }}](https://hub.docker.com/r/vvatelot/ecoindex-api-worker/tags?page=1&name=${{ needs.python_project.outputs.api_version }})" >> tmp/changelog.md
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          draft: ${{ env.DRAFT }}
+          makeLatest: true
+          name: "API: v${{ needs.python_project.outputs.api_version }}"
+          tag: v${{ needs.python_project.outputs.api_version }}@api
+          token: ${{ github.token }}
+          bodyFile: tmp/changelog.md
