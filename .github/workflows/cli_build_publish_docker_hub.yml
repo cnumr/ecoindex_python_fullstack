@@ -1,4 +1,4 @@
-name: Publish CLI Docker images, CLI pypi package and create a release
+name: Publish CLI Docker image, pypi package and create a release
 
 on:
   workflow_dispatch:
@@ -122,7 +122,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-cli:${{ needs.python_project.outputs.cli_version }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: projects/ecoindex_cli/docker/worker/dockerfile
+          file: projects/ecoindex_cli/dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
 
   pypi_package:
@@ -143,6 +143,15 @@ jobs:
         with:
           name: dist
           path: projects/ecoindex_cli/dist
+
+      - name: Download pyproject.toml from artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: pyproject
+          path: /tmp
+
+      - name: Copy pyproject.toml to the project
+        run: cp /tmp/pyproject.toml projects/ecoindex_cli/pyproject.toml
 
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
