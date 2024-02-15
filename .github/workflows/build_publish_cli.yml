@@ -195,6 +195,10 @@ jobs:
           cp /tmp/pyproject.toml projects/ecoindex_cli/pyproject.toml
           cp /tmp/VERSION bases/ecoindex/cli/VERSION
 
+      - name: Get last tag (that is not a `pre` tag) for CLI
+        id: last_tag
+        run: echo "last_tag=$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+@cli$' | sort -r | head -n 1)" >> $GITHUB_OUTPUT
+
       - name: Commit files
         uses: EndBug/add-and-commit@v9
         with:
@@ -202,10 +206,6 @@ jobs:
           tag: v${{ needs.python_project.outputs.cli_version }}@cli
           tag_push: "--force"
           push: true
-
-      - name: Get last tag (that is not a `pre` tag) for CLI
-        id: last_tag
-        run: echo "last_tag=$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+@cli$' | sort -r | head -n 1)" >> $GITHUB_OUTPUT
 
       - name: Update CHANGELOG
         id: changelog
