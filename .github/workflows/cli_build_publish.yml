@@ -222,7 +222,7 @@ jobs:
           echo "" >> /tmp/changelog.md
           echo "### Docker image" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
-          echo "Docker image have been built and pushed to Docker Hub: [vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.cli_version }}](https://hub.docker.com/r/vvatelot/ecoindex-api-backend/tags?page=1&name=${{ needs.python_project.outputs.cli_version }})" >> /tmp/changelog.md
+          echo "Docker image have been built and pushed to Docker Hub: [vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.cli_version }}](https://hub.docker.com/r/vvatelot/ecoindex-cli/tags?page=1&name=${{ needs.python_project.outputs.cli_version }})" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
           echo "### Pypi package" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
