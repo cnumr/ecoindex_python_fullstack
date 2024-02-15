@@ -1,4 +1,4 @@
-name: Publish API Docker images
+name: Publish API Docker images and create a release
 
 on:
   workflow_dispatch:
@@ -82,96 +82,96 @@ jobs:
           echo "API version ${{ steps.version.outputs.api_version }}" >> $GITHUB_STEP_SUMMARY
           echo "Wheel ${{ steps.wheel.outputs.wheel }}" >> $GITHUB_STEP_SUMMARY
 
-  # backend_image:
-  #   name: Build and push backend image to docker hub
-  #   runs-on: ubuntu-latest
-  #   needs: python_project
-  #   steps:
-  #     - name: Check out the repo
-  #       uses: actions/checkout@v4
+  backend_image:
+    name: Build and push backend image to docker hub
+    runs-on: ubuntu-latest
+    needs: python_project
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
 
-  #     - name: Download dist from artifacts
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: dist
-  #         path: projects/ecoindex_api/dist
+      - name: Download dist from artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: projects/ecoindex_api/dist
 
-  #     - name: Set up QEMU
-  #       uses: docker/setup-qemu-action@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-  #     - name: Login to Docker Hub
-  #       uses: docker/login-action@v3
-  #       with:
-  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  #     - name: Extract metadata (tags, labels) for Docker
-  #       id: meta
-  #       uses: docker/metadata-action@v4
-  #       with:
-  #         images: vvatelot/ecoindex-api-backend
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: vvatelot/ecoindex-api-backend
 
-  #     - name: Build and push
-  #       uses: docker/build-push-action@v4
-  #       with:
-  #         context: projects/ecoindex_api
-  #         platforms: linux/amd64,linux/arm64
-  #         push: true
-  #         tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.api_version }},${{ !env.DRAFT && 'vvatelot/ecoindex-api-backend:latest' || '' }}
-  #         labels: ${{ steps.meta.outputs.labels }}
-  #         file: projects/ecoindex_api/docker/backend/dockerfile
-  #         build-args: wheel=${{ needs.python_project.outputs.wheel }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: projects/ecoindex_api
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.api_version }},${{ !env.DRAFT && 'vvatelot/ecoindex-api-backend:latest' || '' }}
+          labels: ${{ steps.meta.outputs.labels }}
+          file: projects/ecoindex_api/docker/backend/dockerfile
+          build-args: wheel=${{ needs.python_project.outputs.wheel }}
 
-  # worker_image:
-  #   name: Build and push worker image to docker hub
-  #   runs-on: ubuntu-latest
-  #   needs: python_project
-  #   steps:
-  #     - name: Check out the repo
-  #       uses: actions/checkout@v4
+  worker_image:
+    name: Build and push worker image to docker hub
+    runs-on: ubuntu-latest
+    needs: python_project
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
 
-  #     - name: Download dist from artifacts
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: dist
-  #         path: projects/ecoindex_api/dist
+      - name: Download dist from artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: projects/ecoindex_api/dist
 
-  #     - name: Set up QEMU
-  #       uses: docker/setup-qemu-action@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-  #     - name: Login to Docker Hub
-  #       uses: docker/login-action@v3
-  #       with:
-  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  #     - name: Extract metadata (tags, labels) for Docker
-  #       id: meta
-  #       uses: docker/metadata-action@v4
-  #       with:
-  #         images: vvatelot/ecoindex-api-worker
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: vvatelot/ecoindex-api-worker
 
-  #     - name: Build and push
-  #       uses: docker/build-push-action@v4
-  #       with:
-  #         context: projects/ecoindex_api
-  #         platforms: linux/amd64,linux/arm64
-  #         push: true
-  #         tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-worker:${{ needs.python_project.outputs.api_version }}
-  #         labels: ${{ steps.meta.outputs.labels }}
-  #         file: projects/ecoindex_api/docker/worker/dockerfile
-  #         build-args: wheel=${{ needs.python_project.outputs.wheel }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: projects/ecoindex_api
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-worker:${{ needs.python_project.outputs.api_version }}
+          labels: ${{ steps.meta.outputs.labels }}
+          file: projects/ecoindex_api/docker/worker/dockerfile
+          build-args: wheel=${{ needs.python_project.outputs.wheel }}
 
   release:
     name: Create a release
     runs-on: ubuntu-latest
-    needs: [python_project]
+    needs: [python_project, backend_image, worker_image]
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
