@@ -1,0 +1,239 @@
+name: Publish API Docker images and create a release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Bump the version of the API"
+        type: choice
+        required: true
+        default: "patch"
+        options:
+          - "patch"
+          - "minor"
+          - "major"
+          - "prepatch"
+          - "preminor"
+          - "premajor"
+env:
+  DRAFT: ${{ contains(inputs.bump, 'pre') }}
+
+jobs:
+  python_project:
+    name: Build ecoindex API python project
+    runs-on: ubuntu-latest
+    outputs:
+      wheel: ${{ steps.wheel.outputs.wheel }}
+      api_version: ${{ steps.version.outputs.api_version }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+
+      - name: Install poetry build project
+        run: pip install poetry-multiproject-plugin
+
+      - name: Bump version
+        run: task api:bump -- ${{ github.event.inputs.bump }}
+
+      - name: Build
+        run: task api:poetry:build
+
+      - name: Upload version to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: version
+          path: bases/ecoindex/backend/VERSION
+
+      - name: Upload pyproject.toml to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pyproject
+          path: projects/ecoindex_api/pyproject.toml
+
+      - name: Upload dist folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: projects/ecoindex_api/dist
+
+      - name: Output version
+        id: version
+        run: echo "api_version=$(task api:poetry:version-short)" >> $GITHUB_OUTPUT
+
+      - name: Output wheel
+        id: wheel
+        run: echo "wheel=ecoindex_api-${{ steps.version.outputs.api_version }}-py3-none-any.whl" >> $GITHUB_OUTPUT
+
+      - name: Output summary
+        run: |
+          echo "API version ${{ steps.version.outputs.api_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "Wheel ${{ steps.wheel.outputs.wheel }}" >> $GITHUB_STEP_SUMMARY
+
+  backend_image:
+    name: Build and push backend image to docker hub
+    runs-on: ubuntu-latest
+    needs: python_project
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Download dist from artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: projects/ecoindex_api/dist
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: vvatelot/ecoindex-api-backend
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: projects/ecoindex_api
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.api_version }},${{ !env.DRAFT && 'vvatelot/ecoindex-api-backend:latest' || '' }}
+          labels: ${{ steps.meta.outputs.labels }}
+          file: projects/ecoindex_api/docker/backend/dockerfile
+          build-args: wheel=${{ needs.python_project.outputs.wheel }}
+
+  worker_image:
+    name: Build and push worker image to docker hub
+    runs-on: ubuntu-latest
+    needs: python_project
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Download dist from artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: projects/ecoindex_api/dist
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: vvatelot/ecoindex-api-worker
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: projects/ecoindex_api
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-worker:${{ needs.python_project.outputs.api_version }}
+          labels: ${{ steps.meta.outputs.labels }}
+          file: projects/ecoindex_api/docker/worker/dockerfile
+          build-args: wheel=${{ needs.python_project.outputs.wheel }}
+
+  release:
+    name: Create a release
+    runs-on: ubuntu-latest
+    needs: [python_project, backend_image, worker_image]
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Git pull
+        run: git pull
+
+      - name: Download pyproject.toml to a temporary file
+        uses: actions/download-artifact@v4
+        with:
+          name: pyproject
+          path: /tmp
+
+      - name: Download VERSION to a temporary file
+        uses: actions/download-artifact@v4
+        with:
+          name: version
+          path: /tmp
+
+      - name: Copy and overwrite existing files to the repo
+        run: |
+          cp /tmp/pyproject.toml projects/ecoindex_api/pyproject.toml
+          cp /tmp/VERSION bases/ecoindex/backend/VERSION
+
+      - name: Commit files
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "chore(api): Bump API version to ${{ needs.python_project.outputs.api_version }}"
+          tag: v${{ needs.python_project.outputs.api_version }}@api
+          tag_push: "--force"
+          push: true
+
+      - name: Get last tag (that is not a `pre` tag) for api
+        id: last_tag
+        run: echo "last_tag=$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+@api$' | sort -r | head -n 1)" >> $GITHUB_OUTPUT
+
+      - name: Update CHANGELOG
+        id: changelog
+        uses: requarks/changelog-action@v1
+        with:
+          token: ${{ github.token }}
+          fromTag: v${{ needs.python_project.outputs.api_version }}@api
+          toTag: ${{ steps.last_tag.outputs.last_tag }}
+          excludeScopes: cli,scraper,compute
+          changelogFilePath: /tmp/changelog.md
+
+      - name: Update changelog content with dockerhub links
+        run: |
+          echo "" >> /tmp/changelog.md
+          echo "### Docker images" >> /tmp/changelog.md
+          echo "" >> /tmp/changelog.md
+          echo "Docker images have been built and pushed to Docker Hub. You can find them here:" >> /tmp/changelog.md
+          echo "- **Backend**: [vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.api_version }}](https://hub.docker.com/r/vvatelot/ecoindex-api-backend/tags?page=1&name=${{ needs.python_project.outputs.api_version }})" >> /tmp/changelog.md
+          echo "- **Worker**: [vvatelot/ecoindex-api-worker:${{ needs.python_project.outputs.api_version }}](https://hub.docker.com/r/vvatelot/ecoindex-api-worker/tags?page=1&name=${{ needs.python_project.outputs.api_version }})" >> /tmp/changelog.md
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          draft: ${{ env.DRAFT }}
+          makeLatest: true
+          name: "API: v${{ needs.python_project.outputs.api_version }}"
+          tag: v${{ needs.python_project.outputs.api_version }}@api
+          token: ${{ github.token }}
+          bodyFile: /tmp/changelog.md
