@@ -190,7 +190,6 @@ jobs:
 
       - name: Copy and overwrite existing files to the repo
         run: |
-          ls -la /tmp
           cp /tmp/pyproject.toml projects/ecoindex_api/pyproject.toml
           cp /tmp/VERSION bases/ecoindex/backend/VERSION
 
@@ -201,6 +200,7 @@ jobs:
           tag: v${{ needs.python_project.outputs.api_version }}@api
           tag_push: "--force"
           push: true
+          pull: "--rebase"
 
       - name: Get last tag (that is not a `pre` tag) for api
         id: last_tag
