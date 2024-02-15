@@ -11,6 +11,7 @@ include = ["LICENSE"]
 packages = [
     { include = "ecoindex/cli", from = "../../bases" },
     { include = "ecoindex/compute", from = "../../components" },
+    { include = "ecoindex/config", from = "../../components" },
     { include = "ecoindex/data", from = "../../components" },
     { include = "ecoindex/exceptions", from = "../../components" },
     { include = "ecoindex/models", from = "../../components" },
@@ -28,6 +29,7 @@ pandas = "^2.1.2"
 playwright = "^1.39.0"
 playwright-stealth = "^1.0.6"
 pydantic = "^2.4.2"
+pydantic-settings = "^2.0.3"
 python = ">=3.10,<3.13"
 pyyaml = "^6.0.1"
 rich = "^13.6.0"

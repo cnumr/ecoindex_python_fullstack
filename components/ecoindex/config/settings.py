@@ -1,3 +1,4 @@
+import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -8,6 +9,7 @@ class Settings(BaseSettings):
     CORS_ALLOWED_ORIGINS: list = ["*"]
     DAILY_LIMIT_PER_HOST: int = 0
     DATABASE_URL: str = "sqlite+aiosqlite:///db.sqlite3"
+    DOCKER_CONTAINER: bool = os.environ.get('DOCKER_CONTAINER', default='False').lower() == 'true'
     DEBUG: bool = False
     ENABLE_SCREENSHOT: bool = False
     EXCLUDED_HOSTS: list[str] = ["localhost", "127.0.0.1"]
