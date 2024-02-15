@@ -180,18 +180,19 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: pyproject
-          path: tmp/pyproject.toml
+          path: /tmp
 
       - name: Download VERSION to a temporary file
         uses: actions/download-artifact@v4
         with:
           name: version
-          path: tmp/VERSION
+          path: /tmp
 
       - name: Copy and overwrite existing files to the repo
         run: |
-          cp tmp/pyproject.toml projects/ecoindex_api/pyproject.toml
-          cp tmp/VERSION bases/ecoindex/backend/VERSION
+          ls -la /tmp
+          cp /tmp/pyproject.toml projects/ecoindex_api/pyproject.toml
+          cp /tmp/VERSION bases/ecoindex/backend/VERSION
 
       - name: Commit files
         uses: EndBug/add-and-commit@v9
