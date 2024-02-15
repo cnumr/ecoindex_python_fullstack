@@ -1,3 +1,4 @@
+import os
 from tempfile import NamedTemporaryFile
 from typing import Set
 from urllib.parse import urlparse, urlunparse
@@ -38,9 +39,10 @@ def get_urls_recursive(main_url: str) -> Set[str]:
     parsed_url = urlparse(main_url)
     netloc = parsed_url.netloc
     domain = netloc
-    if (parsed_url.hostname == "localhost"):
-        domain = "host.docker.internal"
-        netloc = netloc.replace('localhost', 'host.docker.internal')
+    if os.environ.get('DOCKER_CONTAINER') == 'true':
+        if (parsed_url.hostname == "localhost"):
+            domain = "host.docker.internal"
+            netloc = netloc.replace('localhost', 'host.docker.internal')
     main_url = f"{parsed_url.scheme}://{netloc}"
     process = CrawlerProcess()
 
@@ -63,9 +65,10 @@ def get_url_from_args(urls_arg: list[AnyHttpUrl]) -> set[AnyHttpUrl]:
     urls_from_args = set()
     for url in urls_arg:
         parsed_url = urlparse(str(url))
-        if (parsed_url.hostname == "localhost"):
-            replaced_netloc = parsed_url.netloc.replace('localhost', 'host.docker.internal')            
-            url = AnyHttpUrl(urlunparse((parsed_url.scheme, replaced_netloc, parsed_url.path, parsed_url.params, parsed_url.query, parsed_url.fragment)))
+        if os.environ.get('DOCKER_CONTAINER') == 'true':
+            if (parsed_url.hostname == "localhost"):
+                replaced_netloc = parsed_url.netloc.replace('localhost', 'host.docker.internal')            
+                url = AnyHttpUrl(urlunparse((parsed_url.scheme, replaced_netloc, parsed_url.path, parsed_url.params, parsed_url.query, parsed_url.fragment)))
         urls_from_args.add(url)
 
     return urls_from_args

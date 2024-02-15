@@ -34,6 +34,8 @@ If you are on linux and you want to perform analysis on local project you need t
 alias ecoindex-cli="docker run -it --rm --add-host=host.docker.internal:host-gateway -v /tmp/ecoindex-cli:/tmp/ecoindex-cli vvatelot/ecoindex-cli:latest ecoindex-cli"
 ```
 
+Currently, host.docker.internal is mapped to your IPv4 address. To facilitate local testing, ensure that your localhost is accessible via your IPv4 address (127.0.0.1).
+
 ## Use case
 
 The docker image [vvatelot/ecoindex-cli](https://hub.docker.com/r/vvatelot/ecoindex-cli) is available for `linux/amd64` and `linux/arm64` platforms and provides you an easy way to use this CLI on your environment.
