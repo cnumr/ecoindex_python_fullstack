@@ -1,5 +1,20 @@
 # Ecoindex Python Fullstack
 
+[![Validate project quality](https://github.com/cnumr/ecoindex_python_fullstack/actions/workflows/quality_check.yml/badge.svg?branch=main)](https://github.com/cnumr/ecoindex_python_fullstack/actions/workflows/quality_check.yml)
+
+![PyPI - Version](https://img.shields.io/pypi/v/ecoindex-compute?logo=pypi&label=ecoindex-compute)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/ecoindex-compute?style=social&logo=pypi&label=ecoindex-compute)
+
+![PyPI - Version](https://img.shields.io/pypi/v/ecoindex-scraper?logo=pypi&label=ecoindex-scraper)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/ecoindex-scraper?style=social&logo=pypi&label=ecoindex-scraper)
+
+![PyPI - Version](https://img.shields.io/pypi/v/ecoindex-cli?logo=pypi&label=ecoindex-cli)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/ecoindex-cli?style=social&logo=pypi&label=ecoindex-cli)
+![Docker Pulls](https://img.shields.io/docker/pulls/vvatelot/ecoindex-cli?style=social&logo=docker&label=CLI)
+
+![Docker Pulls](https://img.shields.io/docker/pulls/vvatelot/ecoindex-api-worker?style=social&logo=docker&label=API%20Worker)
+![Docker Pulls](https://img.shields.io/docker/pulls/vvatelot/ecoindex-api-backend?style=social&logo=docker&label=API%20Backend)
+
 - [Ecoindex Python Fullstack](#ecoindex-python-fullstack)
   - [Projects](#projects)
   - [Getting started](#getting-started)

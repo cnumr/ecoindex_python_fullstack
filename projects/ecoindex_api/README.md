@@ -1,5 +1,11 @@
 # Ecoindex-Api
 
+[![Validate project quality](https://github.com/cnumr/ecoindex_python_fullstack/actions/workflows/quality_check.yml/badge.svg?branch=main)](https://github.com/cnumr/ecoindex_python_fullstack/actions/workflows/quality_check.yml)
+
+![Docker Pulls](https://img.shields.io/docker/pulls/vvatelot/ecoindex-api-worker?style=social&logo=docker&label=API%20Worker)
+![Docker Pulls](https://img.shields.io/docker/pulls/vvatelot/ecoindex-api-backend?style=social&logo=docker&label=API%20Backend)
+
+
 This tool provides an easy way to analyze websites with [Ecoindex](https://www.ecoindex.fr) on a remote server. You have the ability to:
 
 - Make a page analysis
