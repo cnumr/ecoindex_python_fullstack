@@ -1,5 +1,9 @@
 # Ecoindex python
 
+[![Validate project quality](https://github.com/cnumr/ecoindex_python_fullstack/actions/workflows/quality_check.yml/badge.svg?branch=main)](https://github.com/cnumr/ecoindex_python_fullstack/actions/workflows/quality_check.yml)
+![PyPI - Version](https://img.shields.io/pypi/v/ecoindex-compute?logo=pypi)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/ecoindex-compute?style=social&logo=pypi)
+
 This basic module provides a simple interface to get the [Ecoindex](http://www.ecoindex.fr) based on 3 parameters:
 
 - The number of DOM elements in the page

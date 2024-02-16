@@ -1,5 +1,10 @@
 # Ecoindex Scraper
 
+[![Validate project quality](https://github.com/cnumr/ecoindex_python_fullstack/actions/workflows/quality_check.yml/badge.svg?branch=main)](https://github.com/cnumr/ecoindex_python_fullstack/actions/workflows/quality_check.yml)
+
+![PyPI - Version](https://img.shields.io/pypi/v/ecoindex-scraper?logo=pypi)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/ecoindex-scraper?style=social&logo=pypi)
+
 This module provides a simple interface to get the [Ecoindex](http://www.ecoindex.fr) of a given webpage using module [ecoindex-compute](https://pypi.org/project/ecoindex-compute/)
 
 ## Requirements
