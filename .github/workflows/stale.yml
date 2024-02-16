@@ -1,0 +1,24 @@
+name: Stale bot
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-issue-message: This issue has been marked as inactive because it hasn't been updated for 30 days. If it's not updated within 7 days, it will be automatically closed. To prevent it from being closed, you can add the `keep open` label.
+          stale-pr-message: This pull request has been marked as inactive because it hasn't been updated for 30 days. If it's not updated within 7 days, it will be automatically closed. To prevent it from being closed, you can add the `keep open` label.
+          exempt-pr-labels: "keep open"
+          exempt-issue-labels: "keep open"
+          close-issue-message: This issue has been closed because it's been inactive for 37 days. If you think this is a mistake, you can reopen it.
+          close-pr-message: This pull request has been closed because it's been inactive for 37 days. If you think this is a mistake, you can reopen it.
