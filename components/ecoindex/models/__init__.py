@@ -1,3 +1,6 @@
+from ecoindex.models.cli import (
+    CliHost,
+)
 from ecoindex.models.compute import (
     Ecoindex,
     PageMetrics,
@@ -19,6 +22,7 @@ from ecoindex.models.scraper import RequestItem, Requests
 from ecoindex.models.sort import Sort
 
 __all__ = [
+    "CliHost",
     "Ecoindex",
     "example_daily_limit_response",
     "example_ecoindex_not_found",
