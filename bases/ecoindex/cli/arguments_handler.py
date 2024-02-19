@@ -40,8 +40,7 @@ def get_urls_recursive(main_url: str) -> Set[str]:
     parsed_url = urlparse(main_url)
     netloc = parsed_url.netloc
     domain = netloc
-    if Settings().DOCKER_CONTAINER:
-        if (parsed_url.hostname == "localhost"):
+    if Settings().DOCKER_CONTAINER and parsed_url.hostname == "localhost":
             domain = "host.docker.internal"
             netloc = netloc.replace('localhost', 'host.docker.internal')
     main_url = f"{parsed_url.scheme}://{netloc}"
