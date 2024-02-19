@@ -1,7 +1,4 @@
-from typing import List  # Add the missing import statement
-
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
 
 class Settings(BaseSettings):
     CORS_ALLOWED_CREDENTIALS: bool = True
@@ -13,7 +10,7 @@ class Settings(BaseSettings):
     DOCKER_CONTAINER: bool = False
     DEBUG: bool = False
     ENABLE_SCREENSHOT: bool = False
-    EXCLUDED_HOSTS: List[str] = ["localhost", "127.0.0.1"]  # Update the type annotation
+    EXCLUDED_HOSTS: list[str] = ["localhost", "127.0.0.1"]
     FRONTEND_BASE_URL: str = "https://www.ecoindex.fr"
     REDIS_CACHE_HOST: str = "localhost"
     SCREENSHOTS_GID: int | None = None
