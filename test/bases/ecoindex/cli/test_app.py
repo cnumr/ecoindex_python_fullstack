@@ -88,16 +88,33 @@ def test_analyze_abort_recursive() -> None:
     assert result.exit_code == 1
 
 
-# def test_analyze_abort_sitemap() -> None:
-#     domain = "www.test.com"
-#     valid_url = f"https://{domain}"
-#     result = runner.invoke(app=app, args=["analyze", "--sitemap", valid_url], input="n\n")
-#     assert (
-#         "You are about to read urls from a website sitemap. This can take a long time. Are you sure to want to proceed?"
-#         in result.stdout
-#     )
-#     assert "Aborted" in result.stdout
-#     assert result.exit_code == 1
+def test_analyze_abort_sitemap() -> None:
+    domain = "www.test.com"
+    valid_url = f"https://{domain}/sitemap.xml"
+    result = runner.invoke(
+        app=app, args=["analyze", "--sitemap", valid_url], input="n\n"
+    )
+    assert (
+        "You are about to read urls from a website sitemap. This can take a long time. Are you sure to want to proceed?"
+        in result.stdout
+    )
+    assert "Aborted" in result.stdout
+    assert result.exit_code == 1
+
+
+def test_invalid_sitemap() -> None:
+    domain = "www.test.com"
+    invalid_sitemap = f"https://{domain}"
+    result = runner.invoke(
+        app=app, args=["analyze", "--sitemap", invalid_sitemap], input="y\n"
+    )
+    assert (
+        "You are about to read urls from a website sitemap. This can take a long time. Are you sure to want to proceed?"
+        in result.stdout
+    )
+    assert "Aborted" not in result.stdout
+    assert "The provided url is not a valid sitemap url" in result.stdout
+    assert result.exit_code == 1
 
 
 def test_no_interaction() -> None:

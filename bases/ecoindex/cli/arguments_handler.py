@@ -55,25 +55,29 @@ def get_urls_recursive(main_url: str) -> Set[str]:
         process.start()
         temp_file.seek(0)
         urls = temp_file.readlines()
-
     return validate_list_of_urls(urls)  # type: ignore
+
 
 def get_urls_from_sitemap(main_url: str) -> Set[str]:
     process = CrawlerProcess()
     if "sitemap" not in main_url or not main_url.endswith(".xml"):
         raise ValueError("The provided url is not a valid sitemap url")
-    
+
     with NamedTemporaryFile(mode="w+t") as temp_file:
         process.crawl(
-            crawler_or_spidercls=EcoindexSitemapSpider,
+            crawler_or_spidercls=EcoindexSitemapSpider, 
             sitemap_urls=[main_url],
             temp_file=temp_file,
         )
         process.start()
         temp_file.seek(0)
-        urls = temp_file.readlines()
+        urls = list()
+        str_urls = temp_file.readlines()
+        for url in str_urls:
+            urls.append(AnyHttpUrl(url))
 
     return validate_list_of_urls(urls)
+
 
 @validate_call
 def get_url_from_args(urls_arg: list[AnyHttpUrl]) -> set[AnyHttpUrl]:
