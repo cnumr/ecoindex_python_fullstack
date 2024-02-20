@@ -11,6 +11,7 @@ from ecoindex.cli.arguments_handler import (
     get_file_prefix_input_file_logger_file,
     get_url_from_args,
     get_urls_from_file,
+    get_urls_from_sitemap,
     get_urls_recursive,
     get_window_sizes_from_args,
 )
@@ -37,6 +38,9 @@ app = Typer(help="Ecoindex cli to make analysis of webpages")
 @app.command()
 def analyze(
     url: list[str] = Option(default=None, help="List of urls to analyze"),
+    sitemap: list[str] = Option(
+        default=None, help="Sitemap url of the website you want to analyze"
+    ),
     window_size: list[str] = Option(
         default=["1920,1080"],
         help=(
@@ -117,6 +121,16 @@ def analyze(
             default=True,
         )
 
+    if sitemap and not no_interaction:
+        confirm(
+            text=(
+                "You are about to read urls from a website sitemap. "
+                "This can take a long time. Are you sure to want to proceed?"
+            ),
+            abort=True,
+            default=True,
+        )
+
     try:
         window_sizes = get_window_sizes_from_args(window_size)
         tmp_folder = "/tmp/ecoindex-cli"
@@ -150,6 +164,14 @@ def analyze(
             ) = get_file_prefix_input_file_logger_file(
                 urls=urls, urls_file=urls_file, tmp_folder=tmp_folder
             )
+        elif sitemap:
+            secho(f"⏲️ Crawling sitemap url {sitemap[0]} -> Wait a minute!", fg=colors.MAGENTA)
+            urls = get_urls_from_sitemap(main_url=sitemap[0])
+            (
+                file_prefix,
+                input_file,
+                logger_file,
+            ) = get_file_prefix_input_file_logger_file(urls=urls)
 
         else:
             secho("🔥 You must provide an url...", fg=colors.RED)
