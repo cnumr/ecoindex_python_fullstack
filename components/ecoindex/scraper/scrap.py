@@ -131,10 +131,10 @@ class EcoindexScraper:
                 else:
                     size = entry["response"]["_transferSize"]
                     if size == -1:
-                        request_headers_size = len(
+                        response_headers_size = len(
                             json.dumps(entry["response"]).encode("utf-8")
                         )
-                        size = request_headers_size
+                        size = response_headers_size
 
                 aggregation[category]["total_size"] += size
                 self.all_requests.total_count += 1
