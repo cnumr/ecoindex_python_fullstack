@@ -119,23 +119,7 @@ class EcoindexScraper:
                 mime_type = entry["response"]["content"]["mimeType"]
                 category = await MimetypeAggregation.get_category_of_resource(mime_type)
                 aggregation[category]["total_count"] += 1
-
-                if entry["response"]["status"] == 206 and (
-                    category == "audio" or category == "video"
-                ):
-                    headers = entry["response"]["headers"]
-                    for header in headers:
-                        if header["name"] == "Content-Length":
-                            size = int(header["value"])
-                            break 
-                else:
-                    size = entry["response"]["_transferSize"]
-                    if size == -1:
-                        response_headers_size = len(
-                            json.dumps(entry["response"]).encode("utf-8")
-                        )
-                        size = response_headers_size
-
+                size = self.get_request_size(category, entry)
                 aggregation[category]["total_size"] += size
                 self.all_requests.total_count += 1
                 self.all_requests.total_size += size
@@ -156,3 +140,22 @@ class EcoindexScraper:
         svgs = await self.page.locator("//*[local-name()='svg']//*").all()
 
         return len(nodes) - len(svgs)
+    
+    def get_request_size(self, category: str, entry) -> int:
+        size = 0
+        if entry["response"]["status"] == 206 and (
+            category == "audio" or category == "video"
+        ):
+            headers = entry["response"]["headers"]
+            for header in headers:
+                if header["name"].lower() == "content-length":
+                    size = int(header["value"])
+                    break 
+        else:
+            size = entry["response"]["_transferSize"]
+            if size == -1:
+                response_headers_size = len(
+                    json.dumps(entry["response"]).encode("utf-8")
+                )
+                size = response_headers_size
+        return size
