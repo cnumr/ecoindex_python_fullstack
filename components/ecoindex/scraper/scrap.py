@@ -82,13 +82,12 @@ class EcoindexScraper:
             await self.page.wait_for_load_state()
             sleep(self.wait_before_scroll)
             await self.generate_screenshot()
-            await self.page.keyboard.press('ArrowDown')
+            await self.page.keyboard.press("ArrowDown")
             await self.page.evaluate(
                 "window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })"
             )
             sleep(self.wait_after_scroll)
             total_nodes = await self.get_nodes_count()
-
             await self.page.close()
             await browser.close()
 
@@ -119,9 +118,27 @@ class EcoindexScraper:
                 url = entry["request"]["url"]
                 mime_type = entry["response"]["content"]["mimeType"]
                 category = await MimetypeAggregation.get_category_of_resource(mime_type)
-                size = entry["response"]["_transferSize"]
                 aggregation[category]["total_count"] += 1
+
+                if entry["response"]["status"] == 206 and (
+                    category == "audio" or category == "video"
+                ):
+                    headers = entry["response"]["headers"]
+                    for header in headers:
+                        if header["name"] == "Content-Length":
+                            size = int(header["value"])
+                            break 
+                else:
+                    size = entry["response"]["_transferSize"]
+                    if size == -1:
+                        request_headers_size = len(
+                            json.dumps(entry["response"]).encode("utf-8")
+                        )
+                        size = request_headers_size
+
                 aggregation[category]["total_size"] += size
+                self.all_requests.total_count += 1
+                self.all_requests.total_size += size
                 self.all_requests.items.append(
                     RequestItem(
                         url=url,
@@ -131,9 +148,6 @@ class EcoindexScraper:
                         category=category,
                     )
                 )
-
-                self.all_requests.total_count += 1
-                self.all_requests.total_size += entry["response"]["_transferSize"]
             self.all_requests.aggregation = MimetypeAggregation(**aggregation)
         os.remove(self.har_temp_file_path)
 
