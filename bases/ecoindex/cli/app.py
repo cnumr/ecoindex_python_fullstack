@@ -38,7 +38,7 @@ app = Typer(help="Ecoindex cli to make analysis of webpages")
 @app.command()
 def analyze(
     url: list[str] = Option(default=None, help="List of urls to analyze"),
-    sitemap: list[str] = Option(
+    sitemap: str = Option(
         default=None, help="Sitemap url of the website you want to analyze"
     ),
     window_size: list[str] = Option(
@@ -165,8 +165,8 @@ def analyze(
                 urls=urls, urls_file=urls_file, tmp_folder=tmp_folder
             )
         elif sitemap:
-            secho(f"⏲️ Crawling sitemap url {sitemap[0]} -> Wait a minute!", fg=colors.MAGENTA)
-            urls = get_urls_from_sitemap(main_url=sitemap[0])
+            secho(f"⏲️ Crawling sitemap url {sitemap} -> Wait a minute!", fg=colors.MAGENTA)
+            urls = get_urls_from_sitemap(main_url=sitemap)
             (
                 file_prefix,
                 input_file,

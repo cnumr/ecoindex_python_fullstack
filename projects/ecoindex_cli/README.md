@@ -6,7 +6,6 @@
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/ecoindex-cli?style=social&logo=pypi)
 ![Docker Pulls](https://img.shields.io/docker/pulls/vvatelot/ecoindex-cli?style=social&logo=docker)
 
-
 This tool provides an easy way to analyze websites with [Ecoindex](https://www.ecoindex.fr) from your local computer using multi-threading. You have the ability to:
 
 - Make the analysis on multiple pages
@@ -141,6 +140,8 @@ There are 22 url(s), do you want to process? [Y/n]: y
 ```
 
 </details>
+
+Note: When utilizing the sitemap method with the --recursive flag, please be aware that the recursive flag will not take effect.
 
 ### Make a recursive analysis
 
