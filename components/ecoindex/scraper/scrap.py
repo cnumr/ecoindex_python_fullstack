@@ -140,22 +140,15 @@ class EcoindexScraper:
         svgs = await self.page.locator("//*[local-name()='svg']//*").all()
 
         return len(nodes) - len(svgs)
-    
+
     def get_request_size(self, category: str, entry) -> int:
-        size = 0
-        if entry["response"]["status"] == 206 and (
-            category == "audio" or category == "video"
-        ):
-            headers = entry["response"]["headers"]
-            for header in headers:
-                if header["name"].lower() == "content-length":
-                    size = int(header["value"])
-                    break 
+        if entry["response"]["_transferSize"] != -1:
+            return entry["response"]["_transferSize"]
+        headers = entry["response"]["headers"]
+        content_length_header = list(
+            filter(lambda header: (header["name"].lower() == "content-length"), headers)
+        )
+        if len(content_length_header) > 0 and entry["response"]["status"] == 206:
+            return int(content_length_header[0]["value"])
         else:
-            size = entry["response"]["_transferSize"]
-            if size == -1:
-                response_headers_size = len(
-                    json.dumps(entry["response"]).encode("utf-8")
-                )
-                size = response_headers_size
-        return size
+            return len(json.dumps(entry["response"]).encode("utf-8"))
