@@ -1,6 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
 class Settings(BaseSettings):
     CORS_ALLOWED_CREDENTIALS: bool = True
     CORS_ALLOWED_HEADERS: list = ["*"]
@@ -8,6 +7,7 @@ class Settings(BaseSettings):
     CORS_ALLOWED_ORIGINS: list = ["*"]
     DAILY_LIMIT_PER_HOST: int = 0
     DATABASE_URL: str = "sqlite+aiosqlite:///db.sqlite3"
+    DOCKER_CONTAINER: bool = False
     DEBUG: bool = False
     ENABLE_SCREENSHOT: bool = False
     EXCLUDED_HOSTS: list[str] = ["localhost", "127.0.0.1"]

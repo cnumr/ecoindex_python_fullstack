@@ -1,9 +1,11 @@
 from tempfile import NamedTemporaryFile
 from typing import Set
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 
 from ecoindex.cli.crawl import EcoindexSpider
+from ecoindex.cli.helper import replace_localhost_with_hostdocker
 from ecoindex.models import WindowSize
+
 from pydantic import AnyHttpUrl, validate_call
 from pydantic.types import FilePath
 from scrapy.crawler import CrawlerProcess
@@ -36,8 +38,10 @@ def get_urls_from_file(urls_file: FilePath) -> Set[str]:
 
 def get_urls_recursive(main_url: str) -> Set[str]:
     parsed_url = urlparse(main_url)
-    domain = parsed_url.netloc
-    main_url = f"{parsed_url.scheme}://{domain}"
+    host_infos = replace_localhost_with_hostdocker(parsed_url.netloc)
+    netloc = host_infos.netloc
+    domain = host_infos.domain
+    main_url = f"{parsed_url.scheme}://{netloc}"
     process = CrawlerProcess()
 
     with NamedTemporaryFile(mode="w+t") as temp_file:
@@ -58,6 +62,9 @@ def get_urls_recursive(main_url: str) -> Set[str]:
 def get_url_from_args(urls_arg: list[AnyHttpUrl]) -> set[AnyHttpUrl]:
     urls_from_args = set()
     for url in urls_arg:
+        parsed_url = urlparse(str(url))
+        host_infos = replace_localhost_with_hostdocker(parsed_url.netloc)
+        url = AnyHttpUrl(urlunparse((parsed_url.scheme, host_infos.netloc, parsed_url.path, parsed_url.params, parsed_url.query, parsed_url.fragment)))
         urls_from_args.add(url)
 
     return urls_from_args

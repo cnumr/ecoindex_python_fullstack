@@ -25,8 +25,16 @@ The output is a CSV or JSON file with the results of the analysis.
 
 The simplest way to start with ecoindex-cli is to install docker and then create an alias in your .bashrc or .zshrc file:
 
+For MacOS and Windows :
+
 ```bash
 alias ecoindex-cli="docker run -it --rm -v /tmp/ecoindex-cli:/tmp/ecoindex-cli vvatelot/ecoindex-cli:latest ecoindex-cli"
+```
+
+For Linux :
+
+```bash
+alias ecoindex-cli="docker run -it --rm --add-host=host.docker.internal:host-gateway -v /tmp/ecoindex-cli:/tmp/ecoindex-cli vvatelot/ecoindex-cli:latest ecoindex-cli"
 ```
 
 Then you can use the cli as if it was installed on your computer:
@@ -34,6 +42,9 @@ Then you can use the cli as if it was installed on your computer:
 ```bash
 ecoindex-cli --help
 ```
+
+To enable local testing we use the docker alias `host.docker.internal` to access your machine localhost.
+Currently, `host.docker.internal` is mapped to your IPv4 address. To facilitate local testing, ensure that your localhost is accessible via your IPv4 address (127.0.0.1).
 
 ## Use case
 

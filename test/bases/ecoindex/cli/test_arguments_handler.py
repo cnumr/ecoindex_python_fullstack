@@ -15,9 +15,10 @@ def test_urls_all_valid_from_args():
         "https://test.com/",
         "https://www.dummy.com/page/",
         "https://www.dummy.com/another_page",
+        "http://localhost:8000/",
     )
     valid_urls = get_url_from_args(urls_arg=urls)
-    assert len(valid_urls) == 4
+    assert len(valid_urls) == 5
     for url in valid_urls:
         assert str(url) in urls
 
