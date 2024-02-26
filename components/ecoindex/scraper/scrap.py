@@ -72,12 +72,7 @@ class EcoindexScraper:
             )
             await stealth_async(self.page)
             response = await self.page.goto(self.url)
-            if response and response.status != 200:
-                raise EcoindexScraperStatusException(
-                    url=self.url,
-                    status=response.status,
-                    message=response.status_text,
-                )
+            await self.check_page_response(response)
 
             await self.page.wait_for_load_state()
             sleep(self.wait_before_scroll)
@@ -119,7 +114,7 @@ class EcoindexScraper:
                 mime_type = entry["response"]["content"]["mimeType"]
                 category = await MimetypeAggregation.get_category_of_resource(mime_type)
                 aggregation[category]["total_count"] += 1
-                size = self.get_request_size(category, entry)
+                size = self.get_request_size(entry)
                 aggregation[category]["total_size"] += size
                 self.all_requests.total_count += 1
                 self.all_requests.total_size += size
@@ -141,7 +136,7 @@ class EcoindexScraper:
 
         return len(nodes) - len(svgs)
 
-    def get_request_size(self, category: str, entry) -> int:
+    def get_request_size(self, entry) -> int:
         if entry["response"]["_transferSize"] != -1:
             return entry["response"]["_transferSize"]
         headers = entry["response"]["headers"]
@@ -152,3 +147,23 @@ class EcoindexScraper:
             return int(content_length_header[0]["value"])
         else:
             return len(json.dumps(entry["response"]).encode("utf-8"))
+
+    async def check_page_response(self, response) -> None:
+        if response and response.status != 200:
+            raise EcoindexScraperStatusException(
+                url=self.url,
+                status=response.status,
+                message=response.status_text,
+            )
+        headers = response.headers
+        content_type = next((value for key, value in headers.items() if key.lower() == 'content-type'), None)
+        if content_type and content_type != "text/html":
+            raise TypeError(
+                {
+                    "mimetype": content_type,
+                    "message": (
+                        "This resource is not "
+                        "a standard page with mimeType 'text/html'"
+                    ),
+                }
+            )
