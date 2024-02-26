@@ -6,7 +6,6 @@
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/ecoindex-cli?style=social&logo=pypi)
 ![Docker Pulls](https://img.shields.io/docker/pulls/vvatelot/ecoindex-cli?style=social&logo=docker)
 
-
 This tool provides an easy way to analyze websites with [Ecoindex](https://www.ecoindex.fr) from your local computer using multi-threading. You have the ability to:
 
 - Make the analysis on multiple pages
@@ -112,6 +111,37 @@ There are 2 url(s), do you want to process? [Y/n]:
 ```
 
 </details>
+
+### Make a website analysis based on the website's sitemap
+
+The cli allows for the analysis of a designated website using its sitemap. By entering the sitemap URL, the app identifies and analyzes all pages within the website. ⚠️ This can process for a very long time! **Use it at your own risks!**
+
+```bash
+ecoindex-cli analyze --sitemap https://www.ecoindex.fr/sitemap.xml
+```
+
+<details><summary>Result</summary>
+
+```bash
+You are about to read urls from a website sitemap. This can take a long time. Are you sure to want to proceed? [Y/n]: 
+⏲️ Crawling sitemap url https://www.ecoindex.fr/sitemap.xml -> Wait a minute!
+2024-02-20 18:38:16 [scrapy.utils.log] INFO: Scrapy 2.11.1 started (bot: scrapybot)
+2024-02-20 18:38:16 [scrapy.utils.log] INFO: Versions: lxml 5.1.0.0, libxml2 2.12.3, cssselect 1.2.0, parsel 1.8.1, w3lib 2.1.2, Twisted 23.10.0, Python 3.12.2 (main, Feb 13 2024, 08:34:52) [GCC 12.2.0], pyOpenSSL 24.0.0 (OpenSSL 3.2.1 30 Jan 2024), cryptography 42.0.3, Platform Linux-6.4.16-linuxkit-aarch64-with-glibc2.36
+📁️ Urls recorded in file `/tmp/ecoindex-cli/input/www.ecoindex.fr.csv`
+There are 22 url(s), do you want to process? [Y/n]: y
+22 urls for 1 window size with 10 maximum workers
+100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 22/22 • 0:00:20 • 0:00:00
+┏━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
+┃ Total analysis ┃ Success ┃ Failed ┃
+┡━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
+│ 22             │ 22      │ 0      │
+└────────────────┴─────────┴────────┘
+🙌️ File /tmp/ecoindex-cli/output/www.ecoindex.fr/2024-02-20_183842/results.csv written !
+```
+
+</details>
+
+Note: When utilizing the sitemap method with the --recursive flag, please be aware that the recursive flag will not take effect.
 
 ### Make a recursive analysis
 
