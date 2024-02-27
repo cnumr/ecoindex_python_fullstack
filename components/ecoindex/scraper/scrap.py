@@ -157,7 +157,7 @@ class EcoindexScraper:
             )
         headers = response.headers
         content_type = next((value for key, value in headers.items() if key.lower() == 'content-type'), None)
-        if content_type and content_type != "text/html":
+        if content_type and "text/html" not in content_type:
             raise TypeError(
                 {
                     "mimetype": content_type,
