@@ -72,23 +72,17 @@ class EcoindexScraper:
             )
             await stealth_async(self.page)
             response = await self.page.goto(self.url)
-            if response and response.status != 200:
-                raise EcoindexScraperStatusException(
-                    url=self.url,
-                    status=response.status,
-                    message=response.status_text,
-                )
+            await self.check_page_response(response)
 
             await self.page.wait_for_load_state()
             sleep(self.wait_before_scroll)
             await self.generate_screenshot()
-            await self.page.keyboard.press('ArrowDown')
+            await self.page.keyboard.press("ArrowDown")
             await self.page.evaluate(
                 "window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })"
             )
             sleep(self.wait_after_scroll)
             total_nodes = await self.get_nodes_count()
-
             await self.page.close()
             await browser.close()
 
@@ -119,9 +113,11 @@ class EcoindexScraper:
                 url = entry["request"]["url"]
                 mime_type = entry["response"]["content"]["mimeType"]
                 category = await MimetypeAggregation.get_category_of_resource(mime_type)
-                size = entry["response"]["_transferSize"]
                 aggregation[category]["total_count"] += 1
+                size = self.get_request_size(entry)
                 aggregation[category]["total_size"] += size
+                self.all_requests.total_count += 1
+                self.all_requests.total_size += size
                 self.all_requests.items.append(
                     RequestItem(
                         url=url,
@@ -131,9 +127,6 @@ class EcoindexScraper:
                         category=category,
                     )
                 )
-
-                self.all_requests.total_count += 1
-                self.all_requests.total_size += entry["response"]["_transferSize"]
             self.all_requests.aggregation = MimetypeAggregation(**aggregation)
         os.remove(self.har_temp_file_path)
 
@@ -142,3 +135,35 @@ class EcoindexScraper:
         svgs = await self.page.locator("//*[local-name()='svg']//*").all()
 
         return len(nodes) - len(svgs)
+
+    def get_request_size(self, entry) -> int:
+        if entry["response"]["_transferSize"] != -1:
+            return entry["response"]["_transferSize"]
+        headers = entry["response"]["headers"]
+        content_length_header = list(
+            filter(lambda header: (header["name"].lower() == "content-length"), headers)
+        )
+        if len(content_length_header) > 0 and entry["response"]["status"] == 206:
+            return int(content_length_header[0]["value"])
+        else:
+            return len(json.dumps(entry["response"]).encode("utf-8"))
+
+    async def check_page_response(self, response) -> None:
+        if response and response.status != 200:
+            raise EcoindexScraperStatusException(
+                url=self.url,
+                status=response.status,
+                message=response.status_text,
+            )
+        headers = response.headers
+        content_type = next((value for key, value in headers.items() if key.lower() == 'content-type'), None)
+        if content_type and "text/html" not in content_type:
+            raise TypeError(
+                {
+                    "mimetype": content_type,
+                    "message": (
+                        "This resource is not "
+                        "a standard page with mimeType 'text/html'"
+                    ),
+                }
+            )
