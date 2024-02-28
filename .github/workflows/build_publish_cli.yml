@@ -16,7 +16,7 @@ on:
           - "preminor"
           - "premajor"
 env:
-  DRAFT: ${{ contains(inputs.bump, 'pre') }}
+  PRERELEASE: ${{ contains(inputs.bump, 'pre') }}
 
 jobs:
   python_project:
@@ -120,7 +120,7 @@ jobs:
           context: projects/ecoindex_cli
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-cli:${{ needs.python_project.outputs.cli_version }},,${{ !env.DRAFT && 'vvatelot/ecoindex-cli:latest' || '' }}
+          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-cli:${{ needs.python_project.outputs.cli_version }},,${{ !env.PRERELEASE && 'vvatelot/ecoindex-cli:latest' || '' }}
           labels: ${{ steps.meta.outputs.labels }}
           file: projects/ecoindex_cli/dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
@@ -195,9 +195,12 @@ jobs:
           cp /tmp/pyproject.toml projects/ecoindex_cli/pyproject.toml
           cp /tmp/VERSION bases/ecoindex/cli/VERSION
 
-      - name: Get last tag (that is not a `pre` tag) for CLI
+      - uses: oprypin/find-latest-tag@v1
         id: last_tag
-        run: echo "last_tag=$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+@cli$' | sort -r | head -n 1)" >> $GITHUB_OUTPUT
+        with:
+          repository: ${{ github.repository }}
+          releases-only: false
+          regex: '^v[0-9]+\.[0-9]+\.[0-9]+@cli$'
 
       - name: Commit files
         uses: EndBug/add-and-commit@v9
@@ -213,7 +216,7 @@ jobs:
         with:
           token: ${{ github.token }}
           fromTag: v${{ needs.python_project.outputs.cli_version }}@cli
-          toTag: ${{ steps.last_tag.outputs.last_tag }}
+          toTag: ${{ steps.last_tag.outputs.tag }}
           excludeScopes: api
           changelogFilePath: /tmp/changelog.md
 
@@ -232,7 +235,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          draft: ${{ env.DRAFT }}
+          prerelease: ${{ env.PRERELEASE }}
           makeLatest: true
           name: "CLI: v${{ needs.python_project.outputs.cli_version }}"
           tag: v${{ needs.python_project.outputs.cli_version }}@cli

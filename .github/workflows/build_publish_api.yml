@@ -16,7 +16,7 @@ on:
           - "preminor"
           - "premajor"
 env:
-  DRAFT: ${{ contains(inputs.bump, 'pre') }}
+  PRERELEASE: ${{ contains(inputs.bump, 'pre') }}
 
 jobs:
   python_project:
@@ -120,7 +120,7 @@ jobs:
           context: projects/ecoindex_api
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.api_version }},${{ !env.DRAFT && 'vvatelot/ecoindex-api-backend:latest' || '' }}
+          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.api_version }},${{ !env.PRERELEASE && 'vvatelot/ecoindex-api-backend:latest' || '' }}
           labels: ${{ steps.meta.outputs.labels }}
           file: projects/ecoindex_api/docker/backend/dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
@@ -163,7 +163,7 @@ jobs:
           context: projects/ecoindex_api
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-worker:${{ needs.python_project.outputs.api_version }},${{ !env.DRAFT && 'vvatelot/ecoindex-api-worrker:latest' || '' }}
+          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-worker:${{ needs.python_project.outputs.api_version }},${{ !env.PRERELEASE && 'vvatelot/ecoindex-api-worrker:latest' || '' }}
           labels: ${{ steps.meta.outputs.labels }}
           file: projects/ecoindex_api/docker/worker/dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
@@ -196,9 +196,12 @@ jobs:
           cp /tmp/pyproject.toml projects/ecoindex_api/pyproject.toml
           cp /tmp/VERSION bases/ecoindex/backend/VERSION
 
-      - name: Get last tag (that is not a `pre` tag) for api
+      - uses: oprypin/find-latest-tag@v1
         id: last_tag
-        run: echo "last_tag=$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+@api$' | sort -r | head -n 1)" >> $GITHUB_OUTPUT
+        with:
+          repository: ${{ github.repository }}
+          releases-only: false
+          regex: '^v[0-9]+\.[0-9]+\.[0-9]+@api$'
 
       - name: Commit files
         uses: EndBug/add-and-commit@v9
@@ -214,7 +217,7 @@ jobs:
         with:
           token: ${{ github.token }}
           fromTag: v${{ needs.python_project.outputs.api_version }}@api
-          toTag: ${{ steps.last_tag.outputs.last_tag }}
+          toTag: ${{ steps.last_tag.outputs.tag }}
           excludeScopes: cli
           changelogFilePath: /tmp/changelog.md
 
@@ -231,7 +234,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          draft: ${{ env.DRAFT }}
+          prerelease: ${{ env.PRERELEASE }}
           makeLatest: true
           name: "API: v${{ needs.python_project.outputs.api_version }}"
           tag: v${{ needs.python_project.outputs.api_version }}@api
