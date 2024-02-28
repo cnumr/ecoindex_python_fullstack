@@ -1,0 +1,59 @@
+name: Test get latest tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Bump the version of the API"
+        type: choice
+        required: true
+        default: "patch"
+        options:
+          - "patch"
+          - "minor"
+          - "major"
+          - "prepatch"
+          - "preminor"
+          - "premajor"
+env:
+  DRAFT: ${{ contains(inputs.bump, 'pre') }}
+
+jobs:
+  release:
+    name: Create a release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Git pull
+        run: git pull
+
+      - name: Get last tag (that is not a `pre` tag) for api
+        id: last_tag
+        run: |
+          echo "last_tag=$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+@api$' | sort -r | head -n 1)" >> $GITHUB_OUTPUT
+          echo "last_tag=$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+@api$' | sort -r | head -n 1)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Find Tag
+        id: tagger
+        uses: jimschubert/query-tag-action@v1
+        with:
+          include: "v*@api"
+          exclude: "v*a*@api"
+          commit-ish: "HEAD~"
+
+      - name: Show Tag
+        id: display
+        run: |
+          echo 'Output from Find Tag: ${{steps.tagger.outputs.tag}}'
+
+      - uses: oprypin/find-latest-tag@v1
+        id: chipmunk_version
+        with:
+          repository: ${{ github.repository }}
+          releases-only: false # This repository doesn't use GitHub's "release" feature.
+          regex: '^v[0-9]+\.[0-9]+\.[0-9]+@api$'
+
+      - name: Show latest tag
+        run: echo "Latest tag is ${{ steps.chipmunk_version.outputs.tag }}"
