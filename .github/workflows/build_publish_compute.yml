@@ -16,7 +16,7 @@ on:
           - "preminor"
           - "premajor"
 env:
-  DRAFT: ${{ contains(inputs.bump, 'pre') }}
+  PRERELEASE: ${{ contains(inputs.bump, 'pre') }}
 
 jobs:
   python_project:
@@ -152,9 +152,12 @@ jobs:
           cp /tmp/pyproject.toml projects/ecoindex_compute/pyproject.toml
           cp /tmp/VERSION components/ecoindex/compute/VERSION
 
-      - name: Get last tag (that is not a `pre` tag) for compute
+      - uses: oprypin/find-latest-tag@v1
         id: last_tag
-        run: echo "last_tag=$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+@compute$' | sort -r | head -n 1)" >> $GITHUB_OUTPUT
+        with:
+          repository: ${{ github.repository }}
+          releases-only: false
+          regex: '^v[0-9]+\.[0-9]+\.[0-9]+@compute$'
 
       - name: Commit files
         uses: EndBug/add-and-commit@v9
@@ -170,7 +173,7 @@ jobs:
         with:
           token: ${{ github.token }}
           fromTag: v${{ needs.python_project.outputs.compute_version }}@compute
-          toTag: ${{ steps.last_tag.outputs.last_tag }}
+          toTag: ${{ steps.last_tag.outputs.tag }}
           excludeScopes: api,cli,scraper
           changelogFilePath: /tmp/changelog.md
 
@@ -185,7 +188,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          draft: ${{ env.DRAFT }}
+          prerelease: ${{ env.PRERELEASE }}
           makeLatest: true
           name: "Compute: v${{ needs.python_project.outputs.compute_version }}"
           tag: v${{ needs.python_project.outputs.compute_version }}@compute
