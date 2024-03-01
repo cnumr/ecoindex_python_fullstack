@@ -64,7 +64,8 @@ class EcoindexScraper:
 
     async def scrap_page(self) -> PageMetrics:
         async with async_playwright() as p:
-            browser = await p.chromium.launch()
+            # browser = await p.chromium.launch()
+            browser = await p.firefox.launch()
             self.page = await browser.new_page(
                 record_har_path=self.har_temp_file_path,
                 screen=self.window_size.model_dump(),
