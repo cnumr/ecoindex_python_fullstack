@@ -198,7 +198,7 @@ jobs:
           bodyFile: /tmp/changelog.md
 
       - name: Notify to Mattermost
-        if: ${{ !env.PRERELEASE }}
+        # if: ${{ !env.PRERELEASE }}
         uses: mattermost/action-mattermost-notify@master
         env:
           MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_RELEASE_URL }}
