@@ -120,7 +120,7 @@ jobs:
           context: projects/ecoindex_api
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.api_version }},${{ !env.PRERELEASE && 'vvatelot/ecoindex-api-backend:latest' || '' }}
+          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.api_version }},${{ !contains(inputs.bump, 'pre') && 'vvatelot/ecoindex-api-backend:latest' || '' }}
           labels: ${{ steps.meta.outputs.labels }}
           file: projects/ecoindex_api/docker/backend/dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
@@ -163,7 +163,7 @@ jobs:
           context: projects/ecoindex_api
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-worker:${{ needs.python_project.outputs.api_version }},${{ !env.PRERELEASE && 'vvatelot/ecoindex-api-worrker:latest' || '' }}
+          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-worker:${{ needs.python_project.outputs.api_version }},${{ !contains(inputs.bump, 'pre') && 'vvatelot/ecoindex-api-worker:latest' || '' }}
           labels: ${{ steps.meta.outputs.labels }}
           file: projects/ecoindex_api/docker/worker/dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
@@ -223,6 +223,7 @@ jobs:
 
       - name: Update changelog content with dockerhub links
         run: |
+          echo "${{ steps.changelog.outputs.changes }}" > /tmp/changelog.md
           echo "" >> /tmp/changelog.md
           echo "### Docker images" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md

@@ -120,7 +120,7 @@ jobs:
           context: projects/ecoindex_cli
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-cli:${{ needs.python_project.outputs.cli_version }},,${{ !env.PRERELEASE && 'vvatelot/ecoindex-cli:latest' || '' }}
+          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-cli:${{ needs.python_project.outputs.cli_version }},${{ !contains(inputs.bump, 'pre') && 'vvatelot/ecoindex-cli:latest' || '' }}
           labels: ${{ steps.meta.outputs.labels }}
           file: projects/ecoindex_cli/dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
