@@ -200,4 +200,4 @@ jobs:
       - name: Notify to Mattermost
         # if: ${{ !env.PRERELEASE }}
         run: |
-          curl -X POST -H 'Content-Type: application/json' -d @mattermost.json ${{ secrets.MATTERMOST_WEBHOOK_URL }}
+          curl -X POST -H 'Content-Type: application/json' -d @mattermost.json ${{ secrets.MATTERMOST_RELEASE_URL }}
