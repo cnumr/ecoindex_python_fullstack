@@ -184,7 +184,7 @@ jobs:
           echo "### Pypi package" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
           echo "Pypi package have been built and pushed to Pypi: [ecoindex-compute:${{ needs.python_project.outputs.compute_version }}](https://pypi.org/project/ecoindex-compute/${{ needs.python_project.outputs.compute_version }}/)" >> /tmp/changelog.md
-          echo "{\"icon_emoji\":\":tada:\",\"props\": {\"card\":\"$(cat /tmp/changelog.md)\"},\"text\":\"### [Compute] Nouvelle release: v${{ needs.python_project.outputs.compute_version }}\"}" > mattermost.json
+          echo "{\"props\":{\"card\":\"$(cat /tmp/changelog.md)\"},\"text\":\"### [Compute] Nouvelle release: v${{ needs.python_project.outputs.compute_version }}\"}" > mattermost.json
 
       - name: Create Release
         uses: ncipollo/release-action@v1
