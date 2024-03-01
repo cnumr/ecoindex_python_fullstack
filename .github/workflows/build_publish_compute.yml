@@ -202,5 +202,4 @@ jobs:
       - name: Notify to Mattermost
         # if: ${{ !env.PRERELEASE }}
         run: |
-          ${{ steps.create_release.outputs.html_url }}
           curl -X POST -H 'Content-Type: application/json' -d @mattermost.json ${{ secrets.MATTERMOST_RELEASE_URL }}
