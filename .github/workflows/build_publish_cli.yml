@@ -222,6 +222,7 @@ jobs:
 
       - name: Update changelog content with dockerhub links
         run: |
+          echo "${{ steps.changelog.outputs.changes }}" > /tmp/changelog.md
           echo "" >> /tmp/changelog.md
           echo "### Docker image" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
@@ -230,6 +231,7 @@ jobs:
           echo "### Pypi package" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
           echo "Pypi package have been built and pushed to Pypi: [ecoindex-cli:${{ needs.python_project.outputs.cli_version }}](https://pypi.org/project/ecoindex-cli/${{ needs.python_project.outputs.cli_version }}/)" >> /tmp/changelog.md
+          echo "{\"text\":\"$(cat /tmp/changelog.md)\"}" > mattermost.json
 
       - name: Create Release
         uses: ncipollo/release-action@v1
@@ -241,3 +243,8 @@ jobs:
           tag: v${{ needs.python_project.outputs.cli_version }}@cli
           token: ${{ github.token }}
           bodyFile: /tmp/changelog.md
+
+      - name: Notify to Mattermost
+        uses: mattermost/action-mattermost-notify@master
+        env:
+          MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_RELEASE_URL }}
