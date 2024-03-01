@@ -184,10 +184,10 @@ jobs:
           echo "### Pypi package" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
           echo "Pypi package have been built and pushed to Pypi: [ecoindex-compute:${{ needs.python_project.outputs.compute_version }}](https://pypi.org/project/ecoindex-compute/${{ needs.python_project.outputs.compute_version }}/)" >> /tmp/changelog.md
-          echo "{\"icon_emoji\": \":tada:\",\"text\":\"### [Compute] Nouvelle release: v${{ needs.python_project.outputs.compute_version }}\n$(cat /tmp/changelog.md)\"}" > mattermost.json
 
       - name: Create Release
         uses: ncipollo/release-action@v1
+        id: create_release
         with:
           allowUpdates: true
           prerelease: ${{ env.PRERELEASE }}
@@ -197,19 +197,12 @@ jobs:
           token: ${{ github.token }}
           bodyFile: /tmp/changelog.md
 
+      - name: Create Mattermost file
+        run: |
+          echo ":tada: Une nouvelle release a été publiée pour le projet *compute*: **v${{ needs.python_project.outputs.compute_version }}** :tada:\n: ${{ steps.create_release.outputs.html_url }}" > mattermost.json
+
       - name: Notify to Mattermost
         # if: ${{ !env.PRERELEASE }}
         run: |
+          ${{ steps.create_release.outputs.html_url }}
           curl -X POST -H 'Content-Type: application/json' -d @mattermost.json ${{ secrets.MATTERMOST_RELEASE_URL }}
-
-      - name: Upload mattermost.json
-        uses: actions/upload-artifact@v4
-        with:
-          name: mattermost
-          path: mattermost.json
-
-      - name: Upload changelog
-        uses: actions/upload-artifact@v4
-        with:
-          name: changelog
-          path: /tmp/changelog.md
