@@ -202,7 +202,14 @@ jobs:
         run: |
           curl -X POST -H 'Content-Type: application/json' -d @mattermost.json ${{ secrets.MATTERMOST_RELEASE_URL }}
 
-      - name: Notify to mattermost
-        uses: mattermost/action-mattermost-notify@master
-        env:
-          MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_RELEASE_URL }}
+      - name: Upload mattermost.json
+        uses: actions/upload-artifact@v4
+        with:
+          name: mattermost
+          path: mattermost.json
+
+      - name: Upload changelog
+        uses: actions/upload-artifact@v4
+        with:
+          name: changelog
+          path: /tmp/changelog.md
