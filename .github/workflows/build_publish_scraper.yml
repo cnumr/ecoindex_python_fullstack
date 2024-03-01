@@ -184,7 +184,7 @@ jobs:
           echo "### Pypi package" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
           echo "Pypi package have been built and pushed to Pypi: [ecoindex-scraper:${{ needs.python_project.outputs.scraper_version }}](https://pypi.org/project/ecoindex-scraper/${{ needs.python_project.outputs.scraper_version }}/)" >> /tmp/changelog.md
-          echo "{\"text\":\"$(cat /tmp/changelog.md)\"}" > mattermost.json
+          echo "{\"text\":\"# [Scraper] Nouvelle release: v${{ needs.python_project.outputs.scraper_version }}\n$(cat /tmp/changelog.md)\"}" > mattermost.json
 
       - name: Create Release
         uses: ncipollo/release-action@v1
@@ -198,6 +198,7 @@ jobs:
           bodyFile: /tmp/changelog.md
 
       - name: Notify to Mattermost
+        if: ${{ !env.PRERELEASE }}
         uses: mattermost/action-mattermost-notify@master
         env:
           MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_RELEASE_URL }}
