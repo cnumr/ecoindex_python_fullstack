@@ -179,8 +179,10 @@ jobs:
 
       - name: Update changelog content with dockerhub links
         run: |
-          echo -e "${{ steps.changelog.outputs.changes }}\n\n" > /tmp/changelog.md
-          echo -e "### Pypi package\n\n" >> /tmp/changelog.md
+          echo "${{ steps.changelog.outputs.changes }}" > /tmp/changelog.md
+          echo "" >> /tmp/changelog.md
+          echo "### Pypi package" >> /tmp/changelog.md
+          echo "" >> /tmp/changelog.md
           echo "Pypi package have been built and pushed to Pypi: [ecoindex-compute:${{ needs.python_project.outputs.compute_version }}](https://pypi.org/project/ecoindex-compute/${{ needs.python_project.outputs.compute_version }}/)" >> /tmp/changelog.md
 
       - name: Create Release
@@ -198,5 +200,5 @@ jobs:
       - name: Notify to Mattermost
         if: ${{ !env.PRERELEASE }}
         run: |
-          echo -e "{\"icon_url\":\"https://icon-library.com/images/github-icon-png/github-icon-png-29.jpg\",\"text\":\":tada: Une nouvelle release a été publiée pour le projet **${{ github.repository }}: v${{ needs.python_project.outputs.compute_version }}** :tada:\n\nPlus d'infos ici: ${{ steps.create_release.outputs.html_url }}\"}" > mattermost.json
+          echo "{\"icon_url\":\"https://icon-library.com/images/github-icon-png/github-icon-png-29.jpg\",\"text\":\":tada: Une nouvelle release a été publiée pour le projet **${{ github.repository }}: v${{ needs.python_project.outputs.compute_version }}** :tada:\n\nPlus d'infos ici: ${{ steps.create_release.outputs.html_url }}\"}" > mattermost.json
           curl -X POST -H 'Content-Type: application/json' -d @mattermost.json ${{ secrets.MATTERMOST_RELEASE_URL }}

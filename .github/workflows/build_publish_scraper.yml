@@ -184,7 +184,6 @@ jobs:
           echo "### Pypi package" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
           echo "Pypi package have been built and pushed to Pypi: [ecoindex-scraper:${{ needs.python_project.outputs.version }}](https://pypi.org/project/ecoindex-scraper/${{ needs.python_project.outputs.version }}/)" >> /tmp/changelog.md
-          echo "{\"text\":\"# [Scraper] Nouvelle release: v${{ needs.python_project.outputs.version }}\n$(cat /tmp/changelog.md)\"}" > mattermost.json
 
       - name: Create Release
         id: create_release
