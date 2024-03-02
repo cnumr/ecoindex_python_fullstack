@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       wheel: ${{ steps.wheel.outputs.wheel }}
-      api_version: ${{ steps.version.outputs.api_version }}
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -71,15 +71,15 @@ jobs:
 
       - name: Output version
         id: version
-        run: echo "api_version=$(task api:poetry:version-short)" >> $GITHUB_OUTPUT
+        run: echo "version=$(task api:poetry:version-short)" >> $GITHUB_OUTPUT
 
       - name: Output wheel
         id: wheel
-        run: echo "wheel=ecoindex_api-${{ steps.version.outputs.api_version }}-py3-none-any.whl" >> $GITHUB_OUTPUT
+        run: echo "wheel=ecoindex_api-${{ steps.version.outputs.version }}-py3-none-any.whl" >> $GITHUB_OUTPUT
 
       - name: Output summary
         run: |
-          echo "API version ${{ steps.version.outputs.api_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "API version ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "Wheel ${{ steps.wheel.outputs.wheel }}" >> $GITHUB_STEP_SUMMARY
 
   backend_image:
@@ -120,7 +120,7 @@ jobs:
           context: projects/ecoindex_api
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.api_version }},${{ !contains(inputs.bump, 'pre') && 'vvatelot/ecoindex-api-backend:latest' || '' }}
+          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.version }},${{ !contains(inputs.bump, 'pre') && 'vvatelot/ecoindex-api-backend:latest' || '' }}
           labels: ${{ steps.meta.outputs.labels }}
           file: projects/ecoindex_api/docker/backend/dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
@@ -163,7 +163,7 @@ jobs:
           context: projects/ecoindex_api
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-worker:${{ needs.python_project.outputs.api_version }},${{ !contains(inputs.bump, 'pre') && 'vvatelot/ecoindex-api-worker:latest' || '' }}
+          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-api-worker:${{ needs.python_project.outputs.version }},${{ !contains(inputs.bump, 'pre') && 'vvatelot/ecoindex-api-worker:latest' || '' }}
           labels: ${{ steps.meta.outputs.labels }}
           file: projects/ecoindex_api/docker/worker/dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
@@ -206,8 +206,8 @@ jobs:
       - name: Commit files
         uses: EndBug/add-and-commit@v9
         with:
-          message: "chore(api): Bump API version to ${{ needs.python_project.outputs.api_version }}"
-          tag: v${{ needs.python_project.outputs.api_version }}@api
+          message: "chore(api): Bump API version to ${{ needs.python_project.outputs.version }}"
+          tag: v${{ needs.python_project.outputs.version }}@api
           tag_push: "--force"
           push: true
 
@@ -216,7 +216,7 @@ jobs:
         uses: requarks/changelog-action@v1
         with:
           token: ${{ github.token }}
-          fromTag: v${{ needs.python_project.outputs.api_version }}@api
+          fromTag: v${{ needs.python_project.outputs.version }}@api
           toTag: ${{ steps.last_tag.outputs.tag }}
           excludeScopes: cli
           changelogFilePath: /tmp/changelog.md
@@ -228,23 +228,24 @@ jobs:
           echo "### Docker images" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
           echo "Docker images have been built and pushed to Docker Hub. You can find them here:" >> /tmp/changelog.md
-          echo "- **Backend**: [vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.api_version }}](https://hub.docker.com/r/vvatelot/ecoindex-api-backend/tags?page=1&name=${{ needs.python_project.outputs.api_version }})" >> /tmp/changelog.md
-          echo "- **Worker**: [vvatelot/ecoindex-api-worker:${{ needs.python_project.outputs.api_version }}](https://hub.docker.com/r/vvatelot/ecoindex-api-worker/tags?page=1&name=${{ needs.python_project.outputs.api_version }})" >> /tmp/changelog.md
-          echo "{\"text\":\"# [API] Nouvelle release : v${{ needs.python_project.outputs.api_version }}\n$(cat /tmp/changelog.md)\"}" > mattermost.json
+          echo "- **Backend**: [vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.version }}](https://hub.docker.com/r/vvatelot/ecoindex-api-backend/tags?page=1&name=${{ needs.python_project.outputs.version }})" >> /tmp/changelog.md
+          echo "- **Worker**: [vvatelot/ecoindex-api-worker:${{ needs.python_project.outputs.version }}](https://hub.docker.com/r/vvatelot/ecoindex-api-worker/tags?page=1&name=${{ needs.python_project.outputs.version }})" >> /tmp/changelog.md
+          echo "{\"text\":\"# [API] Nouvelle release : v${{ needs.python_project.outputs.version }}\n$(cat /tmp/changelog.md)\"}" > mattermost.json
 
       - name: Create Release
+        id: create_release
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
           prerelease: ${{ env.PRERELEASE }}
           makeLatest: true
-          name: "API: v${{ needs.python_project.outputs.api_version }}"
-          tag: v${{ needs.python_project.outputs.api_version }}@api
+          name: "API: v${{ needs.python_project.outputs.version }}"
+          tag: v${{ needs.python_project.outputs.version }}@api
           token: ${{ github.token }}
           bodyFile: /tmp/changelog.md
 
       - name: Notify to Mattermost
         if: ${{ !env.PRERELEASE }}
-        uses: mattermost/action-mattermost-notify@master
-        env:
-          MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_RELEASE_URL }}
+        run: |
+          echo -e "{\"icon_url\":\"https://icon-library.com/images/github-icon-png/github-icon-png-29.jpg\",\"text\":\":tada: Une nouvelle release a été publiée pour le projet **${{ github.repository }}: v${{ needs.python_project.outputs.version }}** :tada:\n\nPlus d'infos ici: ${{ steps.create_release.outputs.html_url }}\"}" > mattermost.json
+          curl -X POST -H 'Content-Type: application/json' -d @mattermost.json ${{ secrets.MATTERMOST_RELEASE_URL }}
