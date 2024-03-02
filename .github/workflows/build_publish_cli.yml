@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       wheel: ${{ steps.wheel.outputs.wheel }}
-      cli_version: ${{ steps.version.outputs.cli_version }}
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -71,15 +71,15 @@ jobs:
 
       - name: Output version
         id: version
-        run: echo "cli_version=$(task cli:poetry:version-short)" >> $GITHUB_OUTPUT
+        run: echo "version=$(task cli:poetry:version-short)" >> $GITHUB_OUTPUT
 
       - name: Output wheel
         id: wheel
-        run: echo "wheel=ecoindex_cli-${{ steps.version.outputs.cli_version }}-py3-none-any.whl" >> $GITHUB_OUTPUT
+        run: echo "wheel=ecoindex_cli-${{ steps.version.outputs.version }}-py3-none-any.whl" >> $GITHUB_OUTPUT
 
       - name: Output summary
         run: |
-          echo "CLI version ${{ steps.version.outputs.cli_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "CLI version ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "Wheel ${{ steps.wheel.outputs.wheel }}" >> $GITHUB_STEP_SUMMARY
 
   docker_image:
@@ -120,7 +120,7 @@ jobs:
           context: projects/ecoindex_cli
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-cli:${{ needs.python_project.outputs.cli_version }},,${{ !env.PRERELEASE && 'vvatelot/ecoindex-cli:latest' || '' }}
+          tags: ${{ steps.meta.outputs.tags }},vvatelot/ecoindex-cli:${{ needs.python_project.outputs.version }},${{ !contains(inputs.bump, 'pre') && 'vvatelot/ecoindex-cli:latest' || '' }}
           labels: ${{ steps.meta.outputs.labels }}
           file: projects/ecoindex_cli/dockerfile
           build-args: wheel=${{ needs.python_project.outputs.wheel }}
@@ -205,8 +205,8 @@ jobs:
       - name: Commit files
         uses: EndBug/add-and-commit@v9
         with:
-          message: "chore(cli): Bump CLI version to ${{ needs.python_project.outputs.cli_version }}"
-          tag: v${{ needs.python_project.outputs.cli_version }}@cli
+          message: "chore(cli): Bump CLI version to ${{ needs.python_project.outputs.version }}"
+          tag: v${{ needs.python_project.outputs.version }}@cli
           tag_push: "--force"
           push: true
 
@@ -215,29 +215,37 @@ jobs:
         uses: requarks/changelog-action@v1
         with:
           token: ${{ github.token }}
-          fromTag: v${{ needs.python_project.outputs.cli_version }}@cli
+          fromTag: v${{ needs.python_project.outputs.version }}@cli
           toTag: ${{ steps.last_tag.outputs.tag }}
           excludeScopes: api
           changelogFilePath: /tmp/changelog.md
 
       - name: Update changelog content with dockerhub links
         run: |
+          echo "${{ steps.changelog.outputs.changes }}" > /tmp/changelog.md
           echo "" >> /tmp/changelog.md
           echo "### Docker image" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
-          echo "Docker image have been built and pushed to Docker Hub: [vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.cli_version }}](https://hub.docker.com/r/vvatelot/ecoindex-cli/tags?page=1&name=${{ needs.python_project.outputs.cli_version }})" >> /tmp/changelog.md
+          echo "Docker image have been built and pushed to Docker Hub: [vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.version }}](https://hub.docker.com/r/vvatelot/ecoindex-cli/tags?page=1&name=${{ needs.python_project.outputs.version }})" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
           echo "### Pypi package" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
-          echo "Pypi package have been built and pushed to Pypi: [ecoindex-cli:${{ needs.python_project.outputs.cli_version }}](https://pypi.org/project/ecoindex-cli/${{ needs.python_project.outputs.cli_version }}/)" >> /tmp/changelog.md
+          echo "Pypi package have been built and pushed to Pypi: [ecoindex-cli:${{ needs.python_project.outputs.version }}](https://pypi.org/project/ecoindex-cli/${{ needs.python_project.outputs.version }}/)" >> /tmp/changelog.md
 
       - name: Create Release
+        id: create_release
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
           prerelease: ${{ env.PRERELEASE }}
           makeLatest: true
-          name: "CLI: v${{ needs.python_project.outputs.cli_version }}"
-          tag: v${{ needs.python_project.outputs.cli_version }}@cli
+          name: "CLI: v${{ needs.python_project.outputs.version }}"
+          tag: v${{ needs.python_project.outputs.version }}@cli
           token: ${{ github.token }}
           bodyFile: /tmp/changelog.md
+
+      - name: Notify to Mattermost
+        if: ${{ !env.PRERELEASE }}
+        run: |
+          echo -e "{\"icon_url\":\"https://icon-library.com/images/github-icon-png/github-icon-png-29.jpg\",\"text\":\":tada: Une nouvelle release a été publiée pour le projet **${{ github.repository }}: v${{ needs.python_project.outputs.version }}** :tada:\n\nPlus d'infos ici: ${{ steps.create_release.outputs.html_url }}\"}" > mattermost.json
+          curl -X POST -H 'Content-Type: application/json' -d @mattermost.json ${{ secrets.MATTERMOST_RELEASE_URL }}

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ecoindex_compute"
-version = "5.5.0"
+version = "5.8.0a0"
 readme = "README.md"
 description = "Ecoindex module provides a simple way to measure the Ecoindex score based on the 3 parameters: The DOM elements of the page, the size of the page and the number of external requests of the page"
 authors = ['Vincent Vatelot <vincent.vatelot@ik.me>']
