@@ -1,0 +1,47 @@
+name: New feature
+description: Request a new feature
+title: "[Feature]: "
+labels: [enhancement, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to request a new feature! :heart:
+  - type: textarea
+    id: what-feature
+    attributes:
+      label: What feature do you want?
+      description: Describe the feature you want to see in this project
+      placeholder: Tell us what you want!
+      value: "I want a new feature!"
+    validations:
+      required: true
+  - type: dropdown
+    id: project
+    attributes:
+      label: Project
+      description: What project is concerned by this bug?
+      options:
+        - Ecoindex API
+        - Ecoindex CLI
+        - Ecoindex Compute
+        - Ecoindex Scraper
+    validations:
+      required: true
+  - type: textarea
+    id: why-feature
+    attributes:
+      label: Why do you want this feature?
+      description: Tell us why you want this feature
+      placeholder: Tell us why you want this feature!
+      value: "I want this feature because..."
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
