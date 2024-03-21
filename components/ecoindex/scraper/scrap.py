@@ -1,5 +1,4 @@
 import json
-import os
 from datetime import datetime
 from time import sleep
 from uuid import uuid4
@@ -128,7 +127,7 @@ class EcoindexScraper:
                     )
                 )
             self.all_requests.aggregation = MimetypeAggregation(**aggregation)
-        os.remove(self.har_temp_file_path)
+        # os.remove(self.har_temp_file_path)
 
     async def get_nodes_count(self) -> int:
         nodes = await self.page.locator("*").all()
@@ -156,7 +155,10 @@ class EcoindexScraper:
                 message=response.status_text,
             )
         headers = response.headers
-        content_type = next((value for key, value in headers.items() if key.lower() == 'content-type'), None)
+        content_type = next(
+            (value for key, value in headers.items() if key.lower() == "content-type"),
+            None,
+        )
         if content_type and "text/html" not in content_type:
             raise TypeError(
                 {
