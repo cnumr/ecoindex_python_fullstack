@@ -138,12 +138,6 @@ class EcoindexScraper:
     def get_request_size(self, entry) -> int:
         if entry["response"]["_transferSize"] != -1:
             return entry["response"]["_transferSize"]
-        headers = entry["response"]["headers"]
-        content_length_header = list(
-            filter(lambda header: (header["name"].lower() == "content-length"), headers)
-        )
-        if len(content_length_header) > 0 and entry["response"]["status"] == 206:
-            return int(content_length_header[0]["value"])
         else:
             return len(json.dumps(entry["response"]).encode("utf-8"))
 
