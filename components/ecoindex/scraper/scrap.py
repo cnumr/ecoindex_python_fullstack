@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime
 from time import sleep
 from uuid import uuid4
@@ -127,7 +128,7 @@ class EcoindexScraper:
                     )
                 )
             self.all_requests.aggregation = MimetypeAggregation(**aggregation)
-        # os.remove(self.har_temp_file_path)
+        os.remove(self.har_temp_file_path)
 
     async def get_nodes_count(self) -> int:
         nodes = await self.page.locator("*").all()

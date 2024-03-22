@@ -89,6 +89,7 @@ with ThreadPoolExecutor(max_workers=8) as executor:
                 df_haralyzer = pd.DataFrame(
                     haralyzer_data, columns=["type", "count", "size"]
                 )
+                df_haralyzer["size"] = df_haralyzer["size"] / 1000
 
             flatten_aggregation = [
                 {
@@ -107,7 +108,7 @@ with ThreadPoolExecutor(max_workers=8) as executor:
             )
 
             df = pd.DataFrame(flatten_aggregation, columns=["type", "count", "size"])
-            df.to_csv(f"ecoindex_{index}.csv", index=False)
+            df["size"] = df["size"] / 1000
 
             joinned_df = pd.merge(
                 df,
@@ -117,11 +118,10 @@ with ThreadPoolExecutor(max_workers=8) as executor:
                 suffixes=("_ecoindex", "_haralyzer"),
             )
 
-            joinned_df["size_ecoindex"] = joinned_df["size_ecoindex"] / 1000
-            joinned_df["size_haralyzer"] = joinned_df["size_haralyzer"] / 1000
-
             print()
             print(page.url)
+            print(har_file_path)
+            print(df)
             print(joinned_df)
             print()
 
