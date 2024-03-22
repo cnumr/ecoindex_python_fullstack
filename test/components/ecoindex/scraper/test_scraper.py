@@ -121,10 +121,9 @@ def test_get_request_size():
     assert scraper.get_request_size(mock_stripped_har_entry[1]) == len(
         json.dumps(mock_stripped_har_entry[1]["response"]).encode("utf-8")
     )
-    assert scraper.get_request_size(mock_stripped_har_entry[1]) == len(
-        json.dumps(mock_stripped_har_entry[1]["response"]).encode("utf-8")
+    assert scraper.get_request_size(mock_stripped_har_entry[2]) == len(
+        json.dumps(mock_stripped_har_entry[2]["response"]).encode("utf-8")
     )
-    assert scraper.get_request_size(mock_stripped_har_entry[2]) == 7347
 
 
 async def test_check_page_response():
