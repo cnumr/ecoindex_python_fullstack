@@ -4,3 +4,4 @@ dist
 *.sqlite3
 .coverage
 coverage.xml
+*.csv
