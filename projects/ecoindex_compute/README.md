@@ -22,12 +22,12 @@ pip install ecoindex_compute
 
 ## Use
 
-### Get ecoindex
+### Compute ecoindex
 
-You can easily get the ecoindex by calling the function `get_ecoindex()`:
+You can easily compute the ecoindex by calling the function `compute_ecoindex()`:
 
 ```python
-(function) get_ecoindex: (dom: int, size: float, requests: int) -> Coroutine[Any, Any, Ecoindex]
+(function) compute_ecoindex: (dom: int, size: float, requests: int) -> Coroutine[Any, Any, Ecoindex]
 ```
 
 Example:
@@ -36,10 +36,10 @@ Example:
 import asyncio
 from pprint import pprint
 
-from ecoindex.compute import get_ecoindex
+from ecoindex.compute import compute_ecoindex
 
 # Get ecoindex from DOM elements, size of page and requests of the page
-ecoindex = asyncio.run(get_ecoindex(dom=100, size=100, requests=100))
+ecoindex = asyncio.run(compute_ecoindex(nodes=100, size=100, requests=100))
 pprint(ecoindex)
 ```
 

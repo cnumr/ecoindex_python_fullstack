@@ -1,3 +1,7 @@
-from ecoindex.models import Ecoindex
+import asyncio
+from pprint import pprint
 
-print(Ecoindex(grade="A", score=99.9, ges=0.6, water=0.1))
+from ecoindex.compute import compute_ecoindex
+
+ecoindex = asyncio.run(compute_ecoindex(nodes=100, size=100, requests=100))
+pprint(ecoindex)
