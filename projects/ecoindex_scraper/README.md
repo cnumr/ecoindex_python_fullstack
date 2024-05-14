@@ -33,7 +33,7 @@ Example:
 import asyncio
 from pprint import pprint
 
-from ecoindex.scrap import EcoindexScraper
+from ecoindex.scraper import EcoindexScraper
 
 pprint(
     asyncio.run(
