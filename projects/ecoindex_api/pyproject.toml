@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ecoindex_api"
-version = "3.5.1"
+version = "3.6.0"
 description = "REST API to expose Ecoindex"
 authors = ['Vincent Vatelot <vincent.vatelot@ik.me>']
 license = "Creative Commons BY-NC-ND"
