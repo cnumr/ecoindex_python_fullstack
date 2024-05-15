@@ -20,6 +20,10 @@ from ecoindex.models.tasks import QueueTaskError, QueueTaskResult
 from ecoindex.scraper.scrap import EcoindexScraper
 from ecoindex.worker_component import app
 from playwright._impl._errors import Error as WebDriverException
+from sentry_sdk import init as sentry_init
+
+if Settings().GLITCHTIP_DSN:
+    sentry_init(Settings().GLITCHTIP_DSN)
 
 
 @app.task(

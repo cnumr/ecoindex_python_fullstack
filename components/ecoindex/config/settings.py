@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
     CORS_ALLOWED_CREDENTIALS: bool = True
     CORS_ALLOWED_HEADERS: list = ["*"]
@@ -12,6 +13,7 @@ class Settings(BaseSettings):
     ENABLE_SCREENSHOT: bool = False
     EXCLUDED_HOSTS: list[str] = ["localhost", "127.0.0.1"]
     FRONTEND_BASE_URL: str = "https://www.ecoindex.fr"
+    GLITCHTIP_DSN: str = ""
     REDIS_CACHE_HOST: str = "localhost"
     SCREENSHOTS_GID: int | None = None
     SCREENSHOTS_UID: int | None = None
