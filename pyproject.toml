@@ -28,7 +28,7 @@ pydantic = "^2.4.2"
 pydantic-settings = "^2.0.3"
 python = ">=3.10,<3.13"
 redis = { extras = ["hiredis"], version = "^5.0.1" }
-requests = "^2.31.0"
+requests = "^2.32.2"
 tomli = "^2.0.1"
 haralyzer = "^2.4.0"
 python-slugify = "^8.0.4"
