@@ -92,13 +92,13 @@ ecoindex-cli analyze --url https://www.ecoindex.fr --url https://www.ecoindex.fr
 You can use a file with given urls that you want to analyze: One url per line. This is helpful if you want to play the same scenario recurrently.
 
 ```bash
-ecoindex-cli analyze --urls-file input/ecoindex.csv
+ecoindex-cli analyze --urls-file /tmp/ecoindex-cli/input/ecoindex.csv
 ```
 
 <details><summary>Result</summary>
 
 ```bash
-📁️ Urls recorded in file `/tmp/ecoindex-cli/input/www.ecoindex.fr.csv`
+📁️ Urls recorded in file `/tmp/ecoindex-cli/input/ecoindex.csv`
 There are 2 url(s), do you want to process? [Y/n]: 
 2 urls for 1 window size with 8 maximum workers
 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2/2 • 0:00:14 • 0:00:00
@@ -107,10 +107,12 @@ There are 2 url(s), do you want to process? [Y/n]:
 ┡━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
 │ 2              │ 2       │ 0      │
 └────────────────┴─────────┴────────┘
-🙌️ File /tmp/ecoindex-cli/output/www.ecoindex.fr.csv/2023-14-04_140853/results.csv written !
+🙌️ File /tmp/ecoindex-cli/output/ecoindex.csv/2023-14-04_140853/results.csv written !
 ```
 
 </details>
+
+Please note that since we are using Docker, the container has only access to the `/tmp/ecoindex-cli` folder of your host.
 
 ### Make a website analysis based on the website's sitemap
 
@@ -218,8 +220,9 @@ Here is a sample result:
 You can define the csv output file
 
 ```bash
-ecoindex-cli analyze --url https://www.ecoindex.fr --output-file ~/ecoindex-results/ecoindex.csv
+ecoindex-cli analyze --url https://www.ecoindex.fr --output-file /tmp/ecoindex-cli/ecoindex.csv
 ```
+As for the urls-file command, the container has only access to the `/tmp/ecoindex-cli` folder of your host.
 
 #### Export to JSON file
 
