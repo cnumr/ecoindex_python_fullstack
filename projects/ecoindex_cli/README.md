@@ -112,7 +112,7 @@ There are 2 url(s), do you want to process? [Y/n]:
 
 </details>
 
-Please note that since we are using Docker, the container has only access to the `/tmp/ecoindex-cli` folder of your host.
+> Please note that since we are using Docker, the container has only access to the `/tmp/ecoindex-cli` folder of your host.
 
 ### Make a website analysis based on the website's sitemap
 
