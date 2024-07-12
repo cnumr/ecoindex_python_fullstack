@@ -1,4 +1,4 @@
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from asyncio import run
 from datetime import datetime
 from multiprocessing import cpu_count
 from os.path import dirname
@@ -16,9 +16,9 @@ from ecoindex.cli.arguments_handler import (
     get_window_sizes_from_args,
 )
 from ecoindex.cli.console_output import display_result_synthesis
-from ecoindex.cli.helper import run_page_analysis
 from ecoindex.cli.report import Report
 from ecoindex.models import ExportFormat, Language
+from ecoindex.scraper.helper import bulk_analysis
 from ecoindex.utils.files import write_results_to_file, write_urls_to_file
 from loguru import logger
 from rich.progress import (
@@ -165,7 +165,9 @@ def analyze(
                 urls=urls, urls_file=urls_file, tmp_folder=tmp_folder
             )
         elif sitemap:
-            secho(f"⏲️ Crawling sitemap url {sitemap} -> Wait a minute!", fg=colors.MAGENTA)
+            secho(
+                f"⏲️ Crawling sitemap url {sitemap} -> Wait a minute!", fg=colors.MAGENTA
+            )
             urls = get_urls_from_sitemap(main_url=sitemap)
             (
                 file_prefix,
@@ -220,47 +222,26 @@ def analyze(
         TextColumn("•"),
         TimeRemainingColumn(),
     ) as progress:
+        count_errors = 0
         task = progress.add_task("Processing", total=len(urls) * len(window_sizes))
 
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            future_to_analysis = {}
+        analysis_results = run(
+            bulk_analysis(
+                max_workers=max_workers,
+                urls=urls,
+                window_sizes=window_sizes,
+                wait_after_scroll=wait_after_scroll,
+                wait_before_scroll=wait_before_scroll,
+                logger=logger,
+            )
+        )
 
-            for url in urls:
-                for window_size in window_sizes:
-                    future_to_analysis[
-                        executor.submit(
-                            run_page_analysis,
-                            url,
-                            window_size,
-                            wait_after_scroll,
-                            wait_before_scroll,
-                            logger,
-                        )
-                    ] = (
-                        url,
-                        window_size,
-                        wait_after_scroll,
-                        wait_before_scroll,
-                        logger,
-                    )
-            count_errors = 0
+        for result, success in analysis_results:
+            results.append(result)
+            if not success:
+                count_errors += 1
 
-            for future in as_completed(future_to_analysis):
-                try:
-                    result, success = future.result()
-
-                    if not success:
-                        count_errors += 1
-
-                    else:
-                        results.append(result)
-
-                except Exception as e:
-                    count_errors += 1
-                    url, _, _, _, _ = future_to_analysis[future]
-                    logger.error(f"{url} -- {e.msg if hasattr(e, 'msg') else e}")
-
-                progress.update(task, advance=1)
+            progress.update(task, advance=1)
 
     if count_errors > 0:
         secho(
