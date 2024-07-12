@@ -25,6 +25,7 @@ class EcoindexScraper:
         screenshot_uid: int | None = None,
         screenshot_gid: int | None = None,
         page_load_timeout: int = 20,
+        headless: bool = True,
     ):
         self.url = url
         self.window_size = window_size
@@ -39,6 +40,7 @@ class EcoindexScraper:
         self.har_temp_file_path = (
             f"/tmp/ecoindex-{self.now.strftime('%Y-%m-%d-%H-%M-%S-%f')}-{uuid4()}.har"
         )
+        self.headless = headless
 
     @deprecated("This method is useless with new version of EcoindexScraper")
     def init_chromedriver(self):
@@ -64,7 +66,7 @@ class EcoindexScraper:
 
     async def scrap_page(self) -> PageMetrics:
         async with async_playwright() as p:
-            browser = await p.chromium.launch()
+            browser = await p.chromium.launch(headless=self.headless)
             self.page = await browser.new_page(
                 record_har_path=self.har_temp_file_path,
                 screen=self.window_size.model_dump(),
