@@ -22,9 +22,9 @@ Pull requests are the best way to propose changes to the codebase (we use [Githu
 4. Make sure your code lints.
 5. Issue that pull request!
 
-## Any contributions you make will be under the MIT Software License
+## Any contributions you make will be under the Creative Commons Software License
 
-In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Feel free to contact the maintainers if that's a concern.
+In short, when you submit code changes, your submissions are understood to be under the same [Creative Commons License](LICENSE) that covers the project. Feel free to contact the maintainers if that's a concern.
 
 ## Report bugs using Github's issues
 
@@ -50,7 +50,7 @@ We use [black](https://github.com/psf/black) for linting.
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under its MIT License.
+By contributing, you agree that your contributions will be licensed under its Creative Commons License.
 
 ## References
 
