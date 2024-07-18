@@ -1,0 +1,225 @@
+name: Publish package and / or docker image(s) and create release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Bump the version of the project"
+        type: choice
+        required: true
+        options:
+          - "patch"
+          - "minor"
+          - "major"
+          - "prepatch"
+          - "preminor"
+          - "premajor"
+      project:
+        description: "Project to build"
+        type: choice
+        required: true
+        options:
+          - "compute"
+          - "api"
+          - "cli"
+          - "scraper"
+env:
+  PRERELEASE: ${{ contains(inputs.bump, 'pre') }}
+
+jobs:
+  python_project:
+    name: Build python project
+    runs-on: ubuntu-latest
+    outputs:
+      wheel: ${{ steps.wheel.outputs.wheel }}
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Summary
+        id: summary
+        run: echo "Create a release for the project ${{ inputs.project }} with a ${{ inputs.bump }} bump." >> $GITHUB_STEP_SUMMARY
+
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+
+      - name: Install poetry build project
+        run: pip install poetry-multiproject-plugin
+
+      - name: Bump version
+        run: task ${{ inputs.project }}:bump -- ${{ github.event.inputs.bump }}
+
+      - name: Build
+        run: task ${{ inputs.project }}:poetry:build
+
+      - name: Upload compute version to artifacts
+        if: ${{ inputs.project == 'compute' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: version
+          path: components/ecoindex/compute/VERSION
+
+      # TODO: Upload artifacts for other projects
+
+      - name: Upload pyproject.toml to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pyproject
+          path: projects/ecoindex_${{ inputs.project }}/pyproject.toml
+
+      - name: Upload dist folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: projects/ecoindex_${{ inputs.project }}/dist
+
+      - name: Output version
+        id: version
+        run: echo "version=$(task ${{ inputs.project }}:poetry:version-short)" >> $GITHUB_OUTPUT
+
+      - name: Output wheel
+        id: wheel
+        run: echo "wheel=ecoindex_${{ inputs.project }}-${{ steps.version.outputs.version }}-py3-none-any.whl" >> $GITHUB_OUTPUT
+
+      - name: Output summary
+        run: |
+          echo "New version ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "Wheel ${{ steps.wheel.outputs.wheel }}" >> $GITHUB_STEP_SUMMARY
+
+  pypi_package:
+    if: ${{ inputs.project != 'api' }}
+    name: Build and push pypi package
+    runs-on: ubuntu-latest
+    needs: python_project
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+
+      - name: Download dist from artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: projects/ecoindex_${{ inputs.project }}/dist
+
+      # TODO: Download other projects dist
+
+      - name: Download pyproject.toml from artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: pyproject
+          path: /tmp
+
+      - name: Copy pyproject.toml to the project
+        run: cp /tmp/pyproject.toml projects/ecoindex_${{ inputs.project }}/pyproject.toml
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+
+      - name: Login to Pypi
+        run: poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
+
+      - name: Publish
+        run: task ${{ inputs.project }}:pypi:publish
+
+  release:
+    name: Create a release
+    runs-on: ubuntu-latest
+    needs: [python_project, pypi_package]
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Git pull
+        run: git pull
+
+      - name: Download pyproject.toml to a temporary file
+        uses: actions/download-artifact@v4
+        with:
+          name: pyproject
+          path: /tmp
+
+      - name: Download VERSION to a temporary file
+        uses: actions/download-artifact@v4
+        with:
+          name: version
+          path: /tmp
+
+      # TODO: Adapt for each project
+      - name: Copy and overwrite existing files to the repo
+        run: |
+          cp /tmp/pyproject.toml projects/ecoindex_compute/pyproject.toml
+          cp /tmp/VERSION components/ecoindex/compute/VERSION
+
+      - name: Get last tag
+        uses: oprypin/find-latest-tag@v1
+        id: last_tag
+        with:
+          repository: ${{ github.repository }}
+          releases-only: false
+          regex: '^v[0-9]+\.[0-9]+\.[0-9]+@${{ inputs.project }}$'
+
+      - name: Commit files
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "chore(${{ inputs.project }}): Bump version to ${{ needs.python_project.outputs.version }}"
+          tag: v${{ needs.python_project.outputs.version }}@${{ inputs.project }}
+          tag_push: "--force"
+          push: true
+
+      - name: Update CHANGELOG
+        id: changelog
+        uses: requarks/changelog-action@v1
+        with:
+          token: ${{ github.token }}
+          fromTag: v${{ needs.python_project.outputs.version }}@${{ inputs.project }}
+          toTag: ${{ steps.last_tag.outputs.tag }}
+          excludeScopes: api,cli,scraper # TODO: Adapt for each project
+          changelogFilePath: /tmp/changelog.md
+
+      # TODO: Adapt for each project
+      - name: Update changelog content with dockerhub links
+        run: |
+          echo "${{ steps.changelog.outputs.changes }}" > /tmp/changelog.md
+          echo "" >> /tmp/changelog.md
+          echo "### Pypi package" >> /tmp/changelog.md
+          echo "" >> /tmp/changelog.md
+          echo "Pypi package have been built and pushed to Pypi: [ecoindex-compute:${{ needs.python_project.outputs.version }}](https://pypi.org/project/ecoindex-compute/${{ needs.python_project.outputs.version }}/)" >> /tmp/changelog.md
+
+      - name: Create Release
+        id: create_release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          prerelease: ${{ env.PRERELEASE }}
+          makeLatest: true
+          name: "${{ inputs.project }}: v${{ needs.python_project.outputs.version }}"
+          tag: v${{ needs.python_project.outputs.version }}@${{ inputs.project }}
+          token: ${{ github.token }}
+          bodyFile: /tmp/changelog.md
+
+      - name: Notify to Mattermost
+        if: ${{ !env.PRERELEASE }}
+        run: |
+          echo "{\"icon_url\":\"https://icon-library.com/images/github-icon-png/github-icon-png-29.jpg\",\"text\":\":tada: Une nouvelle release a été publiée pour le projet **${{ github.repository }}: v${{ needs.python_project.outputs.version }}** :tada:\n\nPlus d'infos ici: ${{ steps.create_release.outputs.html_url }}\"}" > mattermost.json
+          curl -X POST -H 'Content-Type: application/json' -d @mattermost.json ${{ secrets.MATTERMOST_RELEASE_URL }}
