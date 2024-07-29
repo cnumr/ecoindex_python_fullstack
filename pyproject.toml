@@ -32,7 +32,7 @@ requests = "^2.32.3"
 tomli = "^2.0.1"
 haralyzer = "^2.4.0"
 python-slugify = "^8.0.4"
-setuptools = "^71.0.3"
+setuptools = "^72.1.0"
 
 [tool.poetry.group.scraper.dependencies]
 pillow = "^10.3.0"
@@ -55,7 +55,7 @@ alembic = "^1.12.1"
 celery = "^5.3.4"
 redis = "^5.0.1"
 sqlmodel = "^0.0.14"
-sentry-sdk = "^2.1.1"
+sentry-sdk = "^2.8.0"
 
 [tool.poetry.group.api-backend.dependencies]
 fastapi = "^0.109.1"
