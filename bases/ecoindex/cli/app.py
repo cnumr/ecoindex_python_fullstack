@@ -1,4 +1,3 @@
-from asyncio import run
 from datetime import datetime
 from multiprocessing import cpu_count
 from os.path import dirname
@@ -225,15 +224,13 @@ def analyze(
         count_errors = 0
         task = progress.add_task("Processing", total=len(urls) * len(window_sizes))
 
-        analysis_results = run(
-            bulk_analysis(
-                max_workers=max_workers,
-                urls=urls,
-                window_sizes=window_sizes,
-                wait_after_scroll=wait_after_scroll,
-                wait_before_scroll=wait_before_scroll,
-                logger=logger,
-            )
+        analysis_results = bulk_analysis(
+            max_workers=max_workers,
+            urls=urls,
+            window_sizes=window_sizes,
+            wait_after_scroll=wait_after_scroll,
+            wait_before_scroll=wait_before_scroll,
+            logger=logger,
         )
 
         for result, success in analysis_results:
