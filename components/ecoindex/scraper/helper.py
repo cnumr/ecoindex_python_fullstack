@@ -47,7 +47,7 @@ def bulk_analysis(
     wait_after_scroll: int = 0,
     wait_before_scroll: int = 0,
     logger=None,
-) -> Generator[tuple[Result, bool], None]:
+) -> Generator[tuple[Result, bool], None, None]:
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_analysis = {}
 
