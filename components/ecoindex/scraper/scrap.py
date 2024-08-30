@@ -9,8 +9,8 @@ from ecoindex.exceptions.scraper import EcoindexScraperStatusException
 from ecoindex.models.compute import PageMetrics, Result, ScreenShot, WindowSize
 from ecoindex.models.scraper import MimetypeAggregation, RequestItem, Requests
 from ecoindex.utils.screenshots import convert_screenshot_to_webp, set_screenshot_rights
+from playwright._impl._api_structures import SetCookieParam
 from playwright.async_api import async_playwright
-from playwright_stealth import stealth_async
 from typing_extensions import deprecated
 
 
@@ -26,6 +26,8 @@ class EcoindexScraper:
         screenshot_gid: int | None = None,
         page_load_timeout: int = 20,
         headless: bool = True,
+        basic_auth: str | None = None,
+        cookies: list[SetCookieParam] = [],
     ):
         self.url = url
         self.window_size = window_size
@@ -41,6 +43,8 @@ class EcoindexScraper:
             f"/tmp/ecoindex-{self.now.strftime('%Y-%m-%d-%H-%M-%S-%f')}-{uuid4()}.har"
         )
         self.headless = headless
+        self.basic_auth = basic_auth
+        self.cookies = cookies
 
     @deprecated("This method is useless with new version of EcoindexScraper")
     def init_chromedriver(self):
@@ -67,12 +71,19 @@ class EcoindexScraper:
     async def scrap_page(self) -> PageMetrics:
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=self.headless)
-            self.page = await browser.new_page(
+            self.context = await browser.new_context(
                 record_har_path=self.har_temp_file_path,
                 screen=self.window_size.model_dump(),
                 ignore_https_errors=True,
+                http_credentials={
+                    "username": self.basic_auth.split(":")[0],
+                    "password": self.basic_auth.split(":")[1],
+                }
+                if self.basic_auth
+                else None,
             )
-            await stealth_async(self.page)
+            await self.context.add_cookies(self.cookies)
+            self.page = await self.context.new_page()
             response = await self.page.goto(self.url)
             await self.check_page_response(response)
 
