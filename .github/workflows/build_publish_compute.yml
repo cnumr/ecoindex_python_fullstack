@@ -200,5 +200,5 @@ jobs:
       - name: Notify to Mattermost
         if: ${{ env.PRERELEASE != 'true' }}
         run: |
-          echo "{\"icon_url\":\"https://icon-library.com/images/github-icon-png/github-icon-png-29.jpg\",\"text\":\":tada: Une nouvelle release a été publiée pour le projet **${{ github.repository }}: v${{ needs.python_project.outputs.compute_version }}** :tada:\n\nPlus d'infos ici: ${{ steps.create_release.outputs.html_url }}\"}" > mattermost.json
+          echo "{\"icon_url\":\"https://icon-library.com/images/github-icon-png/github-icon-png-29.jpg\",\"text\":\":tada: Une nouvelle release a été publiée pour le projet **${{ github.repository }}: v${{ needs.python_project.outputs.compute_version }}** :tada: \n\nPlus d'infos ici: ${{ steps.create_release.outputs.html_url }}\"}" > mattermost.json
           curl -X POST -H 'Content-Type: application/json' -d @mattermost.json ${{ secrets.MATTERMOST_RELEASE_URL }}

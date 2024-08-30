@@ -226,7 +226,7 @@ jobs:
           echo "" >> /tmp/changelog.md
           echo "### Docker image" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
-          echo "Docker image have been built and pushed to Docker Hub: [vvatelot/ecoindex-api-backend:${{ needs.python_project.outputs.version }}](https://hub.docker.com/r/vvatelot/ecoindex-cli/tags?page=1&name=${{ needs.python_project.outputs.version }})" >> /tmp/changelog.md
+          echo "Docker image have been built and pushed to Docker Hub: [vvatelot/cli:${{ needs.python_project.outputs.version }}](https://hub.docker.com/r/vvatelot/ecoindex-cli/tags?page=1&name=${{ needs.python_project.outputs.version }})" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
           echo "### Pypi package" >> /tmp/changelog.md
           echo "" >> /tmp/changelog.md
@@ -247,5 +247,5 @@ jobs:
       - name: Notify to Mattermost
         if: ${{ env.PRERELEASE != 'true' }}
         run: |
-          echo -e "{\"icon_url\":\"https://icon-library.com/images/github-icon-png/github-icon-png-29.jpg\",\"text\":\":tada: Une nouvelle release a été publiée pour le projet **${{ github.repository }}: v${{ needs.python_project.outputs.version }}** :tada:\n\nPlus d'infos ici: ${{ steps.create_release.outputs.html_url }}\"}" > mattermost.json
+          echo -e "{\"icon_url\":\"https://icon-library.com/images/github-icon-png/github-icon-png-29.jpg\",\"text\":\":tada: Une nouvelle release a été publiée pour le projet **${{ github.repository }}: v${{ needs.python_project.outputs.version }}** :tada: \n\nPlus d'infos ici: ${{ steps.create_release.outputs.html_url }}\"}" > mattermost.json
           curl -X POST -H 'Content-Type: application/json' -d @mattermost.json ${{ secrets.MATTERMOST_RELEASE_URL }}
