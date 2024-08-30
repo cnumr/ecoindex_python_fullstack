@@ -1,6 +1,6 @@
 from asyncio import run
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import AsyncGenerator
+from typing import Generator
 
 from ecoindex.models.compute import Result, WindowSize
 from ecoindex.scraper.scrap import EcoindexScraper
@@ -40,14 +40,14 @@ def run_page_analysis(
         )
 
 
-async def bulk_analysis(
+def bulk_analysis(
     max_workers,
     urls,
     window_sizes,
     wait_after_scroll: int = 0,
     wait_before_scroll: int = 0,
     logger=None,
-) -> AsyncGenerator[tuple[Result, bool], None]:
+) -> Generator[tuple[Result, bool], None, None]:
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_analysis = {}
 

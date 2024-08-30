@@ -1,4 +1,5 @@
 import json
+
 from ecoindex.exceptions.scraper import EcoindexScraperStatusException
 from ecoindex.models import ScreenShot, WindowSize
 from ecoindex.scraper import EcoindexScraper
@@ -174,8 +175,7 @@ async def test_check_page_response():
         assert str(e) == {
             "mimetype": "audio/mpeg",
             "message": (
-                "This resource is not "
-                "a standard page with mimeType 'text/html'"
+                "This resource is not " "a standard page with mimeType 'text/html'"
             ),
         }
 
@@ -187,5 +187,5 @@ async def test_check_page_response():
             "status": 404,
             "message": mock_stripped_har_entry[1]["response"]["status_text"],
         }
-    
+
     assert scraper.check_page_response(mock_stripped_har_entry[2]) is None
