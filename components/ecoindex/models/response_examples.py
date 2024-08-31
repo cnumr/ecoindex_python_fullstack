@@ -117,3 +117,14 @@ example_daily_limit_response = {
         }
     },
 }
+
+example_host_unreachable = {
+    "description": "Host unreachable",
+    "content": {
+        "application/json": {
+            "example": {
+                "detail": "The URL http://localhost is unreachable. Are you really sure of this url? 🤔",
+            }
+        }
+    },
+}
