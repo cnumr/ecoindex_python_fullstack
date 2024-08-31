@@ -6,6 +6,11 @@ from ecoindex.models.compute import WindowSize
 from ecoindex.scraper.helper import bulk_analysis
 from loguru import logger
 
+st.set_page_config(
+    page_title="Analyse Ecoindex",
+    page_icon="🌍",
+    initial_sidebar_state="auto",
+)
 st.title("Analyse Ecoindex")
 
 form_container = st.container()
@@ -41,8 +46,18 @@ def run_analysis(
         wait_before_scroll=wait_before_scroll,
         wait_after_scroll=wait_after_scroll,
     )
+    analysis = []
+    nb_analysis = len(urls.splitlines()) * len(sizes)
+    progress_bar = results_container.progress(
+        0, text=f"{nb_analysis} analyse en cours..."
+    )
+    for i, (result, success) in enumerate(analysis_results):
+        progress_bar.progress((i + 1) / nb_analysis)
+        analysis.append({"success": success, **result.__dict__})
 
-    df = pandas.DataFrame([result.__dict__ for result, _ in analysis_results])
+    progress_bar.empty()
+
+    df = pandas.DataFrame(analysis)
     results_container.header("Résultats de l'analyse")
     results_container.dataframe(
         df,
@@ -113,6 +128,11 @@ def run_analysis(
                 "Date",
                 help="Date de l'analyse",
                 format="D/M/Y H:m:s",
+            ),
+            "page_type": st.column_config.TextColumn(
+                "Type",
+                help="Type de page",
+                disabled=True,
             ),
         },
         hide_index=True,

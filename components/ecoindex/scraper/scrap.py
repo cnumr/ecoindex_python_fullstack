@@ -10,7 +10,6 @@ from ecoindex.models.compute import PageMetrics, Result, ScreenShot, WindowSize
 from ecoindex.models.scraper import MimetypeAggregation, RequestItem, Requests
 from ecoindex.utils.screenshots import convert_screenshot_to_webp, set_screenshot_rights
 from playwright.async_api import async_playwright
-from playwright_stealth import stealth_async
 from typing_extensions import deprecated
 
 
@@ -72,7 +71,6 @@ class EcoindexScraper:
                 screen=self.window_size.model_dump(),
                 ignore_https_errors=True,
             )
-            await stealth_async(self.page)
             response = await self.page.goto(self.url)
             await self.check_page_response(response)
 
