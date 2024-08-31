@@ -1,5 +1,6 @@
 from json import loads
 
+import requests
 from celery.result import AsyncResult
 from ecoindex.backend.models.dependencies_parameters.id import IdParameter
 from ecoindex.backend.utils import check_quota
@@ -7,7 +8,10 @@ from ecoindex.config.settings import Settings
 from ecoindex.database.engine import get_session
 from ecoindex.models import WebPage
 from ecoindex.models.enums import TaskStatus
-from ecoindex.models.response_examples import example_daily_limit_response
+from ecoindex.models.response_examples import (
+    example_daily_limit_response,
+    example_host_unreachable,
+)
 from ecoindex.models.tasks import QueueTaskApi, QueueTaskResult
 from ecoindex.worker.tasks import ecoindex_task
 from ecoindex.worker_component import app as task_app
@@ -26,6 +30,7 @@ router = APIRouter(prefix="/v1/tasks/ecoindexes", tags=["Tasks"])
         status.HTTP_201_CREATED: {"model": str},
         status.HTTP_403_FORBIDDEN: {"model": str},
         status.HTTP_429_TOO_MANY_REQUESTS: example_daily_limit_response,
+        521: example_host_unreachable,
     },
     description="This submits a ecoindex analysis task to the engine",
     status_code=status.HTTP_201_CREATED,
@@ -52,6 +57,16 @@ async def add_ecoindex_analysis_task(
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="This host is excluded from the analysis",
+        )
+
+    try:
+        r = requests.head(url=web_page.url, timeout=5)
+        r.raise_for_status()
+    except Exception:
+        print(f"The URL {web_page.url} is not reachable")
+        raise HTTPException(
+            status_code=521,
+            detail=f"The URL {web_page.url} is unreachable. Are you really sure of this url? 🤔",
         )
 
     task_result = ecoindex_task.delay(
