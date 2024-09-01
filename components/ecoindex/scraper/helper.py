@@ -12,7 +12,7 @@ def run_page_analysis(
     wait_after_scroll: int = 3,
     wait_before_scroll: int = 3,
     logger=None,
-) -> tuple[Result, bool]:
+) -> tuple[Result, str | None]:
     """Run the page analysis and return the result and a boolean indicating if the analysis was successful"""
     scraper = EcoindexScraper(
         url=str(url),
@@ -22,7 +22,7 @@ def run_page_analysis(
         page_load_timeout=20,
     )
     try:
-        return (run(scraper.get_page_analysis()), True)
+        return (run(scraper.get_page_analysis()), None)
     except Exception as e:
         logger.error(f"{url} -- {e.msg if hasattr(e, 'msg') else e}")
 
@@ -36,7 +36,7 @@ def run_page_analysis(
                 nodes=0,
                 requests=0,
             ),
-            False,
+            e.msg if hasattr(e, "msg") else str(e),
         )
 
 
@@ -47,7 +47,7 @@ def bulk_analysis(
     wait_after_scroll: int = 0,
     wait_before_scroll: int = 0,
     logger=None,
-) -> Generator[tuple[Result, bool], None, None]:
+) -> Generator[tuple[Result, str | None], None, None]:
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_analysis = {}
 

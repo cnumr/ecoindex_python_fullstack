@@ -7,5 +7,6 @@ class EcoindexScraperStatusException(EcoindexScraperException):
         self.message = message
         self.url = url
         self.status = status
+        self.msg = f"{status}: {message}"
 
     pass
