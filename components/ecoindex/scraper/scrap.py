@@ -9,6 +9,7 @@ from ecoindex.exceptions.scraper import EcoindexScraperStatusException
 from ecoindex.models.compute import PageMetrics, Result, ScreenShot, WindowSize
 from ecoindex.models.scraper import MimetypeAggregation, RequestItem, Requests
 from ecoindex.utils.screenshots import convert_screenshot_to_webp, set_screenshot_rights
+from playwright._impl._network import Response
 from playwright.async_api import async_playwright
 from typing_extensions import deprecated
 
@@ -72,7 +73,7 @@ class EcoindexScraper:
                 ignore_https_errors=True,
             )
             response = await self.page.goto(self.url)
-            await self.check_page_response(response)
+            await self.check_page_response(response)  # type: ignore
 
             await self.page.wait_for_load_state()
             sleep(self.wait_before_scroll)
@@ -142,7 +143,7 @@ class EcoindexScraper:
         else:
             return len(json.dumps(entry["response"]).encode("utf-8"))
 
-    async def check_page_response(self, response) -> None:
+    async def check_page_response(self, response: Response) -> None:
         if response and response.status != 200:
             raise EcoindexScraperStatusException(
                 url=self.url,

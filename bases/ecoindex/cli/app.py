@@ -233,9 +233,9 @@ def analyze(
             logger=logger,
         )
 
-        for result, success in analysis_results:
+        for result, error in analysis_results:
             results.append(result)
-            if not success:
+            if error:
                 count_errors += 1
 
             progress.update(task, advance=1)

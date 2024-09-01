@@ -7,19 +7,21 @@ from ecoindex.scraper.helper import bulk_analysis
 from loguru import logger
 
 st.set_page_config(
-    page_title="Analyse Ecoindex",
-    page_icon="🌍",
+    page_title="Ecoindex",
+    page_icon="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.866em%22 font-size=%22100%22>🟢</text></svg>",
     initial_sidebar_state="auto",
 )
-st.title("Analyse Ecoindex")
+st.title("Ecoindex")
 
-form_container = st.container()
-results_container = st.container()
+tab_local, tab_website = st.tabs(["Ecoindex Local", "Ecoindex.fr"])
+
+form_container = tab_local.container()
+results_container = tab_local.container()
+form_container.header("Lancer une analyse")
 
 try:
     import playwright  # noqa
 
-    st.toast("Playwright est installé", icon="🎉")
 except ImportError:
     st.toast("Playwright n'est pas installé", icon="⚠️")
     st.info("Pour configurer Playwright, veuillez suivre les instructions suivantes:")
@@ -51,13 +53,31 @@ def run_analysis(
     progress_bar = results_container.progress(
         0, text=f"{nb_analysis} analyse en cours..."
     )
-    for i, (result, success) in enumerate(analysis_results):
+
+    for i, (result, error) in enumerate(analysis_results):
         progress_bar.progress((i + 1) / nb_analysis)
-        analysis.append({"success": success, **result.__dict__})
+        analysis.append({**result.__dict__, "error": error})
 
     progress_bar.empty()
 
     df = pandas.DataFrame(analysis)
+    # Apply colors on error column style
+    # df.style.applymap(lambda x: "color: red" if x else "", subset=["error"])
+
+    # Apply colors on grade column
+    colors = {
+        "A": "#349A47",
+        "B": "#51B84B",
+        "C": "#CADB2A",
+        "D": "#F6EB15",
+        "E": "#FECD06",
+        "F": "#F99839",
+        "G": "#ED2124",
+    }
+    # df = df.style.applymap(
+    #     lambda x: f"color: {colors[x]}" if x else "", subset=["grade"]
+    # )
+
     results_container.header("Résultats de l'analyse")
     results_container.dataframe(
         df,
@@ -134,6 +154,10 @@ def run_analysis(
                 help="Type de page",
                 disabled=True,
             ),
+            "error": st.column_config.TextColumn(
+                "Erreur",
+                help="Erreur lors de l'analyse",
+            ),
         },
         hide_index=True,
     )
@@ -153,31 +177,36 @@ with form_container.form("ecoindex_analyzis"):
 
     with st.expander("Options"):
         col1, col2 = st.columns(2)
-        with col1:
-            wait_before_scroll = st.number_input(
-                label="Attendre avant de scroller",
-                value=3,
-                min_value=0,
-                help="Temps d'attente avant de scroller en secondes pour que la page se charge complètement",
-            )
+        wait_before_scroll = col1.number_input(
+            label="Attendre avant de scroller",
+            value=3,
+            min_value=0,
+            help="Temps d'attente avant de scroller en secondes pour que la page se charge complètement",
+        )
 
-        with col2:
-            wait_after_scroll = st.number_input(
-                label="Attendre après avoir scrollé",
-                value=3,
-                min_value=0,
-                help="Temps d'attente après avoir scrollé en secondes pour que la page se charge complètement",
-            )
+        wait_after_scroll = col2.number_input(
+            label="Attendre après avoir scrollé",
+            value=3,
+            min_value=0,
+            help="Temps d'attente après avoir scrollé en secondes pour que la page se charge complètement",
+        )
         basic_auth = st.text_input(label="Authentification de base", disabled=True)
         session_cookie = st.text_input(label="Cookie de session", disabled=True)
 
     submitted = st.form_submit_button(
         label="Lancer l'analyse",
-        on_click=run_analysis,
-        kwargs={
-            "urls": urls,
-            "sizes": sizes,
-            "wait_before_scroll": wait_before_scroll,
-            "wait_after_scroll": wait_after_scroll,
-        },
     )
+
+    if submitted:
+        run_analysis(
+            urls=urls,
+            sizes=sizes,
+            wait_before_scroll=wait_before_scroll,
+            wait_after_scroll=wait_after_scroll,
+        )
+
+
+container_website_search = tab_website.container()
+container_website_results = tab_website.container()
+
+container_website_search.header("Rechercher un résultat d'analyse")
