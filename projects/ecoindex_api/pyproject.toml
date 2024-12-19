@@ -38,6 +38,7 @@ redis = "^5.0.1"
 requests = "^2.32.2"
 sqlmodel = "^0.0.14"
 sentry-sdk = "^2.8.0"
+setuptools = "^75.6.0"
 
 [tool.poetry.group.backend.dependencies]
 uvicorn = "^0.23.2"

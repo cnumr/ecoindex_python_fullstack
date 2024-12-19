@@ -170,7 +170,7 @@ tasks:
   start-backend:
     internal: true
     cmds:
-      - poetry run uvicorn ecoindex.backend.main:app --reload --reload-dir ../..
+      - poetry run uvicorn ecoindex.backend.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir ../..
     silent: true
 
   start-dev:
