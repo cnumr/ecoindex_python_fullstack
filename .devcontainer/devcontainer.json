@@ -1,0 +1,42 @@
+{
+    "name": "Ecoindex python full stack dev container",
+    "image": "mcr.microsoft.com/devcontainers/python:3.12",
+    "postCreateCommand": "pipx install poetry && poetry self add poetry-multiproject-plugin && poetry self add poetry-polylith-plugin",
+    "features": {
+        "ghcr.io/audacioustux/devcontainers/taskfile": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "installDockerBuildx": true,
+            "version": "latest",
+            "dockerDashComposeVersion": "v2"
+        }
+    },
+    "forwardPorts": [
+        8000
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "-ms-python.autopep8",
+                "adrianwilczynski.alpine-js-intellisense",
+                "adrianwilczynski.alpine-js-intellisense",
+                "bierner.markdown-emoji",
+                "charliermarsh.ruff",
+                "Codeium.codeium",
+                "github.vscode-github-actions",
+                "Gruntfuggly.todo-tree",
+                "mhutchie.git-graph",
+                "ms-azuretools.vscode-docker",
+                "ms-python.mypy-type-checker",
+                "ms-python.python",
+                "Perkovec.emoji",
+                "samuelcolvin.jinjahtml",
+                "tamasfe.even-better-toml",
+                "ue.alphabetical-sorter",
+                "yzhang.markdown-all-in-one",
+                "esbenp.prettier-vscode",
+                "ms-pyright.pyright",
+                "-ms-python.vscode-pylance"
+            ]
+        }
+    }
+}
