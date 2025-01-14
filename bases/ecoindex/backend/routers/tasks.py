@@ -2,19 +2,22 @@ from json import loads
 from typing import Annotated
 
 import requests
+import rich
 from celery.result import AsyncResult
+from ecoindex.backend.dependencies.validation import validate_api_key_batch
 from ecoindex.backend.models.dependencies_parameters.id import IdParameter
 from ecoindex.backend.utils import check_quota
 from ecoindex.config.settings import Settings
 from ecoindex.database.engine import get_session
+from ecoindex.database.models import ApiEcoindexes
 from ecoindex.models import WebPage
 from ecoindex.models.enums import TaskStatus
 from ecoindex.models.response_examples import (
     example_daily_limit_response,
     example_host_unreachable,
 )
-from ecoindex.models.tasks import QueueTaskApi, QueueTaskResult
-from ecoindex.worker.tasks import ecoindex_task
+from ecoindex.models.tasks import QueueTaskApi, QueueTaskApiBatch, QueueTaskResult
+from ecoindex.worker.tasks import ecoindex_batch_import_task, ecoindex_task
 from ecoindex.worker_component import app as task_app
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.params import Body
@@ -69,7 +72,6 @@ async def add_ecoindex_analysis_task(
         r = requests.head(url=web_page.url, timeout=5)
         r.raise_for_status()
     except Exception:
-        print(f"The URL {web_page.url} is not reachable")
         raise HTTPException(
             status_code=521,
             detail=f"The URL {web_page.url} is unreachable. Are you really sure of this url? 🤔",
@@ -131,3 +133,65 @@ async def delete_ecoindex_analysis_task_by_id(
     res = task_app.control.revoke(id, terminate=True, signal="SIGKILL")
 
     return res
+
+
+@router.post(
+    name="Save ecoindex analysis from external source in batch mode",
+    path="/batch",
+    response_description="Identifier of the task that has been created in queue",
+    responses={
+        status.HTTP_201_CREATED: {"model": str},
+        status.HTTP_403_FORBIDDEN: {"model": str},
+    },
+    description="This save ecoindex analysis from external source in batch mode. Limited to 100 entries at a time",
+    status_code=status.HTTP_201_CREATED,
+)
+async def add_ecoindex_analysis_task_batch(
+    results: Annotated[
+        ApiEcoindexes,
+        Body(
+            default=...,
+            title="List of ecoindex analysis results to save",
+            example=[],
+            min_length=1,
+            max_length=100,
+        ),
+    ],
+    batch_key: str = Depends(validate_api_key_batch),
+):
+    rich.print(results)
+    task_result = ecoindex_batch_import_task.delay(  # type: ignore
+        results=[result.model_dump() for result in results],
+        source=batch_key["source"],  # type: ignore
+    )
+    rich.print(task_result)
+
+    return task_result.id
+
+
+@router.get(
+    name="Get ecoindex analysis batch task by id",
+    path="/batch/{id}",
+    responses={
+        status.HTTP_200_OK: {"model": QueueTaskApiBatch},
+        status.HTTP_425_TOO_EARLY: {"model": QueueTaskApiBatch},
+    },
+    response_description="Get one ecoindex batch task result by its id",
+    description="This returns an ecoindex batch task result given by its unique identifier",
+)
+async def get_ecoindex_analysis_batch_task_by_id(
+    response: Response,
+    id: IdParameter,
+    _: str = Depends(validate_api_key_batch),
+) -> QueueTaskApiBatch:
+    t = AsyncResult(id=str(id), app=task_app)
+
+    task_response = QueueTaskApiBatch(
+        id=str(t.id),
+        status=t.state,
+    )
+
+    if t.state == TaskStatus.PENDING:
+        response.status_code = status.HTTP_425_TOO_EARLY
+
+    return task_response

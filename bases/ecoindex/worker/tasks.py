@@ -6,6 +6,7 @@ from ecoindex.backend.utils import check_quota, format_exception_response
 from ecoindex.config.settings import Settings
 from ecoindex.database.engine import get_session
 from ecoindex.database.exceptions.quota import QuotaExceededException
+from ecoindex.database.models import ApiEcoindex
 from ecoindex.database.repositories.worker import save_ecoindex_result_db
 from ecoindex.exceptions.scraper import EcoindexScraperStatusException
 from ecoindex.exceptions.worker import (
@@ -153,5 +154,52 @@ async def async_ecoindex_task(
                 exception=EcoindexStatusError.__name__,
                 message=exc.message,
                 detail={"status": exc.status},
+            ),
+        )
+
+
+@app.task(
+    name="Batch import results in DB",
+    timezone=Settings().TZ,
+    queue="ecoindex_batch",
+    bind=True,
+)
+def ecoindex_batch_import_task(self, results: list[dict], source: str):
+    queue_task_result = run(
+        async_ecoindex_batch_import_task(
+            results=[ApiEcoindex.model_validate(result) for result in results],
+            source=source,
+        )
+    )
+
+    return queue_task_result.model_dump_json()
+
+
+async def async_ecoindex_batch_import_task(
+    results: list[ApiEcoindex], source: str
+) -> QueueTaskResult:
+    try:
+        session_generator = get_session()
+        session = await session_generator.__anext__()
+
+        for result in results:
+            await save_ecoindex_result_db(
+                session=session,
+                id=result.id,  # type: ignore
+                ecoindex_result=result,
+                source=source,
+            )
+
+        return QueueTaskResult(status=TaskStatus.SUCCESS)
+
+    except Exception as exc:
+        return QueueTaskResult(
+            status=TaskStatus.FAILURE,
+            error=QueueTaskError(
+                url=None,  # type: ignore
+                exception=type(exc).__name__,
+                status_code=500,
+                message=str(exc.message) if exc.message else "",  # type: ignore
+                detail=await format_exception_response(exception=exc),
             ),
         )

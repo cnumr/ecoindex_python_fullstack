@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from sqlmodel import Field, SQLModel
 
 
-class ApiEcoindex(SQLModel, Result, table=True):
+class ApiEcoindex(SQLModel, Result, table=True):  # type: ignore
     id: UUID | None = Field(
         default=None,
         description="Analysis ID of type `UUID`",

@@ -53,3 +53,21 @@ class QueueTaskApi(BaseModel):
         default=None,
         title="Detail of the error encountered by the task in case of Failure",
     )
+
+
+class QueueTaskApiBatch(BaseModel):
+    id: str = Field(
+        default=...,
+        title=(
+            "Identifier of the current. "
+            "This identifier will become the identifier of the analysis"
+        ),
+    )
+    status: str = Field(
+        default=...,
+        title="Status of the current task. Can be PENDING, FAILURE, SUCCESS",
+    )
+    task_error: Any | None = Field(
+        default=None,
+        title="Detail of the error encountered by the task in case of Failure",
+    )
