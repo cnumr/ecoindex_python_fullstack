@@ -102,18 +102,18 @@ class WebPage(BaseModel):
     @field_validator("url")
     @classmethod
     def url_as_http_url(cls, v: str) -> str:
-        url_object = AnyHttpUrl(url=v)
+        url_object = AnyHttpUrl(url=v)  # type: ignore
         assert url_object.scheme in {"http", "https"}, "scheme must be http or https"
 
         return url_object.unicode_string()
 
     def get_url_host(self) -> str:
-        url_object = AnyHttpUrl(url=self.url)
+        url_object = AnyHttpUrl(url=self.url)  # type: ignore
 
         return str(url_object.host)
 
     def get_url_path(self) -> str:
-        url_obect = AnyHttpUrl(url=self.url)
+        url_obect = AnyHttpUrl(url=self.url)  # type: ignore
 
         return str(url_obect.path)
 

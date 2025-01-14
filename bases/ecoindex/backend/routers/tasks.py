@@ -1,4 +1,5 @@
 from json import loads
+from typing import Annotated
 
 import requests
 from celery.result import AsyncResult
@@ -37,18 +38,23 @@ router = APIRouter(prefix="/v1/tasks/ecoindexes", tags=["Tasks"])
 )
 async def add_ecoindex_analysis_task(
     response: Response,
-    web_page: WebPage = Body(
-        default=...,
-        title="Web page to analyze defined by its url and its screen resolution",
-        example=WebPage(url="https://www.ecoindex.fr", width=1920, height=1080),
-    ),
+    web_page: Annotated[
+        WebPage,
+        Body(
+            default=...,
+            title="Web page to analyze defined by its url and its screen resolution",
+            example=WebPage(url="https://www.ecoindex.fr", width=1920, height=1080),
+        ),
+    ],
     session: AsyncSession = Depends(get_session),
 ) -> str:
     if Settings().DAILY_LIMIT_PER_HOST:
         remaining_quota = await check_quota(
             session=session, host=web_page.get_url_host()
         )
-        response.headers["X-Remaining-Daily-Requests"] = str(remaining_quota - 1)
+
+        if remaining_quota:
+            response.headers["X-Remaining-Daily-Requests"] = str(remaining_quota - 1)
 
     if (
         Settings().EXCLUDED_HOSTS
@@ -69,7 +75,7 @@ async def add_ecoindex_analysis_task(
             detail=f"The URL {web_page.url} is unreachable. Are you really sure of this url? 🤔",
         )
 
-    task_result = ecoindex_task.delay(
+    task_result = ecoindex_task.delay(  # type: ignore
         url=str(web_page.url), width=web_page.width, height=web_page.height
     )
 
@@ -93,7 +99,7 @@ async def get_ecoindex_analysis_task_by_id(
     t = AsyncResult(id=str(id), app=task_app)
 
     task_response = QueueTaskApi(
-        id=t.id,
+        id=str(t.id),
         status=t.state,
     )
 

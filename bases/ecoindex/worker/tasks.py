@@ -82,7 +82,7 @@ async def async_ecoindex_task(
         return QueueTaskResult(
             status=TaskStatus.FAILURE,
             error=QueueTaskError(
-                url=url,
+                url=url,  # type: ignore
                 exception=QuotaExceededException.__name__,
                 status_code=429,
                 message=exc.message,
@@ -95,7 +95,7 @@ async def async_ecoindex_task(
             return QueueTaskResult(
                 status=TaskStatus.FAILURE,
                 error=QueueTaskError(
-                    url=url,
+                    url=url,  # type: ignore
                     exception=EcoindexHostUnreachable.__name__,
                     status_code=502,
                     message=(
@@ -110,7 +110,7 @@ async def async_ecoindex_task(
             return QueueTaskResult(
                 status=TaskStatus.FAILURE,
                 error=QueueTaskError(
-                    url=url,
+                    url=url,  # type: ignore
                     exception=EcoindexTimeout.__name__,
                     status_code=504,
                     message=(
@@ -124,7 +124,7 @@ async def async_ecoindex_task(
         return QueueTaskResult(
             status=TaskStatus.FAILURE,
             error=QueueTaskError(
-                url=url,
+                url=url,  # type: ignore
                 exception=type(exc).__name__,
                 status_code=500,
                 message=str(exc.message) if exc.message else "",
@@ -136,7 +136,7 @@ async def async_ecoindex_task(
         return QueueTaskResult(
             status=TaskStatus.FAILURE,
             error=QueueTaskError(
-                url=url,
+                url=url,  # type: ignore
                 exception=EcoindexContentTypeError.__name__,
                 status_code=520,
                 message=exc.args[0],
@@ -148,7 +148,7 @@ async def async_ecoindex_task(
         return QueueTaskResult(
             status=TaskStatus.FAILURE,
             error=QueueTaskError(
-                url=url,
+                url=url,  # type: ignore
                 status_code=521,
                 exception=EcoindexStatusError.__name__,
                 message=exc.message,

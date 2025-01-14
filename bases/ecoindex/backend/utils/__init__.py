@@ -19,7 +19,7 @@ async def format_exception_response(exception: Exception) -> ExceptionResponse:
     return ExceptionResponse(
         exception=type(exception).__name__,
         args=[arg for arg in exception.args if arg] if exception.args else [],
-        message=exception.msg if hasattr(exception, "msg") else None,
+        message=exception.msg if hasattr(exception, "msg") else None,  # type: ignore
     )
 
 
@@ -45,7 +45,7 @@ async def get_sort_parameters(query_params: list[str], model: BaseModel) -> list
     result = []
 
     for query_param in query_params:
-        pattern = re.compile("^\w+:(asc|desc)$")
+        pattern = re.compile("^\w+:(asc|desc)$")  # type: ignore
 
         if not re.fullmatch(pattern, query_param):
             validation_error.append(
@@ -67,8 +67,9 @@ async def get_sort_parameters(query_params: list[str], model: BaseModel) -> list
                     "type": "value_error.sort",
                 }
             )
+            continue
 
-        result.append(Sort(clause=sort_params[0], sort=sort_params[1]))
+        result.append(Sort(clause=sort_params[0], sort=sort_params[1]))  # type: ignore
 
     if validation_error:
         raise HTTPException(
@@ -94,7 +95,7 @@ async def check_quota(
         raise QuotaExceededException(
             limit=Settings().DAILY_LIMIT_PER_HOST,
             host=host,
-            latest_result=loads(latest_result.model_dump_json()),
+            latest_result=loads(latest_result.model_dump_json() or "{}"),  # type: ignore
         )
 
     return Settings().DAILY_LIMIT_PER_HOST - count_daily_request_per_host

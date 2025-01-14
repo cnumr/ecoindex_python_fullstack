@@ -104,5 +104,5 @@ async def get_latest_result_redirect(
         )
 
     return RedirectResponse(
-        url=f"{Settings().FRONTEND_BASE_URL}/resultat/?id={latest_result.latest_result.id}"
+        url=f"{Settings().FRONTEND_BASE_URL}/resultat/?id={latest_result.latest_result.id}"  # type: ignore
     )

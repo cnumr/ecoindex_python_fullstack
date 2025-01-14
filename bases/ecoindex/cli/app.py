@@ -138,30 +138,32 @@ def analyze(
             secho(f"⏲️ Crawling root url {url[0]} -> Wait a minute!", fg=colors.MAGENTA)
             with spinner():
                 urls = get_urls_recursive(main_url=url[0])
-                urls = urls if urls else url
+                urls = urls if urls else url  # type: ignore
 
             (
                 file_prefix,
                 input_file,
                 logger_file,
-            ) = get_file_prefix_input_file_logger_file(urls=urls)
+            ) = get_file_prefix_input_file_logger_file(urls=urls)  # type: ignore
 
         elif url:
-            urls = get_url_from_args(urls_arg=url)
+            urls = get_url_from_args(urls_arg=url)  # type: ignore
             (
                 file_prefix,
                 input_file,
                 logger_file,
-            ) = get_file_prefix_input_file_logger_file(urls=urls, tmp_folder=tmp_folder)
+            ) = get_file_prefix_input_file_logger_file(urls=urls, tmp_folder=tmp_folder)  # type: ignore
 
         elif urls_file:
-            urls = get_urls_from_file(urls_file=urls_file)
+            urls = get_urls_from_file(urls_file=urls_file)  # type: ignore
             (
                 file_prefix,
                 input_file,
                 logger_file,
             ) = get_file_prefix_input_file_logger_file(
-                urls=urls, urls_file=urls_file, tmp_folder=tmp_folder
+                urls=urls,  # type: ignore
+                urls_file=urls_file,
+                tmp_folder=tmp_folder,
             )
         elif sitemap:
             secho(
@@ -172,14 +174,14 @@ def analyze(
                 file_prefix,
                 input_file,
                 logger_file,
-            ) = get_file_prefix_input_file_logger_file(urls=urls)
+            ) = get_file_prefix_input_file_logger_file(urls=urls)  # type: ignore
 
         else:
             secho("🔥 You must provide an url...", fg=colors.RED)
             raise Exit(code=1)
 
         if input_file:
-            write_urls_to_file(file_prefix=file_prefix, urls=urls)
+            write_urls_to_file(file_prefix=file_prefix, urls=urls)  # type: ignore
             secho(f"📁️ Urls recorded in file `{input_file}`")
 
         if logger_file:
@@ -266,13 +268,13 @@ def analyze(
 
     Path(output_folder).mkdir(parents=True, exist_ok=True)
     write_results_to_file(
-        filename=output_filename, results=results, export_format=export_format
+        filename=str(output_filename), results=results, export_format=export_format
     )
     secho(f"🙌️ File {output_filename} written !", fg=colors.GREEN)
     if html_report:
         Report(
             results_file=output_filename,
-            output_path=output_folder,
+            output_path=str(output_folder),
             domain=file_prefix,
             date=time_now,
             language=html_report_language,
@@ -317,7 +319,7 @@ def report(
     output_folder = output_folder if output_folder else dirname(results_file)
 
     Report(
-        results_file=results_file,
+        results_file=Path(results_file),
         output_path=output_folder,
         domain=domain,
         date=datetime.now(),
