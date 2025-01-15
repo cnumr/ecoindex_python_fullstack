@@ -2,7 +2,6 @@ from json import loads
 from typing import Annotated
 
 import requests
-import rich
 from celery.result import AsyncResult
 from ecoindex.backend.dependencies.validation import validate_api_key_batch
 from ecoindex.backend.models.dependencies_parameters.id import IdParameter
@@ -159,12 +158,10 @@ async def add_ecoindex_analysis_task_batch(
     ],
     batch_key: str = Depends(validate_api_key_batch),
 ):
-    rich.print(results)
     task_result = ecoindex_batch_import_task.delay(  # type: ignore
         results=[result.model_dump() for result in results],
         source=batch_key["source"],  # type: ignore
     )
-    rich.print(task_result)
 
     return task_result.id
 

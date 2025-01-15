@@ -28,7 +28,7 @@ if Settings().GLITCHTIP_DSN:
 
 
 @app.task(
-    name="Make ecoindex analysis",
+    name="ecoindex.analysis",
     bind=True,
     autoretry_for=(Exception,),
     retry_backoff=5,
@@ -159,7 +159,7 @@ async def async_ecoindex_task(
 
 
 @app.task(
-    name="Batch import results in DB",
+    name="ecoindex.batch_import",
     timezone=Settings().TZ,
     queue="ecoindex_batch",
     bind=True,

@@ -164,7 +164,7 @@ tasks:
     deps: [start-redis]
     internal: true
     cmds:
-      - poetry run watchmedo auto-restart --directory=../.. --pattern=worker/*.py --recursive -- poetry run celery -- -A ecoindex.worker.tasks worker -l info -Q ecoindex -Q ecoindex_batch -E
+      - poetry run watchmedo auto-restart --directory=../.. --pattern=worker/*.py --recursive -- poetry run celery -- -A ecoindex.worker.tasks worker -l info -E
     silent: true
   
   start-backend:
@@ -217,7 +217,7 @@ tasks:
     status:
       - test -f docker-compose.yml
 
-  debug-queues:
+  monitor-queues:
     desc: Show the queues of the docker-compose API
     cmds:
       - poetry run celery --app=ecoindex.worker.tasks events
