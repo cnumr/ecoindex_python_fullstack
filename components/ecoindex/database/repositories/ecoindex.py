@@ -118,7 +118,7 @@ async def get_latest_result(session: AsyncSession, host: str) -> ApiEcoindex | N
     statement = (
         select(ApiEcoindex)
         .where(ApiEcoindex.host == host)
-        .order_by(desc(str(ApiEcoindex.date)))
+        .order_by(text(str(desc(str(ApiEcoindex.date)))))
         .limit(1)
     )
 
