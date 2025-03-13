@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 includes:
   poetry: ../../tasks/PoetryTaskfile.yml
@@ -52,7 +52,7 @@ tasks:
           NAME: "api-worker"
           OPTIONS: --build-arg="wheel=ecoindex_api-{{.VERSION}}-py3-none-any.whl" -f docker/worker/dockerfile
     silent: true
-  
+
   docker-build-all:
     desc: Build poetry project and then build the docker images
     cmds:
@@ -67,7 +67,7 @@ tasks:
     cmds:
       - echo "Build the docker images"
     silent: true
-  
+
   docker-push-backend:
     desc: Push the backend docker image
     vars:
@@ -80,7 +80,7 @@ tasks:
           VERSION: "{{.VERSION}}"
           NAME: "api-backend"
     silent: true
-  
+
   docker-push-worker:
     desc: Push the worker docker image
     vars:
@@ -93,21 +93,21 @@ tasks:
           VERSION: "{{.VERSION}}"
           NAME: "api-worker"
     silent: true
-  
+
   docker-push-all:
     desc: Push the docker images
     deps: [docker-push-backend, docker-push-worker]
     cmds:
       - echo "Push the docker images"
     silent: true
-  
+
   docker-pull:
     desc: Pull the docker images
     cmds:
       - echo "Pull the docker images"
       - docker compose pull
     silent: true
-  
+
   docker-up:
     desc: Start the docker-compose API
     deps: [init-env, init-docker-compose]
@@ -151,7 +151,7 @@ tasks:
     cmds:
       - poetry run alembic upgrade head
     silent: true
-  
+
   start-redis:
     internal: true
     cmds:
@@ -162,13 +162,11 @@ tasks:
 
   start-worker:
     deps: [start-redis]
-    internal: true
     cmds:
-      - poetry run watchmedo auto-restart --directory=../.. --pattern=worker/*.py --recursive -- poetry run celery -- -A ecoindex.worker.tasks worker -l info -E
+      - poetry run watchmedo auto-restart --directory=../.. --pattern=worker/*.py --recursive -- poetry run celery -- -A ecoindex.worker.tasks worker --loglevel=DEBUG --queues=ecoindex,ecoindex_batch -E
     silent: true
-  
+
   start-backend:
-    internal: true
     cmds:
       - poetry run uvicorn ecoindex.backend.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir ../..
     silent: true

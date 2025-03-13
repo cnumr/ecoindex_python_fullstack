@@ -51,7 +51,7 @@ playwright-stealth = "^1.0.6"
 [tool.poetry.group.dev.dependencies]
 typing-extensions = "^4.8.0"
 aiosqlite = "^0.19.0"
-watchdog = "^3.0.0"
+watchdog = "^6.0.0"
 
 [tool.poetry.scripts]
 update-openapi = "ecoindex.backend.scripts.openapi:main"

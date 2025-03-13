@@ -1,6 +1,12 @@
 version: "3"
 
 tasks:
+  default:
+    desc: Run poetry
+    cmds:
+      - poetry {{.CLI_ARGS}}
+    silent: true
+
   install:
     desc: Install the poetry project dependencies of {{.PROJECT_NAME}}
     cmds:
