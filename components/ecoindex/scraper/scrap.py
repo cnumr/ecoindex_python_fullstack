@@ -70,7 +70,9 @@ class EcoindexScraper:
 
     async def scrap_page(self) -> PageMetrics:
         async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=self.headless)
+            browser = await p.chromium.launch(
+                headless=self.headless, args=["--disable-software-rasterizer"]
+            )
             self.context = await browser.new_context(
                 record_har_path=self.har_temp_file_path,
                 screen=ViewportSize(
@@ -89,7 +91,6 @@ class EcoindexScraper:
             self.page = await self.context.new_page()
             response = await self.page.goto(self.url)
             await self.check_page_response(response)
-
             await self.page.wait_for_load_state()
             sleep(self.wait_before_scroll)
             await self.generate_screenshot()
@@ -100,6 +101,7 @@ class EcoindexScraper:
             sleep(self.wait_after_scroll)
             total_nodes = await self.get_nodes_count()
             await self.page.close()
+            await self.context.close()
             await browser.close()
 
         await self.get_requests_from_har_file()
