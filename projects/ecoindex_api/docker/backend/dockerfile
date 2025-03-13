@@ -1,13 +1,13 @@
-FROM python:3-slim as requirements-stage
+FROM python:3.12-slim AS requirements-stage
 
 WORKDIR /tmp
 
-RUN pip install poetry
+RUN pip install poetry==1.8.5
 COPY pyproject.toml poetry.lock /tmp/
 RUN poetry export --with=backend --output=requirements.txt --without-hashes
 
 
-FROM python:3-slim
+FROM python:3.12-slim
 
 ARG wheel=ecoindex_api-3.1.0-py3-none-any.whl
 

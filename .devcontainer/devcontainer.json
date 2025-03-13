@@ -1,7 +1,7 @@
 {
     "name": "Ecoindex python full stack dev container",
     "image": "mcr.microsoft.com/devcontainers/python:3.12",
-    "postCreateCommand": "pipx install poetry && poetry self add poetry-multiproject-plugin && poetry self add poetry-polylith-plugin",
+    "postCreateCommand": "pipx install poetry==1.8.5 && poetry self add poetry-multiproject-plugin && poetry self add poetry-polylith-plugin",
     "features": {
         "ghcr.io/audacioustux/devcontainers/taskfile": {},
         "ghcr.io/devcontainers/features/docker-in-docker:2": {

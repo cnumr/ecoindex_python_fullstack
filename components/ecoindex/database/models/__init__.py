@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from sqlmodel import Field, SQLModel
 
 
-class ApiEcoindex(SQLModel, Result, table=True):
+class ApiEcoindex(SQLModel, Result, table=True):  # type: ignore
     id: UUID | None = Field(
         default=None,
         description="Analysis ID of type `UUID`",
@@ -41,6 +41,14 @@ class ApiEcoindex(SQLModel, Result, table=True):
             "at the time of the analysis for a given version."
         ),
     )
+    source: str | None = Field(
+        default="ecoindex.fr",
+        title="Source of the analysis",
+        description="Source of the analysis",
+    )
+
+
+ApiEcoindexes = list[ApiEcoindex]
 
 
 class PageApiEcoindexes(BaseModel):

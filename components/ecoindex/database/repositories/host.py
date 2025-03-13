@@ -25,7 +25,7 @@ async def get_host_list_db(
     )
 
     if host:
-        statement = statement.filter(ApiEcoindex.host.like(f"%{host}%"))
+        statement = statement.filter(ApiEcoindex.host.like(f"%{host}%"))  # type: ignore
 
     statement = date_filter(statement=statement, date_from=date_from, date_to=date_to)
 

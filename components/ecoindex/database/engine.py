@@ -24,7 +24,9 @@ async def init_db():
 
 async def get_session() -> AsyncGenerator:
     async_session = sessionmaker(
-        bind=engine, class_=AsyncSession, expire_on_commit=False
-    )  # type: ignore
-    async with async_session() as session:
+        bind=engine,  # type: ignore
+        class_=AsyncSession,
+        expire_on_commit=False,
+    )
+    async with async_session() as session:  # type: ignore
         yield session

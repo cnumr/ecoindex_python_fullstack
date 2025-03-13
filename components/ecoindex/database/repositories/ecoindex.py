@@ -83,7 +83,7 @@ async def get_ecoindex_result_list_db(
         elif sort.sort == "desc":
             sort_parameter = desc(sort.clause)
 
-        statement = statement.order_by(sort_parameter)
+        statement = statement.order_by(sort_parameter)  # type: ignore
 
     ecoindexes = await session.exec(statement)
 
@@ -92,7 +92,7 @@ async def get_ecoindex_result_list_db(
 
 async def get_ecoindex_result_by_id_db(
     session: AsyncSession, id: UUID, version: Version = Version.v1
-) -> ApiEcoindex:
+) -> ApiEcoindex | None:
     statement = (
         select(ApiEcoindex)
         .where(ApiEcoindex.id == id)
@@ -114,11 +114,11 @@ async def get_count_daily_request_per_host(session: AsyncSession, host: str) -> 
     return len(results.all())
 
 
-async def get_latest_result(session: AsyncSession, host: str) -> ApiEcoindex:
+async def get_latest_result(session: AsyncSession, host: str) -> ApiEcoindex | None:
     statement = (
         select(ApiEcoindex)
         .where(ApiEcoindex.host == host)
-        .order_by(desc(ApiEcoindex.date))
+        .order_by(desc(str(ApiEcoindex.date)))
         .limit(1)
     )
 

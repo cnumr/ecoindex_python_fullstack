@@ -12,10 +12,10 @@ def date_filter(
     date_from: date | None = None,
     date_to: date | None = None,
 ) -> SelectOfScalar:
-    if date_from:
+    if date_from and ApiEcoindex.date:
         statement = statement.where(ApiEcoindex.date >= date_from)
 
-    if date_to:
+    if date_to and ApiEcoindex.date:
         statement = statement.where(ApiEcoindex.date <= date_to)
 
     return statement

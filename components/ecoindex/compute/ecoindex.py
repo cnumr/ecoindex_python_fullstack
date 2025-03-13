@@ -11,6 +11,7 @@ from ecoindex.data import (  # noqa: F401
     quantiles_size,
 )
 from ecoindex.models import Ecoindex
+from ecoindex.models.enums import Grade
 from typing_extensions import deprecated
 
 
@@ -38,7 +39,7 @@ async def get_ecoindex(dom: int, size: float, requests: int) -> Ecoindex:
 
     return Ecoindex(
         score=score,
-        grade=await get_grade(score),
+        grade=Grade(await get_grade(score)),
         ges=await get_greenhouse_gases_emmission(score),
         water=await get_water_consumption(score),
     )

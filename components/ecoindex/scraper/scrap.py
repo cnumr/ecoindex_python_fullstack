@@ -9,7 +9,7 @@ from ecoindex.exceptions.scraper import EcoindexScraperStatusException
 from ecoindex.models.compute import PageMetrics, Result, ScreenShot, WindowSize
 from ecoindex.models.scraper import MimetypeAggregation, RequestItem, Requests
 from ecoindex.utils.screenshots import convert_screenshot_to_webp, set_screenshot_rights
-from playwright._impl._api_structures import SetCookieParam
+from playwright._impl._api_structures import SetCookieParam, ViewportSize
 from playwright.async_api import async_playwright
 from typing_extensions import deprecated
 
@@ -70,10 +70,15 @@ class EcoindexScraper:
 
     async def scrap_page(self) -> PageMetrics:
         async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=self.headless)
+            browser = await p.chromium.launch(
+                headless=self.headless, args=["--disable-software-rasterizer"]
+            )
             self.context = await browser.new_context(
                 record_har_path=self.har_temp_file_path,
-                screen=self.window_size.model_dump(),
+                screen=ViewportSize(
+                    width=self.window_size.width,
+                    height=self.window_size.height,
+                ),
                 ignore_https_errors=True,
                 http_credentials={
                     "username": self.basic_auth.split(":")[0],
@@ -86,7 +91,6 @@ class EcoindexScraper:
             self.page = await self.context.new_page()
             response = await self.page.goto(self.url)
             await self.check_page_response(response)
-
             await self.page.wait_for_load_state()
             sleep(self.wait_before_scroll)
             await self.generate_screenshot()
@@ -97,6 +101,7 @@ class EcoindexScraper:
             sleep(self.wait_after_scroll)
             total_nodes = await self.get_nodes_count()
             await self.page.close()
+            await self.context.close()
             await browser.close()
 
         await self.get_requests_from_har_file()

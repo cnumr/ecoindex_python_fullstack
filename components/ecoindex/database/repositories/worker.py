@@ -15,6 +15,7 @@ async def save_ecoindex_result_db(
     id: UUID,
     ecoindex_result: Result,
     version: Version = Version.v1,
+    source: str | None = None,
 ) -> ApiEcoindex:
     ranking = await get_rank_analysis_db(
         session=session, ecoindex=ecoindex_result, version=version
@@ -40,6 +41,7 @@ async def save_ecoindex_result_db(
         initial_ranking=ranking if ranking else total_results + 1,
         initial_total_results=total_results + 1,
         ecoindex_version=ecoindex_result.ecoindex_version,
+        source=source,
     )
 
     session.add(db_ecoindex)

@@ -71,8 +71,9 @@ async def get_ecoindex_analysis_list(
         page=pagination.page,
         size=pagination.size,
         sort_params=await get_sort_parameters(
-            query_params=sort, model=ApiEcoindex
-        ),  # type: ignore
+            query_params=sort,
+            model=ApiEcoindex,  # type: ignore
+        ),
     )
     total_results = await get_count_analysis_db(
         session=session,
