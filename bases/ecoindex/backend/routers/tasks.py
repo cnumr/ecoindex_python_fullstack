@@ -70,9 +70,11 @@ async def add_ecoindex_analysis_task(
     try:
         r = requests.head(url=web_page.url, timeout=5)
         r.raise_for_status()
-    except Exception:
+    except requests.exceptions.RequestException as e:
         raise HTTPException(
-            status_code=521,
+            status_code=e.response.status_code
+            if e.response
+            else status.HTTP_400_BAD_REQUEST,
             detail=f"The URL {web_page.url} is unreachable. Are you really sure of this url? 🤔",
         )
 
