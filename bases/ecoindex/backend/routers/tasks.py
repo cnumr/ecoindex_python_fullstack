@@ -3,6 +3,7 @@ from typing import Annotated
 
 import requests
 from celery.result import AsyncResult
+import ua_generator
 from ecoindex.backend.dependencies.validation import validate_api_key_batch
 from ecoindex.backend.models.dependencies_parameters.id import IdParameter
 from ecoindex.backend.utils import check_quota
@@ -68,7 +69,8 @@ async def add_ecoindex_analysis_task(
         )
 
     try:
-        r = requests.head(url=web_page.url, timeout=5)
+        ua = ua_generator.generate()
+        r = requests.head(url=web_page.url, timeout=5, headers=ua.headers.get())
         r.raise_for_status()
     except requests.exceptions.RequestException as e:
         raise HTTPException(
