@@ -35,6 +35,7 @@ pyyaml = "^6.0.1"
 rich = "^13.6.0"
 scrapy = "^2.11.0"
 typer = "^0.9.0"
+ua-generator = "^2.0.5"
 
 [tool.poetry.scripts]
 ecoindex-cli = "ecoindex.cli.app:app"
