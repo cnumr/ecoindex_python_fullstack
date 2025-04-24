@@ -77,12 +77,13 @@ async def add_ecoindex_analysis_task(
         )
 
     ua = EcoindexScraper.get_user_agent()
+    headers = {**custom_headers, **ua.headers.get()}
 
     try:
         r = requests.head(
             url=web_page.url,
             timeout=5,
-            headers={**custom_headers, **ua.headers.get()},
+            headers=headers,
         )
         r.raise_for_status()
     except requests.exceptions.RequestException as e:
@@ -97,7 +98,7 @@ async def add_ecoindex_analysis_task(
         url=str(web_page.url),
         width=web_page.width,
         height=web_page.height,
-        custom_headers=custom_headers,
+        custom_headers=headers,
     )
 
     return task_result.id

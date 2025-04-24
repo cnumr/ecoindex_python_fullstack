@@ -99,7 +99,6 @@ class EcoindexScraper:
                 }
                 if self.basic_auth
                 else None,
-                user_agent=self.get_user_agent().text,
                 extra_http_headers=self.custom_headers,
             )
             await self.context.add_cookies(self.cookies)
