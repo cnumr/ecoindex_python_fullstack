@@ -3,7 +3,6 @@ from typing import Annotated
 
 import requests
 from celery.result import AsyncResult
-import ua_generator
 from ecoindex.backend.dependencies.validation import validate_api_key_batch
 from ecoindex.backend.models.dependencies_parameters.id import IdParameter
 from ecoindex.backend.utils import check_quota
