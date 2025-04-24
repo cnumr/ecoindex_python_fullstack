@@ -1520,17 +1520,6 @@ files = [
 ]
 
 [[package]]
-name = "ua-generator"
-version = "2.0.5"
-description = "A random user-agent generator"
-optional = false
-python-versions = ">=3.9"
-files = [
-    {file = "ua_generator-2.0.5-py3-none-any.whl", hash = "sha256:ed7437db60ad1c9a3dfa89e32700a37636944fd7adfccd12013dfbb3b540116f"},
-    {file = "ua_generator-2.0.5.tar.gz", hash = "sha256:5a75d25d71d574da8ec259c06ad55009c8c91cd4b520c2820ad9ba9d6dd28053"},
-]
-
-[[package]]
 name = "urllib3"
 version = "2.4.0"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -1633,4 +1622,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "3288f9f522873c4bdde13c1da112a7bc401ce3d6a712754102ab99d381d7470b"
+content-hash = "a1d61d1334f4cb9c3cafe5a11965eee92ee53c708f18b5a40360225022adc3f3"

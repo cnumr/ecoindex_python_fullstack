@@ -209,34 +209,31 @@ files = [
 
 [[package]]
 name = "caio"
-version = "0.9.22"
+version = "0.9.24"
 description = "Asynchronous file IO for Linux MacOS or Windows."
 optional = false
-python-versions = "<4,>=3.7"
+python-versions = ">=3.9"
 files = [
-    {file = "caio-0.9.22-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:979bef84869822a0b1d10c99f7240e2ca8b00c138a54bec1fcbef1163a6bc976"},
-    {file = "caio-0.9.22-cp310-cp310-manylinux_2_34_aarch64.whl", hash = "sha256:bef2533b1444ce80df47ecce25ad8def6eb76a5ba8c1457074a16f5ab6e12670"},
-    {file = "caio-0.9.22-cp310-cp310-manylinux_2_34_x86_64.whl", hash = "sha256:76fe5d98ff55099ec61a1863eed53ef353ea815e529c19a284865af73b3c84a3"},
-    {file = "caio-0.9.22-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:dd99c28a85809d0954211d637dd0e2e5c0e385dcdfbdbc4ed914b549d7e0fb69"},
-    {file = "caio-0.9.22-cp311-cp311-manylinux_2_34_aarch64.whl", hash = "sha256:6ee67c4d63b77b3d07715c41939b71fee1bbb986219e398f3420ac31b43e65a8"},
-    {file = "caio-0.9.22-cp311-cp311-manylinux_2_34_x86_64.whl", hash = "sha256:fb335891181107bdb8f96dc133fc8e2612b62cd270219333659d6d53f75b1770"},
-    {file = "caio-0.9.22-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:25aae4c3b846eeca63c7d75d63b3fd8deaba9650ef1168d8a239e6a927299ded"},
-    {file = "caio-0.9.22-cp312-cp312-manylinux_2_34_aarch64.whl", hash = "sha256:ac332b8e2c8e0840fe10ee6971b38f8dac6ad64ecf6087ee3f70cd376f511699"},
-    {file = "caio-0.9.22-cp312-cp312-manylinux_2_34_x86_64.whl", hash = "sha256:6f991e4812fd2d6e87f91ff78fcc7d4f299bd98765334756580d4ea42cad89f1"},
-    {file = "caio-0.9.22-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:c3d29f0f2f3a577b58794960dbfc78ef124a8b3e238d653a4c11c57f20651e34"},
-    {file = "caio-0.9.22-cp313-cp313-manylinux_2_34_aarch64.whl", hash = "sha256:a3307e064f423675c4ffd2608ecc86bc47652ec1547dab5f94b72d9599c23201"},
-    {file = "caio-0.9.22-cp313-cp313-manylinux_2_34_x86_64.whl", hash = "sha256:160a1dad60bbb4268811f88f817205fab6cba8fb50801fdd3d865b69999ea924"},
-    {file = "caio-0.9.22-cp38-cp38-macosx_11_0_universal2.whl", hash = "sha256:ceb32307d6d3cfa512220b53b578833ebd27f8ed0b534f15e3e88e6d598bffe7"},
-    {file = "caio-0.9.22-cp38-cp38-manylinux_2_34_aarch64.whl", hash = "sha256:7145f2c47233af12cc0194a7bfe584c632b16fa00d3f900806eda527f89ce93b"},
-    {file = "caio-0.9.22-cp38-cp38-manylinux_2_34_x86_64.whl", hash = "sha256:3bedd3e8ccc485cb20d4d56b0af1471e8f8b5ca3f0b5f1f21ebd087bfdcd21a7"},
-    {file = "caio-0.9.22-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:ae19a37b7294dc15c8775ec657464a4370d1f8351d0fc3a284a9f014514b9be5"},
-    {file = "caio-0.9.22-cp39-cp39-manylinux_2_34_aarch64.whl", hash = "sha256:70e6a12c9d1db8fb7a07c5193ca352df1488787f1cf1c3814879dec754135031"},
-    {file = "caio-0.9.22-cp39-cp39-manylinux_2_34_x86_64.whl", hash = "sha256:3f2f7f22c60844165359a285c5d38ca0d4ab10ca6f6def79abf6243d019df64b"},
-    {file = "caio-0.9.22.tar.gz", hash = "sha256:7ea533d90e5fa0bba33bc8f4805b4c90f19e8d8ac5139a8033b92a6ab5c4012b"},
+    {file = "caio-0.9.24-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:d80322126a97ba572412b17b2f086ff95195de2c4261deb19db6bfcdc9ef7540"},
+    {file = "caio-0.9.24-cp310-cp310-manylinux_2_34_aarch64.whl", hash = "sha256:37bc172349686139e8dc97fff7662c67b1837e18a67b99e8ef25585f2893d013"},
+    {file = "caio-0.9.24-cp310-cp310-manylinux_2_34_x86_64.whl", hash = "sha256:ad7f0902bf952237e120606252c14ab3cb05995c9f79f39154b5248744864832"},
+    {file = "caio-0.9.24-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:925b9e3748ce1a79386dfb921c0aee450e43225534551abd1398b1c08f9ba29f"},
+    {file = "caio-0.9.24-cp311-cp311-manylinux_2_34_aarch64.whl", hash = "sha256:3b4dc0a8fb9a58ab40f967ad5a8a858cc0bfb2348a580b4142595849457f9c9a"},
+    {file = "caio-0.9.24-cp311-cp311-manylinux_2_34_x86_64.whl", hash = "sha256:fa74d111b3b165bfad2e333367976bdf118bcf505a1cb44d3bcddea2849e3297"},
+    {file = "caio-0.9.24-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:7ae3566228383175265a7583107f21a7cb044a752ea29ba84fce7c1a49a05903"},
+    {file = "caio-0.9.24-cp312-cp312-manylinux_2_34_aarch64.whl", hash = "sha256:a306b0dda91cb4ca3170f066c114597f8ea41b3da578574a9d2b54f86963de68"},
+    {file = "caio-0.9.24-cp312-cp312-manylinux_2_34_x86_64.whl", hash = "sha256:8ee158e56128d865fb7d57a9c9c22fca4e8aa8d8664859c977a36fff3ccb3609"},
+    {file = "caio-0.9.24-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:1d47ef8d76aca74c17cb07339a441c5530fc4b8dd9222dfb1e1abd7f9f9b814f"},
+    {file = "caio-0.9.24-cp313-cp313-manylinux_2_34_aarch64.whl", hash = "sha256:d15fc746c4bf0077d75df05939d1e97c07ccaa8e580681a77021d6929f65d9f4"},
+    {file = "caio-0.9.24-cp313-cp313-manylinux_2_34_x86_64.whl", hash = "sha256:9368eae0a9badd5f31264896c51b47431d96c0d46f1979018fb1d20c49f56156"},
+    {file = "caio-0.9.24-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:3f0e5a645ef4e7bb7a81e10ae2a7aef14988cb2cb4354588c6bf6f6f3f6de72a"},
+    {file = "caio-0.9.24-cp39-cp39-manylinux_2_34_aarch64.whl", hash = "sha256:08304fa80af7771c78a5bcc923449c7ec8134d589b50d48c66320f85552c7ae2"},
+    {file = "caio-0.9.24-cp39-cp39-manylinux_2_34_x86_64.whl", hash = "sha256:5339ced0764e10242a50ccb21db7f0d9c359881db0f72fa2c5e45ed828ffacf7"},
+    {file = "caio-0.9.24.tar.gz", hash = "sha256:5bcdecaea02a9aa8e3acf0364eff8ad9903d57d70cdb274a42270126290a77f1"},
 ]
 
 [package.extras]
-develop = ["aiomisc-pytest", "pytest", "pytest-cov"]
+develop = ["aiomisc-pytest", "coveralls", "pylama[toml]", "pytest", "pytest-cov", "setuptools"]
 
 [[package]]
 name = "celery"
@@ -1024,13 +1021,13 @@ test = ["objgraph", "psutil"]
 
 [[package]]
 name = "h11"
-version = "0.14.0"
+version = "0.16.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
-    {file = "h11-0.14.0.tar.gz", hash = "sha256:8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d"},
+    {file = "h11-0.16.0-py3-none-any.whl", hash = "sha256:63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86"},
+    {file = "h11-0.16.0.tar.gz", hash = "sha256:4e35b956cf45792e4caa5885e69fba00bdbc6ffafbfa020300e549b208ee5ff1"},
 ]
 
 [[package]]

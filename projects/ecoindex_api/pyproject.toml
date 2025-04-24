@@ -43,7 +43,6 @@ cryptography = "^44.0.2"
 
 [tool.poetry.group.backend.dependencies]
 uvicorn = "^0.23.2"
-ua-generator = "^2.0.3"
 
 [tool.poetry.group.worker.dependencies]
 pillow = "^10.3.0"
