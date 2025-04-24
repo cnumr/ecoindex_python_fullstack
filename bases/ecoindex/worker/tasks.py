@@ -37,9 +37,13 @@ if Settings().GLITCHTIP_DSN:
     queue="ecoindex",
     dont_autoretry_for=[EcoindexScraperStatusException, TypeError],
 )
-def ecoindex_task(self, url: str, width: int, height: int) -> str:
+def ecoindex_task(
+    self, url: str, width: int, height: int, custom_headers: dict[str, str]
+) -> str:
     queue_task_result = run(
-        async_ecoindex_task(self, url=url, width=width, height=height)
+        async_ecoindex_task(
+            self, url=url, width=width, height=height, custom_headers=custom_headers
+        )
     )
 
     return queue_task_result.model_dump_json()
@@ -50,6 +54,7 @@ async def async_ecoindex_task(
     url: str,
     width: int,
     height: int,
+    custom_headers: dict[str, str],
 ) -> QueueTaskResult:
     try:
         session_generator = get_session()
@@ -69,6 +74,7 @@ async def async_ecoindex_task(
             else None,
             screenshot_gid=Settings().SCREENSHOTS_GID,
             screenshot_uid=Settings().SCREENSHOTS_UID,
+            custom_headers=custom_headers,
         ).get_page_analysis()
 
         db_result = await save_ecoindex_result_db(

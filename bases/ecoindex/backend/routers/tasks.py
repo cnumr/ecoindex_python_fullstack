@@ -17,6 +17,7 @@ from ecoindex.models.response_examples import (
     example_host_unreachable,
 )
 from ecoindex.models.tasks import QueueTaskApi, QueueTaskApiBatch, QueueTaskResult
+from ecoindex.scraper.scrap import EcoindexScraper
 from ecoindex.worker.tasks import ecoindex_batch_import_task, ecoindex_task
 from ecoindex.worker_component import app as task_app
 from fastapi import APIRouter, Depends, HTTPException, Response, status
@@ -49,6 +50,13 @@ async def add_ecoindex_analysis_task(
             example=WebPage(url="https://www.ecoindex.fr", width=1920, height=1080),
         ),
     ],
+    custom_headers: Annotated[
+        dict[str, str],
+        Body(
+            description="Custom headers to add to the request",
+            example={"X-My-Custom-Header": "MyValue"},
+        ),
+    ] = {},
     session: AsyncSession = Depends(get_session),
 ) -> str:
     if Settings().DAILY_LIMIT_PER_HOST:
@@ -68,20 +76,28 @@ async def add_ecoindex_analysis_task(
             detail="This host is excluded from the analysis",
         )
 
+    ua = EcoindexScraper.get_user_agent()
+
     try:
-        ua = ua_generator.generate()
-        r = requests.head(url=web_page.url, timeout=5, headers=ua.headers.get())
+        r = requests.head(
+            url=web_page.url,
+            timeout=5,
+            headers={**custom_headers, **ua.headers.get()},
+        )
         r.raise_for_status()
     except requests.exceptions.RequestException as e:
         raise HTTPException(
             status_code=e.response.status_code
             if e.response
             else status.HTTP_400_BAD_REQUEST,
-            detail=f"The URL {web_page.url} is unreachable. Are you really sure of this url? 🤔",
+            detail=f"The URL {web_page.url} is unreachable. Are you really sure of this url? 🤔 ({e.response.status_code if e.response else ''})",
         )
 
     task_result = ecoindex_task.delay(  # type: ignore
-        url=str(web_page.url), width=web_page.width, height=web_page.height
+        url=str(web_page.url),
+        width=web_page.width,
+        height=web_page.height,
+        custom_headers=custom_headers,
     )
 
     return task_result.id

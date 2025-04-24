@@ -4,6 +4,9 @@ from datetime import datetime
 from time import sleep
 from uuid import uuid4
 
+from ua_generator.user_agent import UserAgent
+from ua_generator import generate as ua_generate
+
 from ecoindex.compute import compute_ecoindex
 from ecoindex.exceptions.scraper import EcoindexScraperStatusException
 from ecoindex.models.compute import PageMetrics, Result, ScreenShot, WindowSize
@@ -28,6 +31,7 @@ class EcoindexScraper:
         headless: bool = True,
         basic_auth: str | None = None,
         cookies: list[SetCookieParam] = [],
+        custom_headers: dict[str, str] = {},
     ):
         self.url = url
         self.window_size = window_size
@@ -45,6 +49,15 @@ class EcoindexScraper:
         self.headless = headless
         self.basic_auth = basic_auth
         self.cookies = cookies
+        self.custom_headers = custom_headers
+
+    @staticmethod
+    def get_user_agent() -> UserAgent:
+        return ua_generate(
+            device="desktop",
+            browser="chrome",
+            platform="linux",
+        )
 
     @deprecated("This method is useless with new version of EcoindexScraper")
     def init_chromedriver(self):
@@ -86,6 +99,8 @@ class EcoindexScraper:
                 }
                 if self.basic_auth
                 else None,
+                user_agent=self.get_user_agent().text,
+                extra_http_headers=self.custom_headers,
             )
             await self.context.add_cookies(self.cookies)
             self.page = await self.context.new_page()
