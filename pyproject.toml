@@ -32,7 +32,7 @@ requests = "^2.32.3"
 tomli = "^2.0.1"
 haralyzer = "^2.4.0"
 python-slugify = "^8.0.4"
-setuptools = "^74.0.0"
+setuptools = "^78.1.1"
 cryptography = "^44.0.2"
 
 [tool.poetry.group.scraper.dependencies]
